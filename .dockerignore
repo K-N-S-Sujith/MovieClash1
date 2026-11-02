@@ -1,0 +1,9 @@
+.git
+.gitignore
+backend/target
+.system_generated
+.gemini
+*.log
+.idea
+.vscode
+

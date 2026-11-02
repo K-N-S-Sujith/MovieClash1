@@ -1,0 +1,20 @@
+package com.movieclash.model.protocol;
+
+public enum ErrorCode {
+    ROOM_NOT_FOUND,
+    ROOM_FULL,
+    INVALID_NAME,
+    INVALID_ROOM_CODE,
+    GAME_ALREADY_STARTED,
+    UNAUTHORIZED,
+    NOT_HOST,
+    NOT_CLUE_GIVER,
+    INVALID_TEAM,
+    RATE_LIMIT_EXCEEDED,
+    MESSAGE_TOO_LONG,
+    INVALID_PAYLOAD,
+    RECONNECT_FAILED,
+    EXPIRED_SESSION,
+    ALREADY_VOTED
+}
+

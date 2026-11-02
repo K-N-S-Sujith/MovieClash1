@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: movieclash
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: LIVEKIT_URL
+        value: wss://movieclash-demo.livekit.cloud
+      - key: LIVEKIT_API_KEY
+        value: devkey
+      - key: LIVEKIT_API_SECRET
+        value: secret
+

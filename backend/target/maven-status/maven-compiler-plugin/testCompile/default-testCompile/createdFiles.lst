@@ -1,0 +1,16 @@
+com\movieclash\IndividualGameLifecycleIT.class
+com\movieclash\PlayerSynchronizationTest.class
+com\movieclash\ScoreSynchronizerTest.class
+com\movieclash\LiveKitTokenControllerTest.class
+com\movieclash\MovieCatalogServiceTest.class
+com\movieclash\ChatAndClueRelayIT.class
+com\movieclash\HealthControllerTest.class
+com\movieclash\WebSocketGatewayIT$TestWebSocketHandler.class
+com\movieclash\FullScoreFlowIT.class
+com\movieclash\TeamBattleModeIT.class
+com\movieclash\ReconnectionIT.class
+com\movieclash\RoomManagerTest.class
+com\movieclash\AnswerValidatorTest.class
+com\movieclash\ForwardedGuessValidationIT.class
+com\movieclash\WebSocketGatewayIT.class
+com\movieclash\CancellationVotingIT.class

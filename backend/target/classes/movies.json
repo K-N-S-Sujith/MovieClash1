@@ -1,0 +1,1810 @@
+[
+  {
+    "id": "m-001",
+    "title": "Mayabazar",
+    "year": 1957,
+    "aliases": [
+      "Mayabazar"
+    ],
+    "hint": "A legendary mythological fantasy about the Pandavas, Krishna and Ghatotkacha."
+  },
+  {
+    "id": "m-002",
+    "title": "Malliswari",
+    "year": 1951,
+    "aliases": [
+      "Malliswari"
+    ],
+    "hint": "A young woman from a royal family dreams of becoming a dancer."
+  },
+  {
+    "id": "m-003",
+    "title": "Pathala Bhairavi",
+    "year": 1951,
+    "aliases": [
+      "Pathala Bhairavi"
+    ],
+    "hint": "A young gardener sets out on a dangerous quest to win a princess."
+  },
+  {
+    "id": "m-004",
+    "title": "Missamma",
+    "year": 1955,
+    "aliases": [
+      "Missamma"
+    ],
+    "hint": "Two unemployed people pretend to be a married couple to get teaching jobs."
+  },
+  {
+    "id": "m-005",
+    "title": "Gundamma Katha",
+    "year": 1962,
+    "aliases": [
+      "Gundamma Katha"
+    ],
+    "hint": "Two brothers teach lessons to a wealthy widow and her daughters."
+  },
+  {
+    "id": "m-006",
+    "title": "Lava Kusa",
+    "year": 1963,
+    "aliases": [
+      "Lava Kusa"
+    ],
+    "hint": "The story of Lord Rama's sons Lava and Kusa."
+  },
+  {
+    "id": "m-007",
+    "title": "Nartanasala",
+    "year": 1963,
+    "aliases": [
+      "Nartanasala"
+    ],
+    "hint": "A celebrated retelling of the Mahabharata episode involving the Pandavas in disguise."
+  },
+  {
+    "id": "m-008",
+    "title": "Ramudu Bheemudu",
+    "year": 1964,
+    "aliases": [
+      "Ramudu Bheemudu"
+    ],
+    "hint": "A wealthy man and a poor man who look alike switch places."
+  },
+  {
+    "id": "m-009",
+    "title": "Mooga Manasulu",
+    "year": 1964,
+    "aliases": [
+      "Mooga Manasulu"
+    ],
+    "hint": "A romantic drama involving reincarnation and love across lifetimes."
+  },
+  {
+    "id": "m-010",
+    "title": "Devadasu",
+    "year": 1953,
+    "aliases": [
+      "Devadasu"
+    ],
+    "hint": "A tragic love story about Devadasu and Parvati."
+  },
+  {
+    "id": "m-011",
+    "title": "Adavi Ramudu",
+    "year": 1977,
+    "aliases": [
+      "Adavi Ramudu"
+    ],
+    "hint": "A forest-based action drama about a man fighting injustice."
+  },
+  {
+    "id": "m-012",
+    "title": "Sankarabharanam",
+    "year": 1980,
+    "aliases": [
+      "Sankarabharanam"
+    ],
+    "hint": "A classical musician struggles to preserve traditional Indian music."
+  },
+  {
+    "id": "m-013",
+    "title": "Sagara Sangamam",
+    "year": 1983,
+    "aliases": [
+      "Sagara Sangamam"
+    ],
+    "hint": "A gifted dancer faces personal struggles and unfulfilled artistic dreams."
+  },
+  {
+    "id": "m-014",
+    "title": "Swathi Muthyam",
+    "year": 1986,
+    "aliases": [
+      "Swathi Muthyam"
+    ],
+    "hint": "An innocent man changes the life of a widow and her child."
+  },
+  {
+    "id": "m-015",
+    "title": "Rudraveena",
+    "year": 1988,
+    "aliases": [
+      "Rudraveena"
+    ],
+    "hint": "A musician challenges social discrimination and works for social change."
+  },
+  {
+    "id": "m-016",
+    "title": "Geethanjali",
+    "year": 1989,
+    "aliases": [
+      "Geethanjali"
+    ],
+    "hint": "Two young people facing serious illness find love and meaning in life."
+  },
+  {
+    "id": "m-017",
+    "title": "Shiva",
+    "year": 1989,
+    "aliases": [
+      "Shiva"
+    ],
+    "hint": "A college student takes on a violent criminal network."
+  },
+  {
+    "id": "m-018",
+    "title": "Jagadeka Veerudu Athiloka Sundari",
+    "year": 1990,
+    "aliases": [
+      "Jagadeka Veerudu Athiloka Sundari"
+    ],
+    "hint": "A young man encounters a celestial woman who comes to Earth."
+  },
+  {
+    "id": "m-019",
+    "title": "Kshana Kshanam",
+    "year": 1991,
+    "aliases": [
+      "Kshana Kshanam"
+    ],
+    "hint": "A woman and a small-time thief get caught in a dangerous chase."
+  },
+  {
+    "id": "m-020",
+    "title": "Chanti",
+    "year": 1992,
+    "aliases": [
+      "Chanti"
+    ],
+    "hint": "A kind-hearted village man becomes involved in a family conflict."
+  },
+  {
+    "id": "m-021",
+    "title": "Gharana Mogudu",
+    "year": 1992,
+    "aliases": [
+      "Gharana Mogudu"
+    ],
+    "hint": "A confident mechanic challenges a powerful businesswoman."
+  },
+  {
+    "id": "m-022",
+    "title": "Muta Mestri",
+    "year": 1993,
+    "aliases": [
+      "Muta Mestri"
+    ],
+    "hint": "A labour leader fights exploitation and corruption."
+  },
+  {
+    "id": "m-023",
+    "title": "Govinda Govinda",
+    "year": 1993,
+    "aliases": [
+      "Govinda Govinda"
+    ],
+    "hint": "A temple idol theft leads to a suspenseful adventure."
+  },
+  {
+    "id": "m-024",
+    "title": "Hello Brother",
+    "year": 1994,
+    "aliases": [
+      "Hello Brother"
+    ],
+    "hint": "A man discovers he has a lookalike and gets caught in comic confusion."
+  },
+  {
+    "id": "m-025",
+    "title": "Bhairava Dweepam",
+    "year": 1994,
+    "aliases": [
+      "Bhairava Dweepam"
+    ],
+    "hint": "A prince faces magical challenges to rescue a princess."
+  },
+  {
+    "id": "m-026",
+    "title": "Pokiri Raja",
+    "year": 1995,
+    "aliases": [
+      "Pokiri Raja"
+    ],
+    "hint": "A man gets involved in a series of comic and action-filled situations."
+  },
+  {
+    "id": "m-027",
+    "title": "Ninne Pelladata",
+    "year": 1996,
+    "aliases": [
+      "Ninne Pelladata"
+    ],
+    "hint": "Two young people fall in love despite family opposition."
+  },
+  {
+    "id": "m-028",
+    "title": "Annamayya",
+    "year": 1997,
+    "aliases": [
+      "Annamayya"
+    ],
+    "hint": "A musical biographical drama about the saint-poet Annamacharya."
+  },
+  {
+    "id": "m-029",
+    "title": "Tholi Prema",
+    "year": 1998,
+    "aliases": [
+      "Tholi Prema"
+    ],
+    "hint": "A young man experiences first love and learns about sacrifice."
+  },
+  {
+    "id": "m-030",
+    "title": "Samarasimha Reddy",
+    "year": 1999,
+    "aliases": [
+      "Samarasimha Reddy"
+    ],
+    "hint": "A faction leader protects his family and village."
+  },
+  {
+    "id": "m-031",
+    "title": "Raja",
+    "year": 1999,
+    "aliases": [
+      "Raja"
+    ],
+    "hint": "A kind-hearted man becomes emotionally connected to a young woman."
+  },
+  {
+    "id": "m-032",
+    "title": "Choodalani Vundi",
+    "year": 1998,
+    "aliases": [
+      "Choodalani Vundi"
+    ],
+    "hint": "A father searches for his missing daughter."
+  },
+  {
+    "id": "m-033",
+    "title": "Nuvve Kavali",
+    "year": 2000,
+    "aliases": [
+      "Nuvve Kavali"
+    ],
+    "hint": "Two close friends slowly discover their feelings for each other."
+  },
+  {
+    "id": "m-034",
+    "title": "Kushi",
+    "year": 2001,
+    "aliases": [
+      "Kushi"
+    ],
+    "hint": "Two friends fall in love but their egos create misunderstandings."
+  },
+  {
+    "id": "m-035",
+    "title": "Murari",
+    "year": 2001,
+    "aliases": [
+      "Murari"
+    ],
+    "hint": "A family believes a curse threatens its male heirs."
+  },
+  {
+    "id": "m-036",
+    "title": "Indra",
+    "year": 2002,
+    "aliases": [
+      "Indra"
+    ],
+    "hint": "A powerful faction leader tries to protect peace and his family."
+  },
+  {
+    "id": "m-037",
+    "title": "Aadi",
+    "year": 2002,
+    "aliases": [
+      "Aadi"
+    ],
+    "hint": "A young man seeks revenge for his family's tragic past."
+  },
+  {
+    "id": "m-038",
+    "title": "Manmadhudu",
+    "year": 2002,
+    "aliases": [
+      "Manmadhudu"
+    ],
+    "hint": "A cynical advertising professional gradually falls in love."
+  },
+  {
+    "id": "m-039",
+    "title": "Okkadu",
+    "year": 2003,
+    "aliases": [
+      "Okkadu"
+    ],
+    "hint": "A kabaddi player protects a woman from a powerful faction leader."
+  },
+  {
+    "id": "m-040",
+    "title": "Tagore",
+    "year": 2003,
+    "aliases": [
+      "Tagore"
+    ],
+    "hint": "A professor leads a secret mission against corruption."
+  },
+  {
+    "id": "m-041",
+    "title": "Santosham",
+    "year": 2002,
+    "aliases": [
+      "Santosham"
+    ],
+    "hint": "A man discovers love and family bonds after personal loss."
+  },
+  {
+    "id": "m-042",
+    "title": "Simhadri",
+    "year": 2003,
+    "aliases": [
+      "Simhadri"
+    ],
+    "hint": "A young man with a mysterious past protects a village."
+  },
+  {
+    "id": "m-043",
+    "title": "Varsham",
+    "year": 2004,
+    "aliases": [
+      "Varsham"
+    ],
+    "hint": "A young couple's romance is threatened by a violent rival."
+  },
+  {
+    "id": "m-044",
+    "title": "Arya",
+    "year": 2004,
+    "aliases": [
+      "Arya"
+    ],
+    "hint": "An energetic young man loves a woman who is already in a relationship."
+  },
+  {
+    "id": "m-045",
+    "title": "Anand",
+    "year": 2004,
+    "aliases": [
+      "Anand"
+    ],
+    "hint": "A self-reliant woman slowly opens her heart to a kind man."
+  },
+  {
+    "id": "m-046",
+    "title": "Bommarillu",
+    "year": 2006,
+    "aliases": [
+      "Bommarillu"
+    ],
+    "hint": "A young man struggles to gain independence from his overprotective father."
+  },
+  {
+    "id": "m-047",
+    "title": "Pokiri",
+    "year": 2006,
+    "aliases": [
+      "Pokiri"
+    ],
+    "hint": "A ruthless-looking gangster hides a surprising identity."
+  },
+  {
+    "id": "m-048",
+    "title": "Vikramarkudu",
+    "year": 2006,
+    "aliases": [
+      "Vikramarkudu"
+    ],
+    "hint": "A thief is mistaken for a brave police officer."
+  },
+  {
+    "id": "m-049",
+    "title": "Athadu",
+    "year": 2005,
+    "aliases": [
+      "Athadu"
+    ],
+    "hint": "A professional killer assumes the identity of a man from a village."
+  },
+  {
+    "id": "m-050",
+    "title": "Chatrapathi",
+    "year": 2005,
+    "aliases": [
+      "Chatrapathi"
+    ],
+    "hint": "A displaced young man rises to protect people living near a port."
+  },
+  {
+    "id": "m-051",
+    "title": "Happy",
+    "year": 2006,
+    "aliases": [
+      "Happy"
+    ],
+    "hint": "A delivery boy becomes involved in a marriage arranged for convenience."
+  },
+  {
+    "id": "m-052",
+    "title": "Godavari",
+    "year": 2006,
+    "aliases": [
+      "Godavari"
+    ],
+    "hint": "A boat journey brings together people searching for love and purpose."
+  },
+  {
+    "id": "m-053",
+    "title": "Desamuduru",
+    "year": 2007,
+    "aliases": [
+      "Desamuduru"
+    ],
+    "hint": "A television reporter falls for a woman living in an ashram."
+  },
+  {
+    "id": "m-054",
+    "title": "Dubai Seenu",
+    "year": 2007,
+    "aliases": [
+      "Dubai Seenu"
+    ],
+    "hint": "A man travels to Dubai and gets caught in a chain of comic events."
+  },
+  {
+    "id": "m-055",
+    "title": "Yamadonga",
+    "year": 2007,
+    "aliases": [
+      "Yamadonga"
+    ],
+    "hint": "A thief encounters Yama after an unexpected death."
+  },
+  {
+    "id": "m-056",
+    "title": "Jalsa",
+    "year": 2008,
+    "aliases": [
+      "Jalsa"
+    ],
+    "hint": "A carefree man with a troubled past falls in love."
+  },
+  {
+    "id": "m-057",
+    "title": "Ready",
+    "year": 2008,
+    "aliases": [
+      "Ready"
+    ],
+    "hint": "A young man uses clever plans to unite two families."
+  },
+  {
+    "id": "m-058",
+    "title": "Arundhati",
+    "year": 2009,
+    "aliases": [
+      "Arundhati"
+    ],
+    "hint": "A woman confronts a supernatural force connected to her family's past."
+  },
+  {
+    "id": "m-059",
+    "title": "Magadheera",
+    "year": 2009,
+    "aliases": [
+      "Magadheera"
+    ],
+    "hint": "A modern-day man discovers a connection to a warrior from a past life."
+  },
+  {
+    "id": "m-060",
+    "title": "Kick",
+    "year": 2009,
+    "aliases": [
+      "Kick"
+    ],
+    "hint": "A thrill-seeking man lives for excitement and adventure."
+  },
+  {
+    "id": "m-061",
+    "title": "Leader",
+    "year": 2010,
+    "aliases": [
+      "Leader"
+    ],
+    "hint": "A young man enters politics and attempts to reform the system."
+  },
+  {
+    "id": "m-062",
+    "title": "Ye Maaya Chesave",
+    "year": 2010,
+    "aliases": [
+      "Ye Maaya Chesave"
+    ],
+    "hint": "A young filmmaker falls in love with a woman from a different background."
+  },
+  {
+    "id": "m-063",
+    "title": "Vedam",
+    "year": 2010,
+    "aliases": [
+      "Vedam"
+    ],
+    "hint": "Five lives intersect during a crisis in a city."
+  },
+  {
+    "id": "m-064",
+    "title": "Maryada Ramanna",
+    "year": 2010,
+    "aliases": [
+      "Maryada Ramanna"
+    ],
+    "hint": "A man visits a village where his family has a dangerous history."
+  },
+  {
+    "id": "m-065",
+    "title": "Brindavanam",
+    "year": 2010,
+    "aliases": [
+      "Brindavanam"
+    ],
+    "hint": "A young man pretends to be the boyfriend of a woman to help her family."
+  },
+  {
+    "id": "m-066",
+    "title": "Dookudu",
+    "year": 2011,
+    "aliases": [
+      "Dookudu"
+    ],
+    "hint": "An undercover police officer investigates a powerful criminal network."
+  },
+  {
+    "id": "m-067",
+    "title": "100% Love",
+    "year": 2011,
+    "aliases": [
+      "100% Love"
+    ],
+    "hint": "Two academically competitive cousins navigate love and ego."
+  },
+  {
+    "id": "m-068",
+    "title": "Eega",
+    "year": 2012,
+    "aliases": [
+      "Eega"
+    ],
+    "hint": "A murdered man is reborn as a housefly and seeks revenge."
+  },
+  {
+    "id": "m-069",
+    "title": "Gabbar Singh",
+    "year": 2012,
+    "aliases": [
+      "Gabbar Singh"
+    ],
+    "hint": "A fearless police officer takes on a corrupt political leader."
+  },
+  {
+    "id": "m-070",
+    "title": "Julayi",
+    "year": 2012,
+    "aliases": [
+      "Julayi"
+    ],
+    "hint": "A clever young man gets involved in a high-stakes robbery case."
+  },
+  {
+    "id": "m-071",
+    "title": "Businessman",
+    "year": 2012,
+    "aliases": [
+      "Businessman"
+    ],
+    "hint": "An ambitious man enters Mumbai's underworld with political ambitions."
+  },
+  {
+    "id": "m-072",
+    "title": "Seethamma Vakitlo Sirimalle Chettu",
+    "year": 2013,
+    "aliases": [
+      "Seethamma Vakitlo Sirimalle Chettu"
+    ],
+    "hint": "Two brothers with contrasting personalities learn the value of family."
+  },
+  {
+    "id": "m-073",
+    "title": "Attarintiki Daredi",
+    "year": 2013,
+    "aliases": [
+      "Attarintiki Daredi"
+    ],
+    "hint": "A young man tries to reunite his estranged family."
+  },
+  {
+    "id": "m-074",
+    "title": "Mirchi",
+    "year": 2013,
+    "aliases": [
+      "Mirchi"
+    ],
+    "hint": "A man attempts to end a long-running family feud through peace."
+  },
+  {
+    "id": "m-075",
+    "title": "Race Gurram",
+    "year": 2014,
+    "aliases": [
+      "Race Gurram"
+    ],
+    "hint": "Two very different brothers become involved in a fight against corruption."
+  },
+  {
+    "id": "m-076",
+    "title": "Manam",
+    "year": 2014,
+    "aliases": [
+      "Manam"
+    ],
+    "hint": "Three generations of a family are connected through love and reincarnation."
+  },
+  {
+    "id": "m-077",
+    "title": "Drushyam",
+    "year": 2014,
+    "aliases": [
+      "Drushyam"
+    ],
+    "hint": "A father goes to extraordinary lengths to protect his family."
+  },
+  {
+    "id": "m-078",
+    "title": "Oohalu Gusagusalade",
+    "year": 2014,
+    "aliases": [
+      "Oohalu Gusagusalade"
+    ],
+    "hint": "A television presenter becomes involved in a romantic triangle."
+  },
+  {
+    "id": "m-079",
+    "title": "Karthikeya",
+    "year": 2014,
+    "aliases": [
+      "Karthikeya"
+    ],
+    "hint": "A medical student investigates mysterious events at an ancient temple."
+  },
+  {
+    "id": "m-080",
+    "title": "Temper",
+    "year": 2015,
+    "aliases": [
+      "Temper"
+    ],
+    "hint": "A corrupt police officer undergoes a transformation after a personal incident."
+  },
+  {
+    "id": "m-081",
+    "title": "Bhale Bhale Magadivoy",
+    "year": 2015,
+    "aliases": [
+      "Bhale Bhale Magadivoy"
+    ],
+    "hint": "A forgetful young botanist tries to manage love and his career."
+  },
+  {
+    "id": "m-082",
+    "title": "Srimanthudu",
+    "year": 2015,
+    "aliases": [
+      "Srimanthudu"
+    ],
+    "hint": "A wealthy man adopts a village and works to improve its condition."
+  },
+  {
+    "id": "m-083",
+    "title": "Rudhramadevi",
+    "year": 2015,
+    "aliases": [
+      "Rudhramadevi"
+    ],
+    "hint": "A historical drama about the Kakatiya ruler Rudrama Devi."
+  },
+  {
+    "id": "m-084",
+    "title": "S/O Satyamurthy",
+    "year": 2015,
+    "aliases": [
+      "S/O Satyamurthy"
+    ],
+    "hint": "A young man tries to uphold his father's values after his death."
+  },
+  {
+    "id": "m-085",
+    "title": "Bengal Tiger",
+    "year": 2015,
+    "aliases": [
+      "Bengal Tiger"
+    ],
+    "hint": "A young man seeks recognition by entering the world of politics."
+  },
+  {
+    "id": "m-086",
+    "title": "Nannaku Prematho",
+    "year": 2016,
+    "aliases": [
+      "Nannaku Prematho"
+    ],
+    "hint": "A son plans an elaborate strategy to avenge his father's humiliation."
+  },
+  {
+    "id": "m-087",
+    "title": "Oopiri",
+    "year": 2016,
+    "aliases": [
+      "Oopiri"
+    ],
+    "hint": "An unlikely friendship develops between a wealthy quadriplegic man and his caretaker."
+  },
+  {
+    "id": "m-088",
+    "title": "Kshanam",
+    "year": 2016,
+    "aliases": [
+      "Kshanam"
+    ],
+    "hint": "A man returns to India to help his former partner find her missing daughter."
+  },
+  {
+    "id": "m-089",
+    "title": "Pelli Choopulu",
+    "year": 2016,
+    "aliases": [
+      "Pelli Choopulu"
+    ],
+    "hint": "Two young entrepreneurs meet through an arranged-marriage meeting."
+  },
+  {
+    "id": "m-090",
+    "title": "Janatha Garage",
+    "year": 2016,
+    "aliases": [
+      "Janatha Garage"
+    ],
+    "hint": "A mechanic joins a group that fights injustice and protects the environment."
+  },
+  {
+    "id": "m-091",
+    "title": "Dhruva",
+    "year": 2016,
+    "aliases": [
+      "Dhruva"
+    ],
+    "hint": "A police officer takes on a brilliant criminal mastermind."
+  },
+  {
+    "id": "m-092",
+    "title": "Arjun Reddy",
+    "year": 2017,
+    "aliases": [
+      "Arjun Reddy"
+    ],
+    "hint": "A brilliant but self-destructive surgeon struggles after heartbreak."
+  },
+  {
+    "id": "m-093",
+    "title": "Fidaa",
+    "year": 2017,
+    "aliases": [
+      "Fidaa"
+    ],
+    "hint": "A medical student falls in love with a spirited village woman."
+  },
+  {
+    "id": "m-094",
+    "title": "Rangasthalam",
+    "year": 2018,
+    "aliases": [
+      "Rangasthalam"
+    ],
+    "hint": "A partially deaf young man challenges a powerful village president."
+  },
+  {
+    "id": "m-095",
+    "title": "Mahanati",
+    "year": 2018,
+    "aliases": [
+      "Mahanati"
+    ],
+    "hint": "A biographical drama about legendary actress Savitri."
+  },
+  {
+    "id": "m-096",
+    "title": "Bharat Ane Nenu",
+    "year": 2018,
+    "aliases": [
+      "Bharat Ane Nenu"
+    ],
+    "hint": "A young man unexpectedly becomes the Chief Minister of Andhra Pradesh."
+  },
+  {
+    "id": "m-097",
+    "title": "Geetha Govindam",
+    "year": 2018,
+    "aliases": [
+      "Geetha Govindam"
+    ],
+    "hint": "A young lecturer's romantic plans go wrong after an awkward encounter."
+  },
+  {
+    "id": "m-098",
+    "title": "Goodachari",
+    "year": 2018,
+    "aliases": [
+      "Goodachari"
+    ],
+    "hint": "A young intelligence agent uncovers a conspiracy involving his past."
+  },
+  {
+    "id": "m-099",
+    "title": "RX 100",
+    "year": 2018,
+    "aliases": [
+      "RX 100"
+    ],
+    "hint": "A passionate village romance takes a dark and unexpected turn."
+  },
+  {
+    "id": "m-100",
+    "title": "C/o Kancharapalem",
+    "year": 2018,
+    "aliases": [
+      "C/o Kancharapalem"
+    ],
+    "hint": "Four love stories unfold among residents of a small town."
+  },
+  {
+    "id": "m-101",
+    "title": "Jersey",
+    "year": 2019,
+    "aliases": [
+      "Jersey"
+    ],
+    "hint": "A former cricketer attempts a comeback to fulfil his son's wish."
+  },
+  {
+    "id": "m-102",
+    "title": "Maharshi",
+    "year": 2019,
+    "aliases": [
+      "Maharshi"
+    ],
+    "hint": "A successful businessman returns to India and reconnects with his roots."
+  },
+  {
+    "id": "m-103",
+    "title": "Majili",
+    "year": 2019,
+    "aliases": [
+      "Majili"
+    ],
+    "hint": "A former cricketer struggles with heartbreak and an arranged marriage."
+  },
+  {
+    "id": "m-104",
+    "title": "Agent Sai Srinivasa Athreya",
+    "year": 2019,
+    "aliases": [
+      "Agent Sai Srinivasa Athreya"
+    ],
+    "hint": "A small-town detective investigates a mysterious criminal case."
+  },
+  {
+    "id": "m-105",
+    "title": "Evaru",
+    "year": 2019,
+    "aliases": [
+      "Evaru"
+    ],
+    "hint": "A police investigation reveals unexpected twists and hidden motives."
+  },
+  {
+    "id": "m-106",
+    "title": "Brochevarevarura",
+    "year": 2019,
+    "aliases": [
+      "Brochevarevarura"
+    ],
+    "hint": "Three friends become involved in a complicated kidnapping plan."
+  },
+  {
+    "id": "m-107",
+    "title": "Ala Vaikunthapurramuloo",
+    "year": 2020,
+    "aliases": [
+      "Ala Vaikunthapurramuloo"
+    ],
+    "hint": "A man discovers the truth about his birth and family background."
+  },
+  {
+    "id": "m-108",
+    "title": "Sarileru Neekevvaru",
+    "year": 2020,
+    "aliases": [
+      "Sarileru Neekevvaru"
+    ],
+    "hint": "An army major takes on corruption while helping a family."
+  },
+  {
+    "id": "m-109",
+    "title": "Bheeshma",
+    "year": 2020,
+    "aliases": [
+      "Bheeshma"
+    ],
+    "hint": "A young man working at an organic farming company tries to prove himself."
+  },
+  {
+    "id": "m-110",
+    "title": "Colour Photo",
+    "year": 2020,
+    "aliases": [
+      "Colour Photo"
+    ],
+    "hint": "A young couple faces social prejudice and difficult circumstances."
+  },
+  {
+    "id": "m-111",
+    "title": "Uma Maheswara Ugra Roopasya",
+    "year": 2020,
+    "aliases": [
+      "Uma Maheswara Ugra Roopasya"
+    ],
+    "hint": "A photographer rebuilds his confidence after a humiliating incident."
+  },
+  {
+    "id": "m-112",
+    "title": "Vakeel Saab",
+    "year": 2021,
+    "aliases": [
+      "Vakeel Saab"
+    ],
+    "hint": "A lawyer defends three women caught in a criminal case."
+  },
+  {
+    "id": "m-113",
+    "title": "Jathi Ratnalu",
+    "year": 2021,
+    "aliases": [
+      "Jathi Ratnalu"
+    ],
+    "hint": "Three friends from a small town get caught in a hilarious legal mess."
+  },
+  {
+    "id": "m-114",
+    "title": "Uppena",
+    "year": 2021,
+    "aliases": [
+      "Uppena"
+    ],
+    "hint": "A young fisherman falls in love with a wealthy landlord's daughter."
+  },
+  {
+    "id": "m-115",
+    "title": "Love Story",
+    "year": 2021,
+    "aliases": [
+      "Love Story"
+    ],
+    "hint": "Two aspiring dancers face social barriers while pursuing their dreams."
+  },
+  {
+    "id": "m-116",
+    "title": "Shyam Singha Roy",
+    "year": 2021,
+    "aliases": [
+      "Shyam Singha Roy"
+    ],
+    "hint": "A filmmaker discovers a connection to a writer from a previous life."
+  },
+  {
+    "id": "m-117",
+    "title": "Pushpa: The Rise",
+    "year": 2021,
+    "aliases": [
+      "Pushpa: The Rise",
+      "Pushpa The Rise"
+    ],
+    "hint": "A labourer rises through the red sandalwood smuggling network."
+  },
+  {
+    "id": "m-118",
+    "title": "Akhanda",
+    "year": 2021,
+    "aliases": [
+      "Akhanda"
+    ],
+    "hint": "A powerful spiritual warrior confronts evil forces and injustice."
+  },
+  {
+    "id": "m-119",
+    "title": "Republic",
+    "year": 2021,
+    "aliases": [
+      "Republic"
+    ],
+    "hint": "An idealistic civil servant fights corruption in the political system."
+  },
+  {
+    "id": "m-120",
+    "title": "Sita Ramam",
+    "year": 2022,
+    "aliases": [
+      "Sita Ramam"
+    ],
+    "hint": "A soldier's love story unfolds through letters and a search decades later."
+  },
+  {
+    "id": "m-121",
+    "title": "RRR",
+    "year": 2022,
+    "aliases": [
+      "RRR"
+    ],
+    "hint": "Two revolutionaries form a powerful friendship during British rule."
+  },
+  {
+    "id": "m-122",
+    "title": "Major",
+    "year": 2022,
+    "aliases": [
+      "Major"
+    ],
+    "hint": "A biographical action drama about the life of Major Sandeep Unnikrishnan."
+  },
+  {
+    "id": "m-123",
+    "title": "Karthikeya 2",
+    "year": 2022,
+    "aliases": [
+      "Karthikeya 2"
+    ],
+    "hint": "A doctor embarks on a quest connected to Lord Krishna and an ancient secret."
+  },
+  {
+    "id": "m-124",
+    "title": "DJ Tillu",
+    "year": 2022,
+    "aliases": [
+      "DJ Tillu"
+    ],
+    "hint": "A carefree young man gets entangled in a murder investigation."
+  },
+  {
+    "id": "m-125",
+    "title": "Ante Sundaraniki",
+    "year": 2022,
+    "aliases": [
+      "Ante Sundaraniki"
+    ],
+    "hint": "A Hindu man and a Christian woman invent stories to convince their families."
+  },
+  {
+    "id": "m-126",
+    "title": "HIT: The Second Case",
+    "year": 2022,
+    "aliases": [
+      "HIT: The Second Case",
+      "HIT The Second Case"
+    ],
+    "hint": "A police officer investigates a series of brutal murders."
+  },
+  {
+    "id": "m-127",
+    "title": "Bimbisara",
+    "year": 2022,
+    "aliases": [
+      "Bimbisara"
+    ],
+    "hint": "An ancient king travels through time to the modern world."
+  },
+  {
+    "id": "m-128",
+    "title": "Dhamaka",
+    "year": 2022,
+    "aliases": [
+      "Dhamaka"
+    ],
+    "hint": "A television journalist and a businessman with similar appearances become connected."
+  },
+  {
+    "id": "m-129",
+    "title": "Virupaksha",
+    "year": 2023,
+    "aliases": [
+      "Virupaksha"
+    ],
+    "hint": "A man investigates mysterious deaths in a village bound by superstition."
+  },
+  {
+    "id": "m-130",
+    "title": "Balagam",
+    "year": 2023,
+    "aliases": [
+      "Balagam"
+    ],
+    "hint": "A family gathers after a death and confronts old conflicts."
+  },
+  {
+    "id": "m-131",
+    "title": "Dasara",
+    "year": 2023,
+    "aliases": [
+      "Dasara"
+    ],
+    "hint": "A young man from a coal-mining village faces betrayal and political violence."
+  },
+  {
+    "id": "m-132",
+    "title": "Hi Nanna",
+    "year": 2023,
+    "aliases": [
+      "Hi Nanna"
+    ],
+    "hint": "A single father and his daughter meet a woman who changes their lives."
+  },
+  {
+    "id": "m-133",
+    "title": "Baby",
+    "year": 2023,
+    "aliases": [
+      "Baby"
+    ],
+    "hint": "A love triangle explores teenage romance, choices and heartbreak."
+  },
+  {
+    "id": "m-134",
+    "title": "Samajavaragamana",
+    "year": 2023,
+    "aliases": [
+      "Samajavaragamana"
+    ],
+    "hint": "A young man tries to manage a complicated family and romantic situation."
+  },
+  {
+    "id": "m-135",
+    "title": "Miss Shetty Mr Polishetty",
+    "year": 2023,
+    "aliases": [
+      "Miss Shetty Mr Polishetty"
+    ],
+    "hint": "An independent chef and a stand-up comedian enter an unconventional relationship."
+  },
+  {
+    "id": "m-136",
+    "title": "MAD",
+    "year": 2023,
+    "aliases": [
+      "MAD"
+    ],
+    "hint": "A group of college friends experience comedy, friendship and romance."
+  },
+  {
+    "id": "m-137",
+    "title": "Keeda Cola",
+    "year": 2023,
+    "aliases": [
+      "Keeda Cola"
+    ],
+    "hint": "A group of friends get caught in a bizarre plan involving a soft-drink bottle."
+  },
+  {
+    "id": "m-138",
+    "title": "Salaar: Part 1 – Ceasefire",
+    "year": 2023,
+    "aliases": [
+      "Salaar: Part 1 – Ceasefire",
+      "Salaar Part 1  Ceasefire"
+    ],
+    "hint": "Two friends are drawn into a violent power struggle in a fictional kingdom."
+  },
+  {
+    "id": "m-139",
+    "title": "Hanu-Man",
+    "year": 2024,
+    "aliases": [
+      "Hanu-Man",
+      "HanuMan"
+    ],
+    "hint": "A young man gains superpowers through a mysterious divine force."
+  },
+  {
+    "id": "m-140",
+    "title": "Guntur Kaaram",
+    "year": 2024,
+    "aliases": [
+      "Guntur Kaaram"
+    ],
+    "hint": "A man confronts family secrets and a complicated relationship with his mother."
+  },
+  {
+    "id": "m-141",
+    "title": "Tillu Square",
+    "year": 2024,
+    "aliases": [
+      "Tillu Square"
+    ],
+    "hint": "A young man gets caught in another chaotic romantic adventure."
+  },
+  {
+    "id": "m-142",
+    "title": "Gaami",
+    "year": 2024,
+    "aliases": [
+      "Gaami"
+    ],
+    "hint": "An aghori sets out on a dangerous journey to find a cure for his condition."
+  },
+  {
+    "id": "m-143",
+    "title": "Om Bheem Bush",
+    "year": 2024,
+    "aliases": [
+      "Om Bheem Bush"
+    ],
+    "hint": "Three friends travel to a village and encounter supernatural mysteries."
+  },
+  {
+    "id": "m-144",
+    "title": "Kalki 2898 AD",
+    "year": 2024,
+    "aliases": [
+      "Kalki 2898 AD"
+    ],
+    "hint": "A futuristic science-fiction epic set in a world inspired by Indian mythology."
+  },
+  {
+    "id": "m-145",
+    "title": "Lucky Baskhar",
+    "year": 2024,
+    "aliases": [
+      "Lucky Baskhar"
+    ],
+    "hint": "A bank employee becomes involved in risky financial schemes."
+  },
+  {
+    "id": "m-146",
+    "title": "Devara: Part 1",
+    "year": 2024,
+    "aliases": [
+      "Devara: Part 1",
+      "Devara Part 1"
+    ],
+    "hint": "A coastal community faces a powerful leader and a mysterious legacy."
+  },
+  {
+    "id": "m-147",
+    "title": "Saripodhaa Sanivaaram",
+    "year": 2024,
+    "aliases": [
+      "Saripodhaa Sanivaaram"
+    ],
+    "hint": "A man controls his anger during the week but confronts injustice on Saturdays."
+  },
+  {
+    "id": "m-148",
+    "title": "35 – Chinna Katha Kaadu",
+    "year": 2024,
+    "aliases": [
+      "35 – Chinna Katha Kaadu",
+      "35  Chinna Katha Kaadu"
+    ],
+    "hint": "A family navigates a child's school struggles and questions about learning."
+  },
+  {
+    "id": "m-149",
+    "title": "Court: State vs. A Nobody",
+    "year": 2025,
+    "aliases": [
+      "Court: State vs. A Nobody",
+      "Court State vs A Nobody"
+    ],
+    "hint": "A young lawyer takes on a difficult case involving a teenager and the justice system."
+  },
+  {
+    "id": "m-150",
+    "title": "HIT: The Third Case",
+    "year": 2025,
+    "aliases": [
+      "HIT: The Third Case",
+      "HIT The Third Case"
+    ],
+    "hint": "An investigator takes on a dangerous case involving a violent criminal network."
+  },
+  {
+    "id": "m-151",
+    "title": "Kuberaa",
+    "year": 2025,
+    "aliases": [
+      "Kuberaa"
+    ],
+    "hint": "A beggar becomes involved in a high-stakes story of money and power."
+  },
+  {
+    "id": "m-152",
+    "title": "Thandel",
+    "year": 2025,
+    "aliases": [
+      "Thandel"
+    ],
+    "hint": "A fisherman faces danger after crossing international waters."
+  },
+  {
+    "id": "m-153",
+    "title": "Mirai",
+    "year": 2025,
+    "aliases": [
+      "Mirai"
+    ],
+    "hint": "A young warrior is drawn into a quest involving ancient secrets and powerful forces."
+  },
+  {
+    "id": "m-154",
+    "title": "Pelli Sandadi",
+    "year": 1996,
+    "aliases": [
+      "Pelli Sandadi"
+    ],
+    "hint": "A musical romantic drama about a young man and a family celebration."
+  },
+  {
+    "id": "m-155",
+    "title": "Aha Naa Pellanta",
+    "year": 1987,
+    "aliases": [
+      "Aha Naa Pellanta"
+    ],
+    "hint": "A miser's obsession with money creates a chain of comic situations."
+  },
+  {
+    "id": "m-156",
+    "title": "Chantabbai",
+    "year": 1986,
+    "aliases": [
+      "Chantabbai"
+    ],
+    "hint": "A comic detective gets involved in a mysterious investigation."
+  },
+  {
+    "id": "m-157",
+    "title": "Yamudiki Mogudu",
+    "year": 1988,
+    "aliases": [
+      "Yamudiki Mogudu"
+    ],
+    "hint": "A man encounters Yama in a fantasy-comedy adventure."
+  },
+  {
+    "id": "m-158",
+    "title": "Khaidi",
+    "year": 1983,
+    "aliases": [
+      "Khaidi"
+    ],
+    "hint": "A man seeks revenge against those responsible for his family's suffering."
+  },
+  {
+    "id": "m-159",
+    "title": "Pasivadi Pranam",
+    "year": 1987,
+    "aliases": [
+      "Pasivadi Pranam"
+    ],
+    "hint": "A man protects a young child while facing dangerous enemies."
+  },
+  {
+    "id": "m-160",
+    "title": "Gang Leader",
+    "year": 1991,
+    "aliases": [
+      "Gang Leader"
+    ],
+    "hint": "A young man helps a family of women seek justice."
+  },
+  {
+    "id": "m-161",
+    "title": "Alluda Majaka",
+    "year": 1995,
+    "aliases": [
+      "Alluda Majaka"
+    ],
+    "hint": "A man gets caught in comic conflicts with his future in-laws."
+  },
+  {
+    "id": "m-162",
+    "title": "Bobbili Raja",
+    "year": 1990,
+    "aliases": [
+      "Bobbili Raja"
+    ],
+    "hint": "A young man raised in a forest falls in love with a city woman."
+  },
+  {
+    "id": "m-163",
+    "title": "Preminchukundam Raa",
+    "year": 1997,
+    "aliases": [
+      "Preminchukundam Raa"
+    ],
+    "hint": "A young couple's love faces opposition from faction-ridden families."
+  },
+  {
+    "id": "m-164",
+    "title": "Nuvvu Naaku Nachav",
+    "year": 2001,
+    "aliases": [
+      "Nuvvu Naaku Nachav"
+    ],
+    "hint": "A young man staying with a family falls in love with a woman who is engaged."
+  },
+  {
+    "id": "m-165",
+    "title": "Vasu",
+    "year": 2002,
+    "aliases": [
+      "Vasu"
+    ],
+    "hint": "A young musician struggles to pursue his passion against family expectations."
+  },
+  {
+    "id": "m-166",
+    "title": "Sye",
+    "year": 2004,
+    "aliases": [
+      "Sye"
+    ],
+    "hint": "Two rival college groups unite through a rugby tournament."
+  },
+  {
+    "id": "m-167",
+    "title": "Rakhi",
+    "year": 2006,
+    "aliases": [
+      "Rakhi"
+    ],
+    "hint": "A man fights crimes against women after a personal tragedy."
+  },
+  {
+    "id": "m-168",
+    "title": "Munna",
+    "year": 2007,
+    "aliases": [
+      "Munna"
+    ],
+    "hint": "A young man confronts a powerful enemy connected to his past."
+  },
+  {
+    "id": "m-169",
+    "title": "Parugu",
+    "year": 2008,
+    "aliases": [
+      "Parugu"
+    ],
+    "hint": "A young man is forced to help a family search for a missing daughter."
+  },
+  {
+    "id": "m-170",
+    "title": "King",
+    "year": 2008,
+    "aliases": [
+      "King"
+    ],
+    "hint": "A man with multiple identities becomes involved in a family mystery."
+  },
+  {
+    "id": "m-171",
+    "title": "Bindaas",
+    "year": 2010,
+    "aliases": [
+      "Bindaas"
+    ],
+    "hint": "A carefree young man gets caught in a family feud."
+  },
+  {
+    "id": "m-172",
+    "title": "Prasthanam",
+    "year": 2010,
+    "aliases": [
+      "Prasthanam"
+    ],
+    "hint": "A political family faces ambition, loyalty and betrayal."
+  },
+  {
+    "id": "m-173",
+    "title": "Mirapakay",
+    "year": 2011,
+    "aliases": [
+      "Mirapakay"
+    ],
+    "hint": "An undercover police officer investigates a criminal operation."
+  },
+  {
+    "id": "m-174",
+    "title": "Pilla Zamindar",
+    "year": 2011,
+    "aliases": [
+      "Pilla Zamindar"
+    ],
+    "hint": "A spoiled heir must learn responsibility to claim his inheritance."
+  },
+  {
+    "id": "m-175",
+    "title": "Ishq",
+    "year": 2012,
+    "aliases": [
+      "Ishq"
+    ],
+    "hint": "A young couple's romance faces a difficult family connection."
+  },
+  {
+    "id": "m-176",
+    "title": "Swamy Ra Ra",
+    "year": 2013,
+    "aliases": [
+      "Swamy Ra Ra"
+    ],
+    "hint": "A stolen idol brings together a group of small-time criminals."
+  },
+  {
+    "id": "m-177",
+    "title": "Venkatadri Express",
+    "year": 2013,
+    "aliases": [
+      "Venkatadri Express"
+    ],
+    "hint": "A man races against time to reach a family wedding."
+  },
+  {
+    "id": "m-178",
+    "title": "Uyyala Jampala",
+    "year": 2013,
+    "aliases": [
+      "Uyyala Jampala"
+    ],
+    "hint": "Childhood friends gradually discover their love for each other."
+  },
+  {
+    "id": "m-179",
+    "title": "Power",
+    "year": 2014,
+    "aliases": [
+      "Power"
+    ],
+    "hint": "A man impersonates a police officer and becomes involved in a dangerous case."
+  },
+  {
+    "id": "m-180",
+    "title": "Loukyam",
+    "year": 2014,
+    "aliases": [
+      "Loukyam"
+    ],
+    "hint": "A young man helps his friend while avoiding a powerful rival."
+  },
+  {
+    "id": "m-181",
+    "title": "Pataas",
+    "year": 2015,
+    "aliases": [
+      "Pataas"
+    ],
+    "hint": "A corrupt police officer unexpectedly takes on a mission for justice."
+  },
+  {
+    "id": "m-182",
+    "title": "Bhale Manchi Roju",
+    "year": 2015,
+    "aliases": [
+      "Bhale Manchi Roju"
+    ],
+    "hint": "A man gets caught in an unusual chain of events over one day."
+  },
+  {
+    "id": "m-183",
+    "title": "Nenu Sailaja",
+    "year": 2016,
+    "aliases": [
+      "Nenu Sailaja"
+    ],
+    "hint": "A young man tries to win the heart of a woman who avoids relationships."
+  },
+  {
+    "id": "m-184",
+    "title": "Awe!",
+    "year": 2018,
+    "aliases": [
+      "Awe!"
+    ],
+    "hint": "Several seemingly unrelated characters and stories connect in surprising ways."
+  },
+  {
+    "id": "m-185",
+    "title": "Taxiwala",
+    "year": 2018,
+    "aliases": [
+      "Taxiwala"
+    ],
+    "hint": "A cab driver discovers that his car has a supernatural secret."
+  },
+  {
+    "id": "m-186",
+    "title": "Hushaaru",
+    "year": 2018,
+    "aliases": [
+      "Hushaaru"
+    ],
+    "hint": "Four friends navigate college life, relationships and career challenges."
+  },
+  {
+    "id": "m-187",
+    "title": "Mallesham",
+    "year": 2019,
+    "aliases": [
+      "Mallesham"
+    ],
+    "hint": "A biographical drama about an innovator who creates a weaving machine."
+  },
+  {
+    "id": "m-188",
+    "title": "Choosi Choodangaane",
+    "year": 2020,
+    "aliases": [
+      "Choosi Choodangaane"
+    ],
+    "hint": "A young photographer navigates love, family expectations and personal growth."
+  },
+  {
+    "id": "m-189",
+    "title": "Middle Class Melodies",
+    "year": 2020,
+    "aliases": [
+      "Middle Class Melodies"
+    ],
+    "hint": "A young man dreams of opening a hotel and building a better life."
+  },
+  {
+    "id": "m-190",
+    "title": "Naandhi",
+    "year": 2021,
+    "aliases": [
+      "Naandhi"
+    ],
+    "hint": "An undertrial prisoner fights for justice after being falsely accused."
+  },
+  {
+    "id": "m-191",
+    "title": "Raja Raja Chora",
+    "year": 2021,
+    "aliases": [
+      "Raja Raja Chora"
+    ],
+    "hint": "A small-time thief's lies lead to unexpected family complications."
+  },
+  {
+    "id": "m-192",
+    "title": "Skylab",
+    "year": 2021,
+    "aliases": [
+      "Skylab"
+    ],
+    "hint": "A village reacts to fears surrounding the falling Skylab space station."
+  },
+  {
+    "id": "m-193",
+    "title": "Mishan Impossible",
+    "year": 2022,
+    "aliases": [
+      "Mishan Impossible"
+    ],
+    "hint": "Three children set out on an adventure to capture a notorious criminal."
+  },
+  {
+    "id": "m-194",
+    "title": "Writer Padmabhushan",
+    "year": 2023,
+    "aliases": [
+      "Writer Padmabhushan"
+    ],
+    "hint": "An aspiring writer's life changes after a mysterious book becomes successful."
+  },
+  {
+    "id": "m-195",
+    "title": "Mem Famous",
+    "year": 2023,
+    "aliases": [
+      "Mem Famous"
+    ],
+    "hint": "Three friends in a village try to become famous through social media."
+  },
+  {
+    "id": "m-196",
+    "title": "Month of Madhu",
+    "year": 2023,
+    "aliases": [
+      "Month of Madhu"
+    ],
+    "hint": "A family reunion brings unresolved emotions and relationships to the surface."
+  },
+  {
+    "id": "m-197",
+    "title": "Ambajipeta Marriage Band",
+    "year": 2024,
+    "aliases": [
+      "Ambajipeta Marriage Band"
+    ],
+    "hint": "A young barber and his sister face social discrimination in their village."
+  },
+  {
+    "id": "m-198",
+    "title": "Committee Kurrollu",
+    "year": 2024,
+    "aliases": [
+      "Committee Kurrollu"
+    ],
+    "hint": "A group of childhood friends reunite and confront old tensions."
+  },
+  {
+    "id": "m-199",
+    "title": "Kishkindhapuri",
+    "year": 2025,
+    "aliases": [
+      "Kishkindhapuri"
+    ],
+    "hint": "A group exploring a haunted location encounters a frightening mystery."
+  },
+  {
+    "id": "m-200",
+    "title": "Little Hearts",
+    "year": 2025,
+    "aliases": [
+      "Little Hearts"
+    ],
+    "hint": "A light-hearted romantic comedy about young love and college life."
+  }
+]

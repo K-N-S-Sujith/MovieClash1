@@ -1,0 +1,99 @@
+/* ==========================================================================
+   MovieClash — Responsive Stylesheet
+   Breakpoints for tablets and mobile screens
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .arena-grid {
+    grid-template-columns: 200px 1fr 220px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 860px) {
+  .lobby-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .arena-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .arena-sidebar, .arena-right-sidebar {
+    order: 2;
+  }
+
+  .arena-center {
+    order: 1;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .mode-preview-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .arena-header-bar {
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 540px) {
+  .app-header {
+    padding: 10px 14px;
+  }
+
+  .logo-text {
+    font-size: 1.15rem;
+  }
+
+  .main-container {
+    padding: 12px;
+  }
+
+  .hero-card {
+    padding: 28px 16px;
+    margin: 16px auto;
+  }
+
+  .action-buttons-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-lg {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .lobby-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .code-display {
+    font-size: 1.3rem;
+  }
+
+  .secret-movie-title {
+    font-size: 1.6rem;
+  }
+
+  .revealed-title {
+    font-size: 1.5rem;
+  }
+
+  .results-actions {
+    flex-direction: column;
+  }
+}
+
