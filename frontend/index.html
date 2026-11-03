@@ -39,6 +39,11 @@
         <span class="dot"></span>
         <span class="label">Connecting...</span>
       </div>
+
+      <!-- Cinema Audio Sound Toggle -->
+      <button type="button" id="btnAudioToggle" class="btn-icon audio-toggle-btn" title="Toggle Sound (Mute/Unmute)" aria-label="Toggle Sound">
+        <span id="audioIcon">🔊</span>
+      </button>
       
       <!-- Microphone Status & Quick Toggle (Voice clue temporarily commented out)
       <div id="voiceControlBadge" class="voice-badge hidden">
@@ -506,6 +511,19 @@
     <div id="reconnectBanner" class="toast-banner hidden">
       <span class="spinner"></span>
       <span id="reconnectBannerText">Reconnecting to game room... (Attempt 1/5)</span>
+    </div>
+
+    <!-- Floating Crowd Reactions Container -->
+    <div id="floatingReactionsContainer" class="floating-reactions-container" aria-hidden="true"></div>
+
+    <!-- Cinema Crowd Reaction Dock (Popcorn, Claps, Laughter) -->
+    <div id="reactionDock" class="reaction-dock hidden" role="toolbar" aria-label="Crowd Reactions">
+      <button type="button" class="reaction-btn" data-emoji="🍿" title="Popcorn Munch">🍿</button>
+      <button type="button" class="reaction-btn" data-emoji="👏" title="Bravo / Applause">👏</button>
+      <button type="button" class="reaction-btn" data-emoji="😂" title="Laugh">😂</button>
+      <button type="button" class="reaction-btn" data-emoji="😱" title="Plot Twist / Shock">😱</button>
+      <button type="button" class="reaction-btn" data-emoji="🔥" title="Cinema Fire">🔥</button>
+      <button type="button" class="reaction-btn" data-emoji="🎯" title="Bullseye">🎯</button>
     </div>
 
   </main>

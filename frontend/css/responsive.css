@@ -248,6 +248,25 @@
     gap: 10px;
   }
 
+  .reaction-dock {
+    bottom: 14px;
+    right: 14px;
+    padding: 6px 10px;
+    gap: 4px;
+  }
+
+  .reaction-btn {
+    font-size: 1.25rem;
+    padding: 3px 4px;
+  }
+
+  .floating-reactions-container {
+    bottom: 65px;
+    right: 16px;
+    width: 100px;
+    height: 300px;
+  }
+
   .toast-banner {
     width: 90%;
     bottom: 16px;

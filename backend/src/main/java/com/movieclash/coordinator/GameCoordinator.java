@@ -83,6 +83,7 @@ public class GameCoordinator {
             case "SCORE_UPDATE" -> handleScoreUpdate(session, envelope);
             case "CLUE_MESSAGE" -> handleClueMessage(session, envelope);
             case "CHAT_MESSAGE" -> handleChatMessage(session, envelope);
+            case "EMOJI_REACTION" -> handleEmojiReaction(session, envelope);
             case "RECONNECT" -> reconnectionManager.handleReconnect(session, envelope);
             case "CANCEL_PROPOSE" -> handleCancelPropose(session, envelope);
             case "CANCEL_VOTE" -> handleCancelVote(session, envelope);
@@ -133,6 +134,33 @@ public class GameCoordinator {
 
         if (roomId != null && playerId != null) {
             chatRelayService.handleChatMessage(roomId, playerId, message);
+        }
+    }
+
+    private void handleEmojiReaction(WebSocketSession session, WsEnvelope envelope) {
+        String sessionId = session.getId();
+        String playerId = sessionTracker.getPlayerId(sessionId);
+        String roomId = sessionTracker.getRoomId(sessionId);
+
+        if (roomId != null && playerId != null) {
+            Map<String, Object> payload = envelope.getPayload() != null ? envelope.getPayload() : Map.of();
+            String rawEmoji = (String) payload.get("emoji");
+            if (rawEmoji != null && !rawEmoji.trim().isEmpty()) {
+                String emoji = rawEmoji.trim();
+                if (emoji.length() > 8) {
+                    emoji = emoji.substring(0, 8);
+                }
+                Room room = roomManager.getRoom(roomId);
+                Player sender = room != null ? room.getPlayer(playerId) : null;
+                String senderName = sender != null ? sender.getName() : "Player";
+
+                Map<String, Object> broadcastPayload = Map.of(
+                    "emoji", emoji,
+                    "senderId", playerId,
+                    "senderName", senderName
+                );
+                broadcaster.broadcastToRoom(roomId, WsEnvelope.of("EMOJI_REACTION", roomId, broadcastPayload));
+            }
         }
     }
 

@@ -18,6 +18,8 @@ import gameView from './views/game.js';
 import resultsView from './views/results.js';
 import chatView from './views/chat.js';
 import cancelModalView from './views/cancelModal.js';
+import audioEngine from './engine/audio.js';
+import reactionsView from './views/reactions.js';
 
 class MovieClashApp {
   constructor() {
@@ -26,6 +28,25 @@ class MovieClashApp {
 
   init() {
     console.log('🎬 MovieClash App initializing...');
+
+    // Setup Cinema Audio Mute / Unmute Toggle
+    const btnAudio = document.getElementById('btnAudioToggle');
+    const audioIcon = document.getElementById('audioIcon');
+    const updateAudioIcon = () => {
+      if (audioIcon) {
+        audioIcon.textContent = audioEngine.getMuted() ? '🔇' : '🔊';
+      }
+      if (btnAudio) {
+        btnAudio.title = audioEngine.getMuted() ? 'Sound Muted (Click to Unmute)' : 'Sound Enabled (Click to Mute)';
+      }
+    };
+    updateAudioIcon();
+    if (btnAudio) {
+      btnAudio.addEventListener('click', () => {
+        audioEngine.toggleMute();
+        updateAudioIcon();
+      });
+    }
 
     // 1. Check for saved session from before refresh
     const urlParams = new URLSearchParams(window.location.search);
@@ -527,6 +548,7 @@ class MovieClashApp {
     });
 
     wsClient.on('ROUND_STARTED', (payload) => {
+      audioEngine.playClapper();
       const {
         roundNumber,
         clueGiverId,
@@ -669,9 +691,11 @@ class MovieClashApp {
     wsClient.on('GUESS_RESULT', (payload) => {
       const { isCorrect, points } = payload;
       if (isCorrect) {
+        audioEngine.playSuccess();
         store.updateRound({ alreadyScoredThisRound: true, myGuessSubmitted: true });
         gameView.showFeedback(`Correct! You scored +${points} points! 🌟`, 'correct');
       } else {
+        audioEngine.playError();
         store.updateRound({ myGuessSubmitted: false });
         gameView.showFeedback('Incorrect guess. Try again!', 'incorrect');
       }
@@ -680,6 +704,7 @@ class MovieClashApp {
     // Room-wide score broadcast
     wsClient.on('SCORE_BROADCAST', (payload) => {
       const { guesserName, guesserPoints, clueGiverName, clueGiverPoints, scoreboard, teams } = payload;
+      audioEngine.playSuccess();
       
       // Update scoreboard in state
       if (scoreboard) {
@@ -690,6 +715,11 @@ class MovieClashApp {
       }
 
       store.addActivity(`${guesserName} guessed correctly! (+${guesserPoints} pts)`);
+    });
+
+    // ---------------- Real-time Crowd Emoji Reactions ----------------
+    wsClient.on('EMOJI_REACTION', (payload) => {
+      reactionsView.spawn(payload);
     });
 
     // ---------------- Clue & Chat Broadcasts ----------------
@@ -720,6 +750,7 @@ class MovieClashApp {
 
     wsClient.on('GAME_FINISHED', (payload) => {
       roundTimer.stop();
+      audioEngine.playFanfare();
       // liveKitVoice.disconnect(); // [TEMPORARILY DISABLED VOICE CLUE]
       store.updateRound({ isRoundActive: false });
       store.updateRoom({ status: 'FINISHED' });

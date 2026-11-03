@@ -4,11 +4,14 @@
  * No high-frequency server ticks needed over the wire.
  */
 
+import audioEngine from './audio.js';
+
 export class RoundTimer {
   constructor() {
     this.intervalId = null;
     this.clockOffsetMs = 0;
     this.deadline = 0;
+    this.lastTickedSec = null;
     this.timerCircleEl = document.getElementById('timerCircle');
     this.timerValueEl = document.getElementById('timerValue');
     this.onExpireCallback = null;
@@ -23,6 +26,7 @@ export class RoundTimer {
   start(serverTime, deadline, onExpire = null) {
     this.stop();
     this.onExpireCallback = onExpire;
+    this.lastTickedSec = null;
 
     // Calculate clock skew between local machine and server
     const localNow = Date.now();
@@ -55,6 +59,12 @@ export class RoundTimer {
       } else {
         this.timerCircleEl.classList.remove('warning');
       }
+    }
+
+    // Audio suspense tick in final 10 seconds
+    if (remainingSec !== this.lastTickedSec && remainingSec <= 10 && remainingSec > 0) {
+      this.lastTickedSec = remainingSec;
+      audioEngine.playTick(remainingSec <= 5);
     }
 
     if (remainingMs <= 0) {
