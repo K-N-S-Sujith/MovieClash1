@@ -381,9 +381,37 @@
             </div>
 
             <!-- GUESSER WAITING / INSTRUCTIONS PANEL (Visible to guessers) -->
-            <div id="guesserPromptPanel" class="guesser-prompt-card card">
-              <div class="prompt-icon">💡</div>
-              <h3>Read the text clues to guess the movie!</h3>
+            <div id="guesserPromptPanel" class="guesser-prompt-card card marquee-cinema-board">
+              <div class="marquee-board-header">
+                <span class="marquee-board-badge">🎬 NOW PLAYING</span>
+                <span class="marquee-board-title">GUESS THE SECRET MOVIE</span>
+                <span id="marqueeLetterProgress" class="marquee-progress-tag">
+                  Revealed: <strong id="marqueeRevealedCount">0</strong>/<strong id="marqueeTotalCount">0</strong>
+                </span>
+              </div>
+
+              <!-- Retro Cinema Hangman Word/Letter Slots -->
+              <div id="hangmanWordSlots" class="hangman-slots-container">
+                <!-- Word wrappers and letter tiles dynamically inserted here -->
+              </div>
+
+              <!-- Metadata pills: Year & Hint -->
+              <div id="marqueeMetaBar" class="marquee-meta-bar">
+                <span id="marqueeYearPill" class="meta-pill hidden">
+                  <span class="pill-icon">📅</span> Year: <strong id="marqueeYearValue">----</strong>
+                </span>
+                <span id="marqueeHintPill" class="meta-pill hidden">
+                  <span class="pill-icon">💡</span> Hint: <span id="marqueeHintValue">----</span>
+                </span>
+              </div>
+
+              <!-- Letter reveal flash alert -->
+              <div id="marqueeRevealAlert" class="marquee-reveal-alert hidden">
+                <span class="sparkle">✨</span>
+                <span id="marqueeRevealAlertText">Letter Revealed!</span>
+                <span class="sparkle">✨</span>
+              </div>
+
               <p id="guesserSubText" class="text-muted">Type your answer in the box below as fast as you can. Minor typos and articles are accepted!</p>
             </div>
 
@@ -525,6 +553,9 @@
       <button type="button" class="reaction-btn" data-emoji="🔥" title="Cinema Fire">🔥</button>
       <button type="button" class="reaction-btn" data-emoji="🎯" title="Bullseye">🎯</button>
     </div>
+
+    <!-- Native Canvas Confetti Layer -->
+    <canvas id="confettiCanvas" class="confetti-canvas" aria-hidden="true"></canvas>
 
   </main>
 

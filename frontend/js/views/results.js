@@ -5,6 +5,7 @@
 
 import store from '../state.js';
 import wsClient from '../api/websocket.js';
+import confettiEngine from '../engine/confetti.js';
 
 export class ResultsView {
   constructor() {
@@ -45,6 +46,7 @@ export class ResultsView {
 
     if (this.btnPlayAgain) {
       this.btnPlayAgain.addEventListener('click', () => {
+        confettiEngine.clear();
         // Return to lobby
         store.set({
           room: { ...store.get().room, status: 'LOBBY' }
@@ -54,6 +56,7 @@ export class ResultsView {
 
     if (this.btnExitToHome) {
       this.btnExitToHome.addEventListener('click', () => {
+        confettiEngine.clear();
         store.clearSavedSession();
         window.location.href = window.location.pathname;
       });

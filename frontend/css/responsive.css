@@ -248,6 +248,37 @@
     gap: 10px;
   }
 
+  /* Hangman Marquee Mobile */
+  .hangman-tile {
+    min-width: 28px;
+    height: 38px;
+    font-size: 1.4rem;
+    padding: 0 4px;
+  }
+
+  .hangman-slots-container {
+    gap: 10px 14px;
+    margin: 12px 0;
+  }
+
+  .hangman-word {
+    gap: 4px;
+  }
+
+  .marquee-board-title {
+    font-size: 1.15rem;
+  }
+
+  .marquee-meta-bar .meta-pill {
+    font-size: 0.78rem;
+    padding: 3px 8px;
+  }
+
+  .marquee-reveal-alert {
+    font-size: 0.9rem;
+    padding: 4px 10px;
+  }
+
   .reaction-dock {
     bottom: 14px;
     right: 14px;
@@ -296,5 +327,15 @@
 
   .round-indicator .round-number {
     font-size: 1.8rem;
+  }
+
+  .hangman-tile {
+    min-width: 22px;
+    height: 32px;
+    font-size: 1.15rem;
+  }
+
+  .hangman-word {
+    gap: 3px;
   }
 }

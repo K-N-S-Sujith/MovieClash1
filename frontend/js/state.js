@@ -62,7 +62,12 @@ class GameStateStore {
         alreadyScoredThisRound: false,
         firstCorrectGuesserFound: false,
         validatedGuessSeqs: new Set(), // Prevents duplicate score processing on client
-        roundScores: []
+        roundScores: [],
+        maskedTitle: '',
+        revealedLettersCount: 0,
+        totalLettersCount: 0,
+        movieHint: '',
+        movieYear: ''
       },
 
       // Feeds

@@ -32,6 +32,75 @@ public class RoundManager {
 
     // Active round deadline futures per room
     private final Map<String, ScheduledFuture<?>> roundTimers = new ConcurrentHashMap<>();
+    private final Map<String, List<ScheduledFuture<?>>> roundHintTimers = new ConcurrentHashMap<>();
+    private final Map<String, ActiveRoundHintState> activeRoundHints = new ConcurrentHashMap<>();
+
+    private static class ActiveRoundHintState {
+        final String originalTitle;
+        final int year;
+        final String hint;
+        final Set<Character> revealedLetters = new HashSet<>();
+        final List<Character> uniqueLetters = new ArrayList<>();
+        int totalLetters = 0;
+        String currentMaskedTitle;
+
+        ActiveRoundHintState(String title, int year, String hint) {
+            this.originalTitle = title != null ? title : "";
+            this.year = year;
+            this.hint = hint != null ? hint : "";
+
+            Set<Character> uniqueSet = new LinkedHashSet<>();
+            for (char c : this.originalTitle.toCharArray()) {
+                if (Character.isLetter(c)) {
+                    this.totalLetters++;
+                    uniqueSet.add(Character.toUpperCase(c));
+                }
+            }
+            this.uniqueLetters.addAll(uniqueSet);
+            this.currentMaskedTitle = buildMasked(this.originalTitle, this.revealedLetters);
+        }
+
+        static String buildMasked(String title, Set<Character> revealed) {
+            if (title == null) return "";
+            StringBuilder sb = new StringBuilder();
+            for (char c : title.toCharArray()) {
+                if (Character.isLetter(c)) {
+                    char upper = Character.toUpperCase(c);
+                    if (revealed.contains(upper)) {
+                        sb.append(c);
+                    } else {
+                        sb.append('_');
+                    }
+                } else {
+                    sb.append(c);
+                }
+            }
+            return sb.toString();
+        }
+
+        int countRevealed() {
+            int count = 0;
+            for (char c : currentMaskedTitle.toCharArray()) {
+                if (Character.isLetter(c)) count++;
+            }
+            return count;
+        }
+
+        Character revealNextRandomLetter() {
+            List<Character> unrevealed = new ArrayList<>();
+            for (Character c : uniqueLetters) {
+                if (!revealedLetters.contains(c)) {
+                    unrevealed.add(c);
+                }
+            }
+            if (unrevealed.isEmpty()) return null;
+
+            Character chosen = unrevealed.get(ThreadLocalRandom.current().nextInt(unrevealed.size()));
+            revealedLetters.add(chosen);
+            currentMaskedTitle = buildMasked(originalTitle, revealedLetters);
+            return chosen;
+        }
+    }
 
     public RoundManager(RoomManager roomManager,
                         MovieCatalogService movieCatalogService,
@@ -204,17 +273,29 @@ public class RoundManager {
         log.info("Starting Round {} in room [{}]. Clue-Giver: [{}] ({}), Movie: [{}]",
                 room.getCurrentRound(), room.getRoomId(), clueGiver.getName(), clueGiver.getId(), movie.getTitle());
 
-        // 1. Broadcast ROUND_STARTED to all players
-        Map<String, Object> roundStartedPayload = Map.of(
-            "roundNumber", room.getCurrentRound(),
-            "totalRounds", room.getTotalRounds(),
-            "clueGiverId", clueGiver.getId(),
-            "clueGiverName", clueGiver.getName(),
-            "clueGiverTeam", clueGiver.getTeamId() != null ? clueGiver.getTeamId() : "",
-            "serverTime", now,
-            "deadline", deadline,
-            "roundDurationMs", durationMs
+        ActiveRoundHintState hintState = new ActiveRoundHintState(
+            movie.getTitle(),
+            movie.getYear(),
+            movie.getHint()
         );
+        activeRoundHints.put(room.getRoomId(), hintState);
+
+        // 1. Broadcast ROUND_STARTED to all players
+        Map<String, Object> roundStartedPayload = new HashMap<>();
+        roundStartedPayload.put("roundNumber", room.getCurrentRound());
+        roundStartedPayload.put("totalRounds", room.getTotalRounds());
+        roundStartedPayload.put("clueGiverId", clueGiver.getId());
+        roundStartedPayload.put("clueGiverName", clueGiver.getName());
+        roundStartedPayload.put("clueGiverTeam", clueGiver.getTeamId() != null ? clueGiver.getTeamId() : "");
+        roundStartedPayload.put("serverTime", now);
+        roundStartedPayload.put("deadline", deadline);
+        roundStartedPayload.put("roundDurationMs", durationMs);
+        roundStartedPayload.put("maskedTitle", hintState.currentMaskedTitle);
+        roundStartedPayload.put("year", hintState.year > 0 ? String.valueOf(hintState.year) : "");
+        roundStartedPayload.put("hint", hintState.hint);
+        roundStartedPayload.put("totalLetters", hintState.totalLetters);
+        roundStartedPayload.put("revealedCount", 0);
+
         broadcaster.broadcastToRoom(room.getRoomId(), WsEnvelope.of("ROUND_STARTED", room.getRoomId(), roundStartedPayload));
 
         // 2. PRIVATELY send CLUE_GIVER_ANSWER to the clue-giver (and all teammates in Team mode)
@@ -243,11 +324,35 @@ public class RoundManager {
 
         // 3. Schedule round deadline enforcement (duration + small grace)
         final int currentRoundNum = room.getCurrentRound();
+        final String roomId = room.getRoomId();
         ScheduledFuture<?> timer = scheduler.schedule(() -> {
-            handleRoundDeadline(room.getRoomId(), currentRoundNum);
+            handleRoundDeadline(roomId, currentRoundNum);
         }, durationMs + 200, TimeUnit.MILLISECONDS);
 
-        roundTimers.put(room.getRoomId(), timer);
+        roundTimers.put(roomId, timer);
+
+        // 4. Schedule progressive Hangman marquee letter reveals
+        List<ScheduledFuture<?>> hintFutures = new ArrayList<>();
+        List<Double> percentages = new ArrayList<>();
+        if (durationMs >= 80_000L) {
+            percentages.add(0.30);
+            percentages.add(0.60);
+            percentages.add(0.80);
+        } else if (durationMs >= 25_000L) {
+            percentages.add(0.40);
+            percentages.add(0.70);
+        } else if (durationMs >= 15_000L) {
+            percentages.add(0.50);
+        }
+
+        for (double pct : percentages) {
+            long delayMs = (long) (durationMs * pct);
+            ScheduledFuture<?> hintFuture = scheduler.schedule(() -> {
+                triggerLetterHint(roomId, currentRoundNum);
+            }, delayMs, TimeUnit.MILLISECONDS);
+            hintFutures.add(hintFuture);
+        }
+        roundHintTimers.put(roomId, hintFutures);
     }
 
     public void startRoundWithChosenMovie(String roomId, String clueGiverId, String title, String hint, String year, List<String> aliases) {
@@ -468,11 +573,47 @@ public class RoundManager {
         log.info("Game cancelled and room [{}] returned to LOBBY status", room.getRoomId());
     }
 
+    public void triggerLetterHint(String roomId, int roundNumber) {
+        Room room = roomManager.getRoom(roomId);
+        if (room == null) return;
+
+        room.executeLocked(() -> {
+            if (room.getStatus() != RoomStatus.IN_PROGRESS || room.getCurrentRound() != roundNumber) {
+                return;
+            }
+
+            ActiveRoundHintState hintState = activeRoundHints.get(roomId);
+            if (hintState == null) return;
+
+            Character revealedLetter = hintState.revealNextRandomLetter();
+            if (revealedLetter != null) {
+                log.info("Revealed letter hint [{}] for room [{}] round {}", revealedLetter, roomId, roundNumber);
+                Map<String, Object> hintPayload = Map.of(
+                    "maskedTitle", hintState.currentMaskedTitle,
+                    "revealedLetter", String.valueOf(revealedLetter),
+                    "revealedCount", hintState.countRevealed(),
+                    "totalLetters", hintState.totalLetters,
+                    "roundNumber", roundNumber
+                );
+                broadcaster.broadcastToRoom(roomId, WsEnvelope.of("LETTER_HINT", roomId, hintPayload));
+            }
+        });
+    }
+
     public void cancelRoundTimer(String roomId) {
         ScheduledFuture<?> future = roundTimers.remove(roomId);
         if (future != null && !future.isDone()) {
             future.cancel(false);
         }
+        List<ScheduledFuture<?>> hints = roundHintTimers.remove(roomId);
+        if (hints != null) {
+            for (ScheduledFuture<?> hintFuture : hints) {
+                if (hintFuture != null && !hintFuture.isDone()) {
+                    hintFuture.cancel(false);
+                }
+            }
+        }
+        activeRoundHints.remove(roomId);
     }
 
     @PreDestroy

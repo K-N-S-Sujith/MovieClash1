@@ -20,6 +20,7 @@ import chatView from './views/chat.js';
 import cancelModalView from './views/cancelModal.js';
 import audioEngine from './engine/audio.js';
 import reactionsView from './views/reactions.js';
+import confettiEngine from './engine/confetti.js';
 
 class MovieClashApp {
   constructor() {
@@ -580,7 +581,12 @@ class MovieClashApp {
         alreadyScoredThisRound: false,
         firstCorrectGuesserFound: false,
         validatedGuessSeqs: new Set(),
-        roundScores: []
+        roundScores: [],
+        maskedTitle: payload.maskedTitle || '',
+        movieYear: payload.year || '',
+        movieHint: payload.hint || '',
+        totalLettersCount: payload.totalLetters || 0,
+        revealedLettersCount: payload.revealedCount || 0
       });
 
       // Clear round clue feed for new round
@@ -601,6 +607,20 @@ class MovieClashApp {
       });
 
       this.switchView('viewGame');
+    });
+
+    // Dynamic Hangman Marquee Letter Hints
+    wsClient.on('LETTER_HINT', (payload) => {
+      const { maskedTitle, revealedLetter, revealedCount, totalLetters } = payload;
+      store.updateRound({
+        maskedTitle,
+        revealedLettersCount: revealedCount,
+        totalLettersCount: totalLetters
+      });
+      audioEngine.playPop();
+      if (revealedLetter) {
+        gameView.showLetterRevealAlert(revealedLetter);
+      }
     });
 
     // ---------------- Answer Validation & Authority ----------------
@@ -692,6 +712,7 @@ class MovieClashApp {
       const { isCorrect, points } = payload;
       if (isCorrect) {
         audioEngine.playSuccess();
+        confettiEngine.fireMiniSuccess();
         store.updateRound({ alreadyScoredThisRound: true, myGuessSubmitted: true });
         gameView.showFeedback(`Correct! You scored +${points} points! 🌟`, 'correct');
       } else {
@@ -751,6 +772,7 @@ class MovieClashApp {
     wsClient.on('GAME_FINISHED', (payload) => {
       roundTimer.stop();
       audioEngine.playFanfare();
+      confettiEngine.firePodiumCelebration();
       // liveKitVoice.disconnect(); // [TEMPORARILY DISABLED VOICE CLUE]
       store.updateRound({ isRoundActive: false });
       store.updateRoom({ status: 'FINISHED' });

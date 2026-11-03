@@ -6,6 +6,7 @@ com\movieclash\model\Player.class
 com\movieclash\controller\LiveKitTokenController.class
 com\movieclash\model\protocol\ErrorCode.class
 com\movieclash\model\Team.class
+com\movieclash\manager\RoundManager$ActiveRoundHintState.class
 com\movieclash\manager\CancellationManager$CancelVoteSession.class
 com\movieclash\manager\ScoreSynchronizer.class
 com\movieclash\model\dto\PlayerDTO.class

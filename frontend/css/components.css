@@ -1378,3 +1378,234 @@
   }
 }
 
+/* ================= 20. CINEMA HANGMAN MARQUEE BOARD & HINTS ================= */
+.marquee-cinema-board {
+  background: linear-gradient(135deg, rgba(22, 17, 28, 0.95), rgba(12, 10, 16, 0.98)) !important;
+  border: 2px solid var(--cinema-gold) !important;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 0 20px rgba(245, 197, 66, 0.2), inset 0 0 15px rgba(0, 0, 0, 0.6);
+  padding: 20px !important;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.marquee-cinema-board::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--cinema-gold-bright) 0px,
+    var(--cinema-gold-bright) 12px,
+    transparent 12px,
+    transparent 20px
+  );
+  opacity: 0.85;
+}
+
+.marquee-board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 1px dashed var(--cinema-gold-dim);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.marquee-board-badge {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  letter-spacing: 1.5px;
+  color: var(--cinema-gold-bright);
+  background: rgba(245, 197, 66, 0.15);
+  border: 1px solid var(--cinema-gold-dim);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.marquee-board-title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  color: var(--friends-yellow);
+  text-shadow: 0 0 8px rgba(245, 197, 66, 0.4);
+}
+
+.marquee-progress-tag {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  color: var(--friends-cream-muted);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.marquee-progress-tag strong {
+  color: var(--cinema-gold-bright);
+}
+
+/* Hangman Word Slots & Letter Tiles */
+.hangman-slots-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 14px 20px;
+  margin: 18px 0;
+  min-height: 52px;
+}
+
+.hangman-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.hangman-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 48px;
+  padding: 0 6px;
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-radius: var(--radius-sm);
+  user-select: none;
+  transition: all var(--transition-normal);
+}
+
+.hangman-tile.revealed {
+  background: linear-gradient(180deg, #2a2013 0%, #151109 100%);
+  color: var(--cinema-gold-bright);
+  border: 2px solid var(--cinema-gold);
+  box-shadow: 0 0 12px rgba(245, 197, 66, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 0 8px rgba(245, 197, 66, 0.7);
+  animation: flipInTile 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hangman-tile.blank {
+  background: rgba(14, 11, 18, 0.85);
+  border: 1px dashed rgba(245, 197, 66, 0.35);
+  border-bottom: 3px solid var(--cinema-gold);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.hangman-tile.punct {
+  min-width: 14px;
+  height: auto;
+  padding: 0 2px;
+  background: transparent;
+  border: none;
+  color: var(--friends-yellow);
+  font-size: 1.7rem;
+}
+
+@keyframes flipInTile {
+  0% {
+    transform: rotateX(90deg) scale(0.7);
+    opacity: 0;
+  }
+  60% {
+    transform: rotateX(-15deg) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Marquee Metadata: Year & Clue-Giver Hint */
+.marquee-meta-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.marquee-meta-bar .meta-pill {
+  background: rgba(22, 17, 28, 0.85);
+  border: 1px solid var(--cinema-gold-dim);
+  color: var(--friends-cream-muted);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.marquee-meta-bar .meta-pill strong {
+  color: var(--cinema-gold-bright);
+}
+
+.marquee-meta-bar .meta-pill em {
+  font-style: normal;
+  color: var(--friends-yellow);
+}
+
+/* Flash Alert for New Letter Reveal */
+.marquee-reveal-alert {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(90deg, rgba(107, 59, 167, 0.85), rgba(211, 47, 47, 0.85));
+  border: 1px solid var(--friends-yellow);
+  color: var(--friends-cream);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+  margin: 10px auto;
+  box-shadow: 0 0 15px rgba(245, 197, 66, 0.4);
+}
+
+.marquee-reveal-alert strong {
+  color: var(--cinema-gold-bright);
+  font-size: 1.25rem;
+  text-decoration: underline;
+}
+
+.marquee-reveal-alert.pulse-in {
+  animation: pulseInAlert 0.5s ease-out;
+}
+
+@keyframes pulseInAlert {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ================= 21. NATIVE CANVAS CONFETTI LAYER ================= */
+.confetti-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+}
+

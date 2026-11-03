@@ -53,6 +53,17 @@ export class GameView {
     // Guesser elements
     this.guesserPromptPanel = document.getElementById('guesserPromptPanel');
     this.guesserSubText = document.getElementById('guesserSubText');
+    this.hangmanWordSlots = document.getElementById('hangmanWordSlots');
+    this.marqueeRevealedCount = document.getElementById('marqueeRevealedCount');
+    this.marqueeTotalCount = document.getElementById('marqueeTotalCount');
+    this.marqueeYearPill = document.getElementById('marqueeYearPill');
+    this.marqueeYearValue = document.getElementById('marqueeYearValue');
+    this.marqueeHintPill = document.getElementById('marqueeHintPill');
+    this.marqueeHintValue = document.getElementById('marqueeHintValue');
+    this.marqueeRevealAlert = document.getElementById('marqueeRevealAlert');
+    this.marqueeRevealAlertText = document.getElementById('marqueeRevealAlertText');
+    this.revealAlertTimeout = null;
+
     this.guessSection = document.getElementById('guessSubmissionSection');
     this.guessForm = document.getElementById('guessForm');
     this.guessInput = document.getElementById('guessInput');
@@ -245,6 +256,9 @@ export class GameView {
           if (this.guessSection) this.guessSection.classList.remove('hidden');
           if (this.guesserSubText) this.guesserSubText.textContent = 'Type your answer below as fast as you can. Minor typos and articles are accepted!';
         }
+
+        // Render Hangman Marquee Board
+        this.renderMarqueeBoard(round);
       }
     }
 
@@ -324,6 +338,90 @@ export class GameView {
       this.activityFeedEl.appendChild(item);
     });
     this.activityFeedEl.scrollTop = this.activityFeedEl.scrollHeight;
+  }
+
+  renderMarqueeBoard(round) {
+    if (!this.hangmanWordSlots) return;
+
+    const maskedTitle = round.maskedTitle || '';
+    if (!maskedTitle) {
+      this.hangmanWordSlots.innerHTML = '<span class="text-muted text-sm">Waiting for round to begin...</span>';
+      return;
+    }
+
+    // 1. Update counts
+    if (this.marqueeRevealedCount) {
+      this.marqueeRevealedCount.textContent = round.revealedLettersCount || 0;
+    }
+    if (this.marqueeTotalCount) {
+      this.marqueeTotalCount.textContent = round.totalLettersCount || 0;
+    }
+
+    // 2. Metadata pills (Year & Hint)
+    if (this.marqueeYearPill && this.marqueeYearValue) {
+      if (round.movieYear) {
+        this.marqueeYearValue.textContent = round.movieYear;
+        this.marqueeYearPill.classList.remove('hidden');
+      } else {
+        this.marqueeYearPill.classList.add('hidden');
+      }
+    }
+
+    if (this.marqueeHintPill && this.marqueeHintValue) {
+      if (round.movieHint) {
+        this.marqueeHintValue.textContent = round.movieHint;
+        this.marqueeHintPill.classList.remove('hidden');
+      } else {
+        this.marqueeHintPill.classList.add('hidden');
+      }
+    }
+
+    // 3. Render word clusters and letter tiles
+    const words = maskedTitle.split(' ');
+    this.hangmanWordSlots.innerHTML = '';
+
+    words.forEach(wordStr => {
+      const wordContainer = document.createElement('div');
+      wordContainer.className = 'hangman-word';
+
+      for (let i = 0; i < wordStr.length; i++) {
+        const ch = wordStr[i];
+        const tile = document.createElement('span');
+
+        if (ch === '_') {
+          tile.className = 'hangman-tile blank';
+          tile.textContent = '';
+        } else if (/[a-zA-Z0-9]/.test(ch)) {
+          tile.className = 'hangman-tile revealed';
+          tile.textContent = ch.toUpperCase();
+        } else {
+          tile.className = 'hangman-tile punct';
+          tile.textContent = ch;
+        }
+        wordContainer.appendChild(tile);
+      }
+
+      this.hangmanWordSlots.appendChild(wordContainer);
+    });
+  }
+
+  showLetterRevealAlert(letter) {
+    if (!this.marqueeRevealAlert || !this.marqueeRevealAlertText) return;
+
+    this.marqueeRevealAlertText.innerHTML = `Marquee Clue: Letter <strong>${this.escapeHtml(letter.toUpperCase())}</strong> revealed!`;
+    this.marqueeRevealAlert.classList.remove('hidden');
+    this.marqueeRevealAlert.classList.remove('pulse-in');
+    void this.marqueeRevealAlert.offsetWidth; // trigger reflow
+    this.marqueeRevealAlert.classList.add('pulse-in');
+
+    if (this.revealAlertTimeout) {
+      clearTimeout(this.revealAlertTimeout);
+    }
+    this.revealAlertTimeout = setTimeout(() => {
+      if (this.marqueeRevealAlert) {
+        this.marqueeRevealAlert.classList.add('hidden');
+      }
+    }, 3500);
   }
 
   escapeHtml(str) {
