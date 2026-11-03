@@ -345,10 +345,10 @@ public class GameCoordinator {
                 config.setAutoStartRound(b);
             }
             if (cfgMap.get("roundDurationSec") instanceof Number n) {
-                config.setRoundDurationSec(n.intValue());
+                config.setRoundDurationSec(Math.max(10, Math.min(600, n.intValue())));
             }
             if (cfgMap.get("totalRounds") instanceof Number n) {
-                config.setTotalRounds(n.intValue());
+                config.setTotalRounds(Math.max(1, Math.min(50, n.intValue())));
             }
             if (cfgMap.get("correctGuessPoints") instanceof Number n) {
                 config.setCorrectGuessPoints(n.intValue());

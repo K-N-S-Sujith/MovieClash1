@@ -6,14 +6,22 @@
   <title>MovieClash — Real-Time Movie Guessing Arena</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fredoka:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 </head>
 <body class="dark-theme">
-  <!-- Top Navigation & Latency / Connection Bar -->
+  <!-- Top Navigation & Latency / Connection Bar (Cinema Marquee Header) -->
   <header class="app-header">
+    <div class="marquee-bulbs-track" aria-hidden="true">
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
+    </div>
     <div class="brand">
       <span class="logo-icon">🎬</span>
       <span class="logo-text">Movie<span class="highlight">Clash</span></span>
@@ -97,7 +105,7 @@
     <!-- ================= VIEW 2: CREATE ROOM MODAL / CARD ================= -->
     <section id="viewCreateRoom" class="view-section hidden">
       <div class="card form-card">
-        <button class="btn-back" data-target="viewLanding">← Back</button>
+        <button type="button" class="btn-back" data-target="viewLanding">← Back</button>
         <h2>Create a Room</h2>
         <form id="createRoomForm" class="app-form">
           <div class="form-group profile-helper-group">
@@ -140,12 +148,19 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="roundDuration">Round Duration (sec)</label>
+              <label for="roundDuration">Round Duration</label>
               <select id="roundDuration">
-                <option value="45">45 Seconds</option>
-                <option value="60" selected>60 Seconds</option>
-                <option value="90">90 Seconds</option>
+                <option value="30">30 Seconds (Blitz)</option>
+                <option value="45">45 Seconds (Fast)</option>
+                <option value="60" selected>60 Seconds (Standard)</option>
+                <option value="90">90 Seconds (Relaxed)</option>
+                <option value="120">120 Seconds (2 Minutes)</option>
+                <option value="custom">⏱️ Custom Timer...</option>
               </select>
+              <div id="customDurationBox" class="custom-input-box hidden">
+                <input type="number" id="customRoundDuration" min="10" max="600" placeholder="Seconds (10-600)" autocomplete="off" />
+                <span class="custom-input-unit">sec</span>
+              </div>
             </div>
             <div class="form-group">
               <label for="totalRounds">Total Rounds / Turns</label>
@@ -153,7 +168,14 @@
                 <option value="1">1 Turn per Player/Team</option>
                 <option value="2" selected>2 Turns per Player/Team</option>
                 <option value="3">3 Turns per Player/Team</option>
+                <option value="4">4 Turns per Player/Team</option>
+                <option value="5">5 Turns per Player/Team</option>
+                <option value="custom">🎬 Custom Rounds...</option>
               </select>
+              <div id="customRoundsBox" class="custom-input-box hidden">
+                <input type="number" id="customTotalRounds" min="1" max="50" placeholder="Turns (1-50)" autocomplete="off" />
+                <span class="custom-input-unit">turns</span>
+              </div>
             </div>
           </div>
 
@@ -165,7 +187,7 @@
     <!-- ================= VIEW 3: JOIN ROOM ================= -->
     <section id="viewJoinRoom" class="view-section hidden">
       <div class="card form-card">
-        <button class="btn-back" data-target="viewLanding">← Back</button>
+        <button type="button" class="btn-back" data-target="viewLanding">← Back</button>
         <h2>Join Game Room</h2>
         <form id="joinRoomForm" class="app-form">
           <div class="form-group profile-helper-group">

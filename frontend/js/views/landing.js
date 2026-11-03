@@ -97,15 +97,22 @@ export class LandingView {
 
     // Navigation between landing cards
     if (this.btnNavCreate) {
-      this.btnNavCreate.addEventListener('click', () => this.showCard('create'));
+      this.btnNavCreate.addEventListener('click', () => this.showCard('create', true));
     }
     if (this.btnNavJoin) {
-      this.btnNavJoin.addEventListener('click', () => this.showCard('join'));
+      this.btnNavJoin.addEventListener('click', () => this.showCard('join', true));
     }
 
     // Back buttons
     document.querySelectorAll('.btn-back').forEach(btn => {
-      btn.addEventListener('click', () => this.showCard('landing'));
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (window.location.hash === '#create' || window.location.hash === '#join') {
+          window.history.back();
+        } else {
+          this.showCard('landing', true);
+        }
+      });
     });
 
     // Radio toggle styling scoped to group
@@ -118,6 +125,46 @@ export class LandingView {
         e.target.closest('.toggle-option')?.classList.add('selected');
       });
     });
+
+    // Custom Round Duration toggle
+    const roundDurationSelect = document.getElementById('roundDuration');
+    const customDurationBox = document.getElementById('customDurationBox');
+    const customRoundDuration = document.getElementById('customRoundDuration');
+
+    if (roundDurationSelect && customDurationBox) {
+      roundDurationSelect.addEventListener('change', () => {
+        if (roundDurationSelect.value === 'custom') {
+          customDurationBox.classList.remove('hidden');
+          if (customRoundDuration) {
+            if (!customRoundDuration.value) customRoundDuration.value = '75';
+            customRoundDuration.focus();
+            customRoundDuration.select();
+          }
+        } else {
+          customDurationBox.classList.add('hidden');
+        }
+      });
+    }
+
+    // Custom Total Rounds toggle
+    const totalRoundsSelect = document.getElementById('totalRounds');
+    const customRoundsBox = document.getElementById('customRoundsBox');
+    const customTotalRounds = document.getElementById('customTotalRounds');
+
+    if (totalRoundsSelect && customRoundsBox) {
+      totalRoundsSelect.addEventListener('change', () => {
+        if (totalRoundsSelect.value === 'custom') {
+          customRoundsBox.classList.remove('hidden');
+          if (customTotalRounds) {
+            if (!customTotalRounds.value) customTotalRounds.value = '4';
+            customTotalRounds.focus();
+            customTotalRounds.select();
+          }
+        } else {
+          customRoundsBox.classList.add('hidden');
+        }
+      });
+    }
 
     // Create Room Submit
     if (this.createForm) {
@@ -135,14 +182,21 @@ export class LandingView {
       });
     }
 
-    // Check for room code in URL query string (?room=ABC123)
+    // Check for room code in URL query string (?room=ABC123) or hash (#create, #join)
     const saved = store.getSavedSession();
     const urlParams = new URLSearchParams(window.location.search);
     const roomParam = urlParams.get('room');
     if (roomParam && !saved && this.viewJoin) {
       const codeInput = document.getElementById('joinRoomCode');
       if (codeInput) codeInput.value = roomParam.toUpperCase().slice(0, 6);
-      this.showCard('join');
+      this.showCard('join', false);
+    } else if (!saved) {
+      const hash = window.location.hash;
+      if (hash === '#create') {
+        this.showCard('create', false);
+      } else if (hash === '#join') {
+        this.showCard('join', false);
+      }
     }
   }
 
@@ -167,7 +221,7 @@ export class LandingView {
     store.updatePlayer({ name: clean });
   }
 
-  showCard(name) {
+  showCard(name, pushHistory = true) {
     if (this.viewLanding) {
       this.viewLanding.classList.remove('active');
       this.viewLanding.classList.add('hidden');
@@ -184,14 +238,23 @@ export class LandingView {
     if (name === 'create' && this.viewCreate) {
       this.viewCreate.classList.remove('hidden');
       this.viewCreate.classList.add('active');
-      // Already filled from profile; no need to focus on name
+      if (pushHistory && window.location.hash !== '#create') {
+        history.pushState({ card: 'create' }, '', '#create');
+      }
     } else if (name === 'join' && this.viewJoin) {
       this.viewJoin.classList.remove('hidden');
       this.viewJoin.classList.add('active');
       document.getElementById('joinRoomCode')?.focus();
+      if (pushHistory && window.location.hash !== '#join') {
+        history.pushState({ card: 'join' }, '', '#join');
+      }
     } else if (this.viewLanding) {
       this.viewLanding.classList.remove('hidden');
       this.viewLanding.classList.add('active');
+      if (pushHistory && window.location.hash) {
+        const cleanUrl = window.location.pathname + (window.location.search || '');
+        history.pushState({ card: 'landing' }, '', cleanUrl);
+      }
     }
   }
 
@@ -203,8 +266,36 @@ export class LandingView {
     const gameMode = document.querySelector('input[name="gameMode"]:checked')?.value || 'INDIVIDUAL';
     const movieSelection = document.querySelector('input[name="movieSelection"]:checked')?.value || 'manual';
     const autoStartRound = (movieSelection === 'auto');
-    const roundDurationSec = parseInt(document.getElementById('roundDuration').value, 10) || 60;
-    const totalRounds = parseInt(document.getElementById('totalRounds').value, 10) || 2;
+
+    // Parse round duration (preset or custom)
+    let roundDurationSec = 60;
+    const durationSelectVal = document.getElementById('roundDuration')?.value;
+    if (durationSelectVal === 'custom') {
+      const customVal = parseInt(document.getElementById('customRoundDuration')?.value, 10);
+      if (!customVal || customVal < 10 || customVal > 600) {
+        alert('Please enter a valid round duration between 10 and 600 seconds.');
+        document.getElementById('customRoundDuration')?.focus();
+        return;
+      }
+      roundDurationSec = customVal;
+    } else {
+      roundDurationSec = parseInt(durationSelectVal, 10) || 60;
+    }
+
+    // Parse total rounds / turns (preset or custom)
+    let totalRounds = 2;
+    const roundsSelectVal = document.getElementById('totalRounds')?.value;
+    if (roundsSelectVal === 'custom') {
+      const customVal = parseInt(document.getElementById('customTotalRounds')?.value, 10);
+      if (!customVal || customVal < 1 || customVal > 50) {
+        alert('Please enter a valid number of turns/rounds between 1 and 50.');
+        document.getElementById('customTotalRounds')?.focus();
+        return;
+      }
+      totalRounds = customVal;
+    } else {
+      totalRounds = parseInt(roundsSelectVal, 10) || 2;
+    }
 
     const userId = userProfile.getUserId();
     store.updatePlayer({ userId, name: playerName, isHost: true });

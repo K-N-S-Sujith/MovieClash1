@@ -1,45 +1,113 @@
 /* ==========================================================================
    MovieClash — Main Stylesheet
-   Theme: Dark Gaming Aesthetic with High Contrast & Smooth Transitions
+   Theme: Dark Cinema + Friends Aesthetic
+   - Dark cinema base (near-black, deep velvet red accents, gold highlights)
+   - Friends-style accents: warm purple, mustard yellow, teal, warm cream
+   - Marquee header with glowing bulbs, film-strip borders, ticket notches,
+     and the iconic yellow rounded peephole-inspired frame
+   - Fonts: Bebas Neue (headings/marquee/counters) & Fredoka (body/UI)
    ========================================================================== */
 
 :root {
-  --bg-primary: #0f111a;
-  --bg-secondary: #161926;
-  --bg-tertiary: #1f2337;
-  --bg-card: rgba(26, 30, 48, 0.85);
-  --bg-card-hover: rgba(35, 41, 66, 0.95);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-focus: #6366f1;
+  /* ================= 1. DARK CINEMA BASE PALETTE ================= */
+  --cinema-black: #0d0a10;
+  --cinema-surface: #16111a;
+  --cinema-surface-elevated: #201827;
+  --cinema-card: #1b1522;
+  --cinema-card-hover: #261d30;
+  --cinema-border: #382a44;
+  --cinema-border-light: rgba(245, 197, 66, 0.16);
 
-  --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
-  --text-dim: #6b7280;
+  /* Deep Velvet Red Accents (Cinema Theater Curtains & Carpets) */
+  --cinema-red: #8b1e2d;
+  --cinema-red-bright: #ad2438;
+  --cinema-red-dark: #5e121d;
+  --cinema-red-glow: rgba(173, 36, 56, 0.45);
 
-  --accent-primary: #6366f1;       /* Indigo */
-  --accent-primary-hover: #4f46e5;
-  --accent-secondary: #ec4899;     /* Pink gradient accent */
-  --accent-gold: #f59e0b;          /* Star / Trophy */
-  --accent-success: #10b981;       /* Green */
-  --accent-danger: #ef4444;        /* Red */
-  --accent-warning: #f59e0b;       /* Amber */
+  /* Marquee Gold Highlights (Canopy Bulbs, Stars, Brass Stanchions) */
+  --cinema-gold: #f5c542;
+  --cinema-gold-bright: #ffe27a;
+  --cinema-gold-dark: #b8860b;
+  --cinema-gold-glow: rgba(245, 197, 66, 0.45);
+  --cinema-gold-dim: #99731e;
 
-  --font-family-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-family-mono: 'JetBrains Mono', monospace;
+  /* ================= 2. FRIENDS-INSPIRED ACCENTS ================= */
+  /* Monica's Apartment Walls & Door: Warm Theatrical Purple */
+  --friends-purple: #74457e;
+  --friends-purple-deep: #4c2656;
+  --friends-purple-light: #945da0;
+  --friends-purple-glow: rgba(116, 69, 126, 0.4);
 
+  /* Monica's Peephole Frame: Iconic Mustard / Golden Yellow */
+  --friends-yellow: #f8c02f;
+  --friends-yellow-bright: #ffd452;
+  --friends-yellow-dark: #cb9310;
+  --friends-yellow-shadow: #7a5405;
+  --friends-yellow-glow: rgba(248, 192, 47, 0.45);
+
+  /* Central Perk Coffeehouse: Iconic Velvet Teal */
+  --friends-teal: #1f777a;
+  --friends-teal-light: #2da1a5;
+  --friends-teal-dark: #134e50;
+  --friends-teal-glow: rgba(45, 161, 165, 0.35);
+
+  /* Central Perk Ceramic Mugs & Warmth: Cozy Cream */
+  --friends-cream: #faf3e3;
+  --friends-cream-muted: #d9cfbc;
+  --friends-cream-dim: #9e9380;
+
+  /* ================= 3. SEMANTIC SYSTEM COLORS ================= */
+  --color-success: #2ec486;
+  --color-danger: #e63946;
+  --color-warning: #f59e0b;
+  --color-info: #38bdf8;
+
+  /* ================= 4. APPLICATION MAPPINGS (Backward Compatible) ================= */
+  --bg-primary: var(--cinema-black);
+  --bg-secondary: var(--cinema-surface);
+  --bg-tertiary: var(--cinema-surface-elevated);
+  --bg-card: var(--cinema-card);
+  --bg-card-hover: var(--cinema-card-hover);
+  --border-color: var(--cinema-border-light);
+  --border-focus: var(--friends-yellow);
+
+  --text-main: var(--friends-cream);
+  --text-muted: var(--friends-cream-muted);
+  --text-dim: var(--friends-cream-dim);
+
+  --accent-primary: var(--cinema-red);
+  --accent-primary-hover: var(--cinema-red-bright);
+  --accent-secondary: var(--friends-purple);
+  --accent-gold: var(--cinema-gold);
+  --accent-cyan: var(--friends-teal-light);
+  --accent-success: var(--color-success);
+  --accent-danger: var(--color-danger);
+  --accent-warning: var(--color-warning);
+
+  /* ================= 5. TYPOGRAPHY ================= */
+  --font-heading: 'Bebas Neue', Impact, 'Segoe UI Black', sans-serif;
+  --font-body: 'Fredoka', cursive, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-family-sans: var(--font-body);
+  --font-family-mono: var(--font-mono);
+
+  /* ================= 6. RADII, SHADOWS & MOTION ================= */
   --radius-sm: 6px;
   --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.75);
+  --shadow-marquee: 0 0 20px var(--cinema-gold-glow);
 
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s ease;
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ================= CSS RESET & BASE STYLES ================= */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -49,9 +117,9 @@
 html, body {
   width: 100%;
   height: 100%;
-  background-color: var(--bg-primary);
+  background-color: var(--cinema-black);
   color: var(--text-main);
-  font-family: var(--font-family-sans);
+  font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -59,15 +127,35 @@ html, body {
   overflow-x: hidden;
 }
 
-/* Background Ambient Glow */
+/* Custom Scrollbars (Cinema Velvet & Brass Thumb) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cinema-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cinema-surface-elevated);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--cinema-gold-dim);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--friends-purple);
+}
+
+/* Ambient Cinema Glows (Velvet Red & Monica Purple Atmosphere) */
 body::before {
   content: '';
   position: fixed;
-  top: -15%;
-  left: 20%;
-  width: 60vw;
-  height: 50vh;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+  top: -10%;
+  left: 15%;
+  width: 70vw;
+  height: 55vh;
+  background: radial-gradient(circle, rgba(139, 30, 45, 0.2) 0%, rgba(116, 69, 126, 0.12) 40%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -76,55 +164,135 @@ body::after {
   content: '';
   position: fixed;
   bottom: -15%;
-  right: 15%;
-  width: 50vw;
-  height: 45vh;
-  background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
+  right: 10%;
+  width: 60vw;
+  height: 50vh;
+  background: radial-gradient(circle, rgba(31, 119, 122, 0.15) 0%, rgba(13, 10, 16, 0.9) 70%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* ================= HEADER ================= */
+/* ================= HEADINGS ================= */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: 1px;
+  color: var(--friends-cream);
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+/* ================= MARQUEE-STYLE APP HEADER ================= */
 .app-header {
   position: relative;
   z-index: 10;
   display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: linear-gradient(180deg, #1b1422 0%, #110d16 100%);
+  border-bottom: 3px solid var(--cinema-gold-dark);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+}
+
+/* Glowing Marquee Lightbulbs Strip */
+.marquee-bulbs-track {
+  display: flex;
+  justify-content: space-around;
   align-items: center;
-  justify-content: space-between;
-  padding: 14px 24px;
-  background-color: rgba(15, 17, 26, 0.8);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
+  padding: 6px 14px;
+  background: #09070c;
+  border-bottom: 1px solid rgba(245, 197, 66, 0.3);
+  overflow: hidden;
+}
+
+.marquee-bulbs-track .bulb {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--cinema-gold-bright);
+  box-shadow: 0 0 6px var(--cinema-gold-bright), 0 0 12px var(--cinema-gold);
+  animation: marqueeBulbOdd 1.6s infinite ease-in-out;
+}
+
+.marquee-bulbs-track .bulb:nth-child(even) {
+  animation: marqueeBulbEven 1.6s infinite ease-in-out;
+}
+
+@keyframes marqueeBulbOdd {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px #ffe27a);
+    transform: scale(1.15);
+  }
+  50% {
+    opacity: 0.35;
+    filter: drop-shadow(0 0 2px #b8860b);
+    transform: scale(0.85);
+  }
+}
+
+@keyframes marqueeBulbEven {
+  0%, 100% {
+    opacity: 0.35;
+    filter: drop-shadow(0 0 2px #b8860b);
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px #ffe27a);
+    transform: scale(1.15);
+  }
+}
+
+/* Header Content Row */
+.app-header > :not(.marquee-bulbs-track) {
+  position: relative;
+}
+
+/* Using grid or flex layout for header content row */
+.app-header {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.app-header .marquee-bulbs-track {
+  width: 100%;
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  padding: 12px 24px;
   user-select: none;
 }
 
 .logo-icon {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
+  filter: drop-shadow(0 2px 8px rgba(245, 197, 66, 0.4));
 }
 
 .logo-text {
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  letter-spacing: 2px;
+  color: var(--friends-cream);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .highlight {
-  color: var(--accent-primary);
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: var(--cinema-gold);
+  background: linear-gradient(135deg, var(--cinema-gold-bright), var(--cinema-gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px rgba(245, 197, 66, 0.4));
 }
 
 .header-right {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 12px 24px;
+  margin-left: auto;
 }
 
 /* ================= CONTAINERS & SURFACES ================= */
@@ -134,7 +302,7 @@ body::after {
   max-width: 1280px;
   margin: 0 auto;
   padding: 24px;
-  min-height: calc(100vh - 65px);
+  min-height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
 }
@@ -142,129 +310,204 @@ body::after {
 .view-section {
   display: none;
   width: 100%;
-  animation: fadeIn 0.25s ease forwards;
+  animation: cinemaFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .view-section.active {
   display: block;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(8px);
+@keyframes cinemaFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .hidden {
   display: none !important;
 }
 
-/* ================= BUTTONS ================= */
+/* Generic Card Base with Cinema Velvet Glow */
+.card {
+  background: var(--cinema-card);
+  border: 1px solid var(--cinema-border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+/* ================= MONICA'S PEEPHOLE FRAME (YELLOW ROUNDED FRAME) ================= */
+/* Applied to the main active hero and central game cards */
+.hero-card,
+.movie-choice-card,
+.clue-secret-card,
+.guesser-prompt-card,
+.results-card {
+  position: relative;
+  border-radius: var(--radius-xl);
+  border: 4px solid var(--friends-yellow);
+  box-shadow: 
+    0 0 0 3px var(--friends-yellow-dark),
+    0 0 0 7px rgba(248, 192, 47, 0.25),
+    0 12px 40px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.12);
+  background: var(--cinema-card);
+}
+
+/* Ornate Peephole Top Sculpting */
+.hero-card::before,
+.movie-choice-card::before,
+.clue-secret-card::before,
+.results-card::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 8px;
+  background: var(--friends-yellow-dark);
+  border-radius: var(--radius-full);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  z-index: 3;
+}
+
+/* ================= BUTTONS: TACTILE CINEMA PRESS ================= */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
-  font-family: var(--font-family-sans);
-  font-size: 0.95rem;
-  font-weight: 600;
+  padding: 10px 22px;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   border-radius: var(--radius-md);
-  border: none;
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: transform var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
   text-decoration: none;
   outline: none;
+  user-select: none;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .btn:active {
-  transform: translateY(1px);
+  transform: translateY(2px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
+/* Primary Button: Deep Velvet Red with Gold Border */
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-primary), #4f46e5);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+  background: linear-gradient(135deg, var(--cinema-red-bright) 0%, var(--cinema-red) 100%);
+  color: var(--friends-cream);
+  border: 1px solid rgba(245, 197, 66, 0.4);
+  box-shadow: 0 4px 16px var(--cinema-red-glow), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #4f46e5, #4338ca);
-  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+  background: linear-gradient(135deg, #bd2c41 0%, var(--cinema-red-bright) 100%);
+  border-color: var(--cinema-gold);
+  box-shadow: 0 6px 22px var(--cinema-red-glow), 0 0 12px rgba(245, 197, 66, 0.4);
 }
 
+/* Secondary Button: Monica's Warm Purple */
 .btn-secondary {
-  background: var(--bg-tertiary);
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
+  background: linear-gradient(135deg, var(--friends-purple) 0%, var(--friends-purple-deep) 100%);
+  color: var(--friends-cream);
+  border: 1px solid rgba(245, 197, 66, 0.25);
+  box-shadow: 0 4px 14px var(--friends-purple-glow);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-card-hover);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, var(--friends-purple-light) 0%, var(--friends-purple) 100%);
+  border-color: var(--friends-yellow);
+  box-shadow: 0 6px 18px var(--friends-purple-glow);
 }
 
+/* Accent Button: Friends Mustard Yellow */
 .btn-accent {
-  background: linear-gradient(135deg, var(--accent-secondary), #db2777);
-  color: #fff;
-  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
+  background: linear-gradient(135deg, var(--friends-yellow-bright) 0%, var(--friends-yellow) 100%);
+  color: #24142b;
+  font-weight: 700;
+  border: 1px solid var(--friends-yellow-dark);
+  box-shadow: 0 4px 16px var(--friends-yellow-glow);
 }
 
 .btn-accent:hover {
-  background: linear-gradient(135deg, #db2777, #be185d);
+  background: linear-gradient(135deg, #ffe075 0%, var(--friends-yellow-bright) 100%);
+  box-shadow: 0 6px 22px var(--friends-yellow-glow);
 }
 
+/* Danger Button: Premiere Red */
 .btn-danger {
-  background-color: var(--accent-danger);
+  background-color: var(--color-danger);
   color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-danger:hover {
-  background-color: #dc2626;
+  background-color: #f04351;
+  box-shadow: 0 4px 16px rgba(230, 57, 70, 0.45);
 }
 
 .btn-danger-outline {
   background: transparent;
-  border: 1px solid rgba(239, 68, 68, 0.5);
+  border: 1px solid rgba(230, 57, 70, 0.6);
   color: #f87171;
 }
 
 .btn-danger-outline:hover {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: var(--accent-danger);
+  background: rgba(230, 57, 70, 0.15);
+  border-color: var(--color-danger);
 }
 
+/* Outline Button: Vintage Theater Brass */
 .btn-outline {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
+  background: var(--cinema-surface);
+  border: 1px solid rgba(245, 197, 66, 0.3);
+  color: var(--friends-cream-muted);
 }
 
 .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-main);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--cinema-surface-elevated);
+  border-color: var(--cinema-gold);
+  color: var(--cinema-gold-bright);
 }
 
+.btn-ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--friends-cream-muted);
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--friends-cream);
+}
+
+/* Button Sizing */
 .btn-sm {
-  padding: 6px 12px;
-  font-size: 0.85rem;
+  padding: 6px 14px;
+  font-size: 0.95rem;
 }
 
 .btn-lg {
-  padding: 14px 28px;
-  font-size: 1.1rem;
+  padding: 14px 32px;
+  font-size: 1.35rem;
+  letter-spacing: 1.5px;
 }
 
 .btn-block {
@@ -279,31 +522,41 @@ body::after {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  color: var(--friends-cream);
+  transition: transform var(--transition-fast);
+}
+
+.btn-icon:hover {
+  transform: scale(1.15);
 }
 
 .btn-back {
   background: transparent;
   border: none;
-  color: var(--text-muted);
+  color: var(--cinema-gold);
   cursor: pointer;
-  font-size: 0.9rem;
-  margin-bottom: 12px;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  transition: transform var(--transition-fast), color var(--transition-fast);
 }
 
 .btn-back:hover {
-  color: var(--text-main);
+  color: var(--cinema-gold-bright);
+  transform: translateX(-3px);
 }
 
-/* ================= FORMS ================= */
+/* ================= FORMS & INPUTS ================= */
 .app-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 18px;
+  margin-top: 18px;
 }
 
 .form-group {
@@ -313,58 +566,88 @@ body::after {
 }
 
 .form-group label {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+  color: var(--cinema-gold);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted);
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
 }
 
-input[type="text"], select {
+input[type="text"], input[type="number"], select {
   width: 100%;
-  padding: 12px 14px;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+  background-color: var(--cinema-surface);
+  border: 1px solid var(--cinema-border);
   border-radius: var(--radius-md);
-  color: var(--text-main);
-  font-family: var(--font-family-sans);
-  font-size: 0.95rem;
+  color: var(--friends-cream);
+  font-family: var(--font-body);
+  font-size: 1rem;
   outline: none;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-input[type="text"]:focus, select:focus {
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+input[type="text"]:focus, input[type="number"]:focus, select:focus {
+  border-color: var(--friends-yellow);
+  box-shadow: 0 0 0 3px rgba(248, 192, 47, 0.25);
+  background-color: var(--cinema-surface-elevated);
+}
+
+/* Custom duration / rounds input container */
+.custom-input-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  animation: cinemaFadeIn 0.2s ease forwards;
+}
+
+.custom-input-box input[type="number"] {
+  flex: 1;
+}
+
+.custom-input-unit {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+  color: var(--cinema-gold);
+  background: var(--cinema-surface-elevated);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--cinema-border);
+  user-select: none;
+  white-space: nowrap;
 }
 
 .input-code {
-  font-family: var(--font-family-mono);
-  font-size: 1.3rem;
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: 4px;
+  letter-spacing: 6px;
   text-align: center;
+  color: var(--cinema-gold-bright);
+  background: #110d16 !important;
+  border: 2px dashed var(--cinema-gold) !important;
 }
 
-/* Radio Toggle Cards */
+/* Radio Toggle Cards (Theater Mode Selection) */
 .radio-toggle-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 12px;
 }
 
 .toggle-option {
   display: flex;
   flex-direction: column;
-  padding: 12px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  padding: 14px;
+  background: var(--cinema-surface);
+  border: 1px solid var(--cinema-border);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -374,108 +657,122 @@ input[type="text"]:focus, select:focus {
   display: none;
 }
 
+.toggle-option:hover {
+  border-color: rgba(245, 197, 66, 0.4);
+  transform: translateY(-2px);
+}
+
 .toggle-option.selected {
-  border-color: var(--accent-primary);
-  background: rgba(99, 102, 241, 0.12);
+  border-color: var(--friends-yellow);
+  background: rgba(116, 69, 126, 0.25);
+  box-shadow: 0 0 16px rgba(248, 192, 47, 0.25);
 }
 
 .option-title {
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text-main);
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  letter-spacing: 0.5px;
+  color: var(--friends-cream);
+}
+
+.toggle-option.selected .option-title {
+  color: var(--cinema-gold-bright);
 }
 
 .option-desc {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 2px;
+  font-size: 0.82rem;
+  color: var(--friends-cream-muted);
+  margin-top: 4px;
 }
 
 /* ================= TYPOGRAPHY & UTILITIES ================= */
 .text-gradient {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  background: linear-gradient(135deg, var(--cinema-gold-bright), var(--cinema-gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.text-muted { color: var(--text-muted); }
-.text-sm { font-size: 0.85rem; }
+.text-muted { color: var(--friends-cream-muted); }
+.text-sm { font-size: 0.88rem; }
+.text-xs { font-size: 0.75rem; }
 .mb-2 { margin-bottom: 8px; }
 .mt-2 { margin-top: 8px; }
 
-/* Status Badges */
+/* Status Badges in Header */
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 7px;
+  padding: 5px 12px;
   border-radius: var(--radius-full);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  font-family: var(--font-family-mono);
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  background-color: #0c0910;
+  border: 1px solid rgba(245, 197, 66, 0.3);
+  color: var(--friends-cream);
 }
 
 .status-badge .dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--accent-danger);
+  background-color: var(--color-danger);
+  box-shadow: 0 0 6px var(--color-danger);
 }
 
-.status-badge.connected .dot { background-color: var(--accent-success); }
-.status-badge.connecting .dot { background-color: var(--accent-warning); }
+.status-badge.connected .dot {
+  background-color: var(--color-success);
+  box-shadow: 0 0 6px var(--color-success);
+}
 
-.latency-badge.lat-good .dot { background-color: #10b981; }
-.latency-badge.lat-med .dot { background-color: #f59e0b; }
-.latency-badge.lat-high .dot { background-color: #ef4444; }
+.status-badge.connecting .dot {
+  background-color: var(--color-warning);
+  box-shadow: 0 0 6px var(--color-warning);
+}
+
+.latency-badge.lat-good .dot { background-color: var(--color-success); box-shadow: 0 0 6px var(--color-success); }
+.latency-badge.lat-med .dot { background-color: var(--color-warning); box-shadow: 0 0 6px var(--color-warning); }
+.latency-badge.lat-high .dot { background-color: var(--color-danger); box-shadow: 0 0 6px var(--color-danger); }
 
 .voice-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  font-size: 0.8rem;
+  background: var(--cinema-surface);
+  border: 1px solid var(--cinema-border);
+  font-size: 0.82rem;
 }
 
-/* ================= MOVIE SELECTION & ROUND READY ================= */
+/* ================= MOVIE SELECTION CARD ================= */
 .movie-choice-card {
-  background: linear-gradient(135deg, rgba(31, 35, 55, 0.95), rgba(22, 25, 38, 0.95));
-  border: 2px solid var(--accent-primary);
-  box-shadow: 0 0 24px rgba(99, 102, 241, 0.25);
-  padding: 24px;
-  border-radius: var(--radius-lg);
-  margin-bottom: 20px;
-}
-
-.choice-card-header {
-  margin-bottom: 18px;
+  padding: 28px;
+  margin-bottom: 22px;
 }
 
 .choice-card-header h3 {
-  font-size: 1.4rem;
-  font-weight: 800;
-  margin: 6px 0 4px;
-  color: #fff;
+  font-size: 1.8rem;
+  color: var(--cinema-gold-bright);
+  margin: 8px 0 6px;
 }
 
 .badge-accent {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  color: #fff;
-  font-weight: 700;
-  font-size: 0.8rem;
-  padding: 4px 10px;
+  background: linear-gradient(135deg, var(--cinema-red), var(--friends-purple));
+  color: var(--friends-cream);
+  font-family: var(--font-heading);
+  letter-spacing: 1px;
+  font-size: 0.95rem;
+  padding: 4px 12px;
   border-radius: var(--radius-full);
   display: inline-block;
+  border: 1px solid rgba(245, 197, 66, 0.3);
 }
 
 .input-with-button {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
 }
 
@@ -484,51 +781,50 @@ input[type="text"]:focus, select:focus {
 }
 
 .guesser-waiting-card {
-  background: var(--bg-card);
-  border: 1px dashed var(--border-focus);
-  padding: 32px 24px;
+  background: var(--cinema-card);
+  border: 2px dashed var(--cinema-gold);
+  padding: 36px 24px;
   text-align: center;
   border-radius: var(--radius-lg);
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .waiting-icon {
-  font-size: 2.8rem;
+  font-size: 3rem;
   margin-bottom: 12px;
-  animation: pulse 1.8s infinite ease-in-out;
+  animation: waitingHourglass 2s infinite ease-in-out;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.9; }
+@keyframes waitingHourglass {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
 .guesser-waiting-card h3 {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.7rem;
+  color: var(--cinema-gold-bright);
   margin-bottom: 8px;
 }
 
 .text-danger {
-  color: var(--accent-danger);
+  color: var(--color-danger);
 }
 
 #btnNextRoundReady {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-  font-weight: 700;
-  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--friends-teal-light) 0%, var(--friends-teal) 100%);
+  color: var(--friends-cream);
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  padding: 14px 30px;
   border-radius: var(--radius-md);
-  border: none;
+  border: 1px solid rgba(245, 197, 66, 0.4);
+  box-shadow: 0 4px 18px var(--friends-teal-glow);
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-  transition: var(--transition-fast);
 }
 
 #btnNextRoundReady:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+  background: linear-gradient(135deg, #37b7bb 0%, var(--friends-teal-light) 100%);
+  box-shadow: 0 6px 24px var(--friends-teal-glow), 0 0 12px rgba(245, 197, 66, 0.4);
 }
-
-

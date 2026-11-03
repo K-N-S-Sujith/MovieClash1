@@ -1,14 +1,11 @@
 # -------------------------------------------------------------
-# MovieClash — Production Dockerfile for Render
-# Multi-stage build: compiles Spring Boot backend & bundles frontend
+# MovieClash — Unified Production Dockerfile
+# Builds Spring Boot backend (Java 21) & bundles frontend assets
 # -------------------------------------------------------------
 
-# Stage 1: Build Spring Boot backend with Java 21 & Maven
-FROM eclipse-temurin:21-jdk-alpine AS builder
+# Stage 1: Build Spring Boot backend with pre-packaged Maven 3.9 & Java 21
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 WORKDIR /workspace
-
-# Install maven
-RUN apk add --no-cache maven
 
 # Copy POM and download dependencies
 COPY backend/pom.xml ./backend/
@@ -50,4 +47,3 @@ HEALTHCHECK --interval=20s --timeout=4s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}/health || exit 1
 
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar --server.port=${PORT:-8080}"]
-

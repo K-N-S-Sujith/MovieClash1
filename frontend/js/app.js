@@ -61,6 +61,9 @@ class MovieClashApp {
     window.addEventListener('beforeunload', () => {
       // Session is preserved in sessionStorage & localStorage
     });
+
+    // 6. Set up browser history navigation routing (Undo / Back support)
+    this.initHistoryRouting();
   }
 
   async initVoice(roomId, playerId) {
@@ -81,7 +84,7 @@ class MovieClashApp {
     */
   }
 
-  switchView(viewId) {
+  switchView(viewId, pushHistory = true) {
     document.querySelectorAll('.view-section').forEach(sec => {
       sec.classList.remove('active');
       sec.classList.add('hidden');
@@ -92,7 +95,94 @@ class MovieClashApp {
       target.classList.remove('hidden');
       target.classList.add('active');
       this.currentViewId = viewId;
+
+      if (pushHistory) {
+        const roomId = store.get()?.room?.roomId;
+        if (viewId === 'viewLobby' && roomId) {
+          history.pushState({ view: 'lobby', roomId }, '', `?room=${roomId}`);
+        } else if (viewId === 'viewGame' && roomId) {
+          history.pushState({ view: 'game', roomId }, '', `?room=${roomId}`);
+        } else if (viewId === 'viewResults') {
+          history.pushState({ view: 'results' }, '', window.location.pathname);
+        } else if (viewId === 'viewLanding') {
+          history.pushState({ view: 'landing' }, '', window.location.pathname);
+        }
+      }
     }
+  }
+
+  initHistoryRouting() {
+    // Ensure initial baseline state exists
+    if (!history.state) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomParam = urlParams.get('room');
+      const hash = window.location.hash;
+      if (hash === '#create') {
+        history.replaceState({ view: 'landing', card: 'create' }, '', window.location.href);
+      } else if (hash === '#join') {
+        history.replaceState({ view: 'landing', card: 'join' }, '', window.location.href);
+      } else if (roomParam) {
+        history.replaceState({ view: 'lobby', roomId: roomParam }, '', window.location.href);
+      } else {
+        history.replaceState({ view: 'landing', card: 'landing' }, '', window.location.href);
+      }
+    }
+
+    // Intercept browser Back / Forward ("undo" button) navigation
+    window.addEventListener('popstate', (e) => {
+      // 1. If currently in an active game arena
+      if (this.currentViewId === 'viewGame') {
+        const leave = confirm('A game round is in progress. Do you want to leave the game?');
+        if (!leave) {
+          const roomId = store.get()?.room?.roomId;
+          history.pushState({ view: 'game', roomId }, '', window.location.href);
+          return;
+        }
+        wsClient.send('LEAVE_ROOM', {});
+        store.clearSavedSession();
+        store.reset();
+        this.switchView('viewLanding', false);
+        landingView.showCard('landing', false);
+        return;
+      }
+
+      // 2. If currently in room lobby
+      if (this.currentViewId === 'viewLobby') {
+        const leave = confirm('Do you want to leave this game room?');
+        if (!leave) {
+          const roomId = store.get()?.room?.roomId;
+          history.pushState({ view: 'lobby', roomId }, '', window.location.href);
+          return;
+        }
+        wsClient.send('LEAVE_ROOM', {});
+        store.clearSavedSession();
+        store.reset();
+        this.switchView('viewLanding', false);
+        landingView.showCard('landing', false);
+        return;
+      }
+
+      // 3. If on Landing screen (or switching between Landing / Create / Join)
+      if (this.currentViewId === 'viewLanding' || !this.currentViewId) {
+        const hash = window.location.hash;
+        const card = e.state?.card;
+
+        if (card === 'create' || hash === '#create') {
+          landingView.showCard('create', false);
+        } else if (card === 'join' || hash === '#join') {
+          landingView.showCard('join', false);
+        } else {
+          landingView.showCard('landing', false);
+        }
+        return;
+      }
+
+      // 4. If on Results screen
+      if (this.currentViewId === 'viewResults') {
+        this.switchView('viewLanding', false);
+        landingView.showCard('landing', false);
+      }
+    });
   }
 
   registerWebSocketHandlers() {

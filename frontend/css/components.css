@@ -1,42 +1,50 @@
 /* ==========================================================================
    MovieClash — Component Stylesheet
-   Specific component layouts, animations, arena, roster, scoreboard, & modals
+   Theme: Dark Cinema + Friends Aesthetic
+   - Film-strip borders & sprocket perforations
+   - Ticket-shaped room cards with admission notches & dashed tear-lines
+   - Clapperboard-style round counter (diagonal black & gold stripes)
+   - Iconic yellow peephole rounded frame
+   - High-contrast scoreboard, Central Perk lounge chat, tactile buttons
    ========================================================================== */
 
-/* ================= HERO & LANDING ================= */
+/* ================= 1. HERO & LANDING ================= */
 .hero-card {
-  max-width: 780px;
-  margin: 40px auto;
+  max-width: 820px;
+  margin: 36px auto;
   text-align: center;
-  padding: 48px 32px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+  padding: 48px 36px;
+  background: var(--cinema-card);
   box-shadow: var(--shadow-lg);
 }
 
 .hero-title {
-  font-size: 2.8rem;
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -1px;
+  font-family: var(--font-heading);
+  font-size: 3.4rem;
+  line-height: 1.05;
+  letter-spacing: 2px;
   margin-bottom: 16px;
+  color: var(--friends-cream);
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.8);
 }
 
 .hero-subtitle {
-  font-size: 1.1rem;
-  color: var(--text-muted);
-  max-width: 580px;
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  color: var(--friends-cream-muted);
+  max-width: 620px;
   margin: 0 auto 36px auto;
+  line-height: 1.6;
 }
 
 .action-buttons-group {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 20px;
   margin-bottom: 48px;
 }
 
+/* ================= 2. TICKET-SHAPED MODE CARDS ================= */
 .mode-preview-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -45,314 +53,475 @@
 }
 
 .mode-card {
-  padding: 20px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  position: relative;
+  padding: 24px;
+  background: linear-gradient(135deg, var(--cinema-surface) 0%, #1a1422 100%);
+  border: 2px dashed rgba(245, 197, 66, 0.35);
   border-radius: var(--radius-md);
-  transition: transform var(--transition-fast);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  overflow: visible;
+}
+
+/* Admission Ticket Cutout Notches */
+.mode-card::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -10px;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background-color: var(--cinema-black);
+  border-radius: 50%;
+  border-right: 2px solid rgba(245, 197, 66, 0.4);
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.7);
+}
+
+.mode-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -10px;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background-color: var(--cinema-black);
+  border-radius: 50%;
+  border-left: 2px solid rgba(245, 197, 66, 0.4);
+  box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.7);
 }
 
 .mode-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-3px);
+  border-color: var(--cinema-gold);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(245, 197, 66, 0.2);
 }
 
 .mode-icon {
-  font-size: 1.8rem;
-  margin-bottom: 8px;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 2px 6px rgba(245, 197, 66, 0.3));
 }
 
 .mode-card h3 {
-  font-size: 1.1rem;
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  color: var(--cinema-gold-bright);
   margin-bottom: 6px;
 }
 
 .mode-card p {
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  font-size: 0.9rem;
+  color: var(--friends-cream-muted);
+  line-height: 1.5;
 }
 
+/* ================= 3. TICKET-SHAPED FORM CARD (CREATE/JOIN) ================= */
 .form-card {
-  max-width: 480px;
-  margin: 40px auto;
+  position: relative;
+  max-width: 520px;
+  margin: 36px auto;
+  background: var(--cinema-card);
+  border: 3px dashed var(--cinema-gold);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  box-shadow: var(--shadow-lg), 0 0 25px rgba(245, 197, 66, 0.15);
 }
 
-/* ================= LOBBY ================= */
-.lobby-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.form-card h2 {
+  font-size: 2.2rem;
+  color: var(--cinema-gold-bright);
+  text-align: center;
+  margin-bottom: 8px;
 }
 
-.lobby-header-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-}
-
-.room-code-block {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.meta-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--text-muted);
-}
-
-.code-display {
-  font-family: var(--font-family-mono);
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: var(--accent-gold);
-  letter-spacing: 3px;
-  background: var(--bg-secondary);
-  padding: 4px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-
-.lobby-meta {
-  display: flex;
-  gap: 10px;
-}
-
-.badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  font-size: 0.8rem;
-  font-weight: 700;
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-}
-
-.lobby-grid {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 20px;
-}
-
-.roster-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 12px;
-  margin-bottom: 16px;
-}
-
-.player-roster-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 420px;
-  overflow-y: auto;
-}
-
-.roster-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  transition: background-color var(--transition-fast);
-}
-
-.roster-item.is-me {
-  border-color: var(--accent-primary);
-  background: rgba(99, 102, 241, 0.08);
-}
-
-.roster-player-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.player-avatar {
-  width: 32px;
-  height: 32px;
+/* Circular Ticket Notches on Form Card */
+.form-card::before {
+  content: '';
+  position: absolute;
+  top: 45%;
+  left: -14px;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  background-color: var(--cinema-black);
   border-radius: 50%;
-  background: var(--bg-tertiary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.85rem;
+  border-right: 3px solid var(--cinema-gold);
+  box-shadow: inset -3px 0 5px rgba(0, 0, 0, 0.8);
 }
 
-.host-tag {
-  background: var(--accent-gold);
-  color: #000;
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  text-transform: uppercase;
+.form-card::after {
+  content: '';
+  position: absolute;
+  top: 45%;
+  right: -14px;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  background-color: var(--cinema-black);
+  border-radius: 50%;
+  border-left: 3px solid var(--cinema-gold);
+  box-shadow: inset 3px 0 5px rgba(0, 0, 0, 0.8);
 }
 
-.co-host-tag {
-  background: rgba(245, 158, 11, 0.15);
-  color: var(--accent-gold);
-  border: 1px solid var(--accent-gold);
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  text-transform: uppercase;
-  margin-left: 4px;
-}
-
-/* User Profile Persistent Identity */
+/* ================= 4. PERSISTENT PLAYER IDENTITY BAR ================= */
 .user-profile-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   position: relative;
 }
 
 .profile-info-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
-  padding: 6px 16px;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(32, 24, 39, 0.95), rgba(22, 17, 26, 0.95));
+  border: 2px solid var(--cinema-gold);
+  padding: 8px 20px;
   border-radius: var(--radius-full);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 10px rgba(245, 197, 66, 0.2);
   backdrop-filter: blur(8px);
 }
 
 .profile-avatar-icon {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
 }
 
 .profile-label {
-  color: var(--text-muted);
-  font-size: 0.8rem;
+  color: var(--friends-cream-muted);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .profile-display-name {
-  color: var(--accent-cyan);
-  font-weight: 700;
-  font-size: 0.95rem;
+  color: var(--cinema-gold-bright);
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  letter-spacing: 1px;
 }
 
 .btn-profile-edit {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
+  background: rgba(245, 197, 66, 0.15);
+  border: 1px solid var(--cinema-gold);
+  color: var(--cinema-gold-bright);
   cursor: pointer;
-  font-size: 0.8rem;
-  padding: 2px 6px;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
   border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
 }
 
 .btn-profile-edit:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--cinema-gold);
+  color: #110d16;
+  box-shadow: 0 0 10px rgba(245, 197, 66, 0.5);
 }
 
 .profile-edit-box {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--bg-card);
-  padding: 6px 10px;
+  gap: 8px;
+  background: var(--cinema-surface-elevated);
+  padding: 8px 12px;
   border-radius: var(--radius-md);
-  border: 1px solid var(--accent-cyan);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--friends-yellow);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7);
 }
 
 .profile-edit-box input {
-  padding: 4px 8px;
-  font-size: 0.9rem;
-  background: var(--bg-input);
-  border: 1px solid var(--border-color);
-  color: #fff;
+  padding: 6px 10px;
+  font-size: 0.95rem;
+  background: var(--cinema-black);
+  border: 1px solid var(--cinema-border);
+  color: var(--friends-cream);
   border-radius: var(--radius-sm);
-  width: 140px;
+  width: 150px;
 }
 
 .badge-saved {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
-  font-size: 0.65rem;
-  padding: 1px 6px;
+  background: rgba(46, 196, 134, 0.2);
+  color: var(--color-success);
+  font-size: 0.7rem;
+  padding: 2px 8px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(46, 196, 134, 0.4);
   margin-left: 6px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
 .helper-text {
   display: block;
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  font-size: 0.8rem;
+  color: var(--friends-cream-muted);
   margin-top: 4px;
 }
 
-/* Team Selection Block */
+/* ================= 5. LOBBY & TICKET ROOM CODE BAR ================= */
+.lobby-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Golden VIP Admission Ticket Stub Header */
+.lobby-header-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  background: linear-gradient(135deg, var(--cinema-card) 0%, #1e1728 100%);
+  border: 2px dashed var(--cinema-gold);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md), 0 0 20px rgba(245, 197, 66, 0.2);
+  overflow: visible;
+}
+
+/* Ticket Notches for Lobby Header */
+.lobby-header-bar::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -13px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background-color: var(--cinema-black);
+  border-radius: 50%;
+  border-right: 2px solid var(--cinema-gold);
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.lobby-header-bar::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -13px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  background-color: var(--cinema-black);
+  border-radius: 50%;
+  border-left: 2px solid var(--cinema-gold);
+  box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.room-code-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.meta-label {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  color: var(--friends-cream-muted);
+}
+
+.code-display {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  letter-spacing: 6px;
+  color: var(--cinema-gold-bright);
+  background: #0d0912;
+  padding: 4px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--cinema-gold);
+  text-shadow: 0 0 12px var(--cinema-gold-glow);
+}
+
+.lobby-meta {
+  display: flex;
+  gap: 12px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+  background-color: var(--cinema-surface-elevated);
+  border: 1px solid rgba(245, 197, 66, 0.3);
+  color: var(--friends-cream);
+}
+
+/* ================= 6. LOBBY GRID & ROSTER ================= */
+.lobby-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 22px;
+}
+
+.roster-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--cinema-border);
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.roster-header h3 {
+  font-size: 1.6rem;
+  color: var(--cinema-gold-bright);
+}
+
+.player-roster-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 440px;
+  overflow-y: auto;
+}
+
+/* Movie Credits Cast Roster Item */
+.roster-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--cinema-surface);
+  border: 1px solid var(--cinema-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.roster-item:hover {
+  background: var(--cinema-surface-elevated);
+  border-color: rgba(245, 197, 66, 0.35);
+  transform: translateX(2px);
+}
+
+.roster-item.is-me {
+  border-color: var(--friends-yellow);
+  background: rgba(116, 69, 126, 0.2);
+  box-shadow: 0 0 16px rgba(248, 192, 47, 0.2);
+}
+
+.roster-player-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.player-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--friends-purple), var(--cinema-surface-elevated));
+  border: 2px solid var(--cinema-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--friends-cream);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.player-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--friends-cream);
+}
+
+/* VIP Director & Assistant Director Badges */
+.host-tag {
+  background: linear-gradient(135deg, var(--cinema-gold-bright), var(--cinema-gold));
+  color: #120e18;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  font-weight: 700;
+  box-shadow: 0 0 8px rgba(245, 197, 66, 0.4);
+}
+
+.co-host-tag {
+  background: rgba(245, 197, 66, 0.15);
+  color: var(--cinema-gold-bright);
+  border: 1px solid var(--cinema-gold);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  margin-left: 6px;
+}
+
+/* ================= 7. TEAM SELECTION BLOCKS ================= */
 .team-roster-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .team-buttons {
   display: flex;
-  gap: 8px;
-  margin-top: 6px;
+  gap: 10px;
+  margin-top: 8px;
   flex-wrap: wrap;
 }
 
 .team-pill-btn {
-  padding: 6px 14px;
+  padding: 8px 18px;
   border-radius: var(--radius-full);
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  letter-spacing: 1px;
   cursor: pointer;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
+  background: var(--cinema-surface);
+  border: 1px solid var(--cinema-border);
+  color: var(--friends-cream-muted);
   transition: all var(--transition-fast);
 }
 
+.team-pill-btn:hover {
+  border-color: var(--cinema-gold);
+  color: var(--friends-cream);
+  transform: translateY(-2px);
+}
+
 .team-pill-btn.active {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  color: #fff;
+  background: linear-gradient(135deg, var(--friends-teal-light), var(--friends-teal));
+  border-color: var(--cinema-gold);
+  color: var(--friends-cream);
+  box-shadow: 0 4px 14px var(--friends-teal-glow);
 }
 
 .teams-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
 }
 
 .team-box {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+  background: var(--cinema-surface);
+  border: 2px solid var(--cinema-border);
   border-radius: var(--radius-md);
-  padding: 14px;
+  padding: 16px;
   transition: all var(--transition-fast);
 }
 
 .team-box.my-team-box {
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 16px rgba(6, 182, 212, 0.15);
+  border-color: var(--friends-yellow);
+  background: rgba(116, 69, 126, 0.18);
+  box-shadow: 0 0 20px rgba(248, 192, 47, 0.25);
 }
 
 .team-box-header {
@@ -360,50 +529,52 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--cinema-border);
 }
 
-.team-title-row {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
+.team-name {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+  color: var(--cinema-gold-bright);
 }
 
 .badge-team-current {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
-  border: 1px solid rgba(16, 185, 129, 0.4);
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 3px 8px;
+  background: rgba(46, 196, 134, 0.2);
+  color: var(--color-success);
+  border: 1px solid rgba(46, 196, 134, 0.4);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  text-transform: uppercase;
 }
 
 .btn-switch-team {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 3px 10px;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  padding: 4px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   white-space: nowrap;
 }
 
-/* Chat Component */
+/* ================= 8. CENTRAL PERK LOUNGE CHAT ================= */
 .chat-wrapper {
   display: flex;
   flex-direction: column;
-  height: 360px;
-  border-bottom: 1px solid var(--border-color);
+  height: 380px;
+  border-bottom: 2px solid var(--cinema-border);
   padding-bottom: 16px;
   margin-bottom: 16px;
 }
 
-.chat-header {
+.chat-header h4 {
+  font-size: 1.35rem;
+  color: var(--cinema-gold-bright);
   margin-bottom: 8px;
 }
 
@@ -412,457 +583,668 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-  background: var(--bg-secondary);
+  gap: 10px;
+  padding: 12px;
+  background: #110d16;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  margin-bottom: 10px;
-  font-size: 0.85rem;
+  border: 1px solid var(--cinema-border);
+  margin-bottom: 12px;
+  font-size: 0.9rem;
 }
 
 .chat-msg {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  background: rgba(32, 24, 39, 0.6);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--friends-teal);
 }
 
 .chat-msg .sender {
-  font-weight: 700;
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  color: var(--cinema-gold);
 }
 
 .chat-msg .text {
   word-break: break-word;
+  color: var(--friends-cream);
 }
 
 .chat-input-row {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* ================= ARENA / ACTIVE GAME ================= */
+/* ================= 9. ACTIVE GAME ARENA ================= */
 .game-arena-layout {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
+/* Arena Header with Film-Strip Perforated Border */
 .arena-header-bar {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 24px;
+  padding: 18px 28px;
+  background: linear-gradient(180deg, #1f1728 0%, #130f1a 100%);
+  border: 2px solid var(--cinema-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
 
+/* 35mm Film Strip Perforations Along Arena Header Top */
+.arena-header-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background-color: #0b080e;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 8px,
+    var(--cinema-gold) 8px,
+    var(--cinema-gold) 14px,
+    transparent 14px,
+    transparent 22px
+  );
+  opacity: 0.45;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ================= 10. CLAPPERBOARD-STYLE ROUND COUNTER ================= */
 .round-indicator {
+  position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #110d15;
+  border: 2px solid var(--cinema-gold);
+  border-radius: 8px;
+  padding: 8px 18px 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
 }
 
-.round-number {
-  font-family: var(--font-family-mono);
-  font-size: 1.5rem;
-  font-weight: 800;
+/* Alternating Diagonal Black & Gold Stripes Clapper Stick */
+.round-indicator::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #18131e 0px,
+    #18131e 10px,
+    var(--cinema-gold) 10px,
+    var(--cinema-gold) 20px
+  );
+  border-bottom: 2px solid #000;
 }
 
+.round-indicator .meta-label {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  color: var(--friends-cream-muted);
+  margin-top: 8px;
+  line-height: 1;
+}
+
+.round-indicator .round-number {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  letter-spacing: 2px;
+  color: var(--cinema-gold-bright);
+  line-height: 1.1;
+  text-shadow: 0 0 10px var(--cinema-gold-glow);
+}
+
+/* Director's Spotlight Clue-Giver Banner */
 .clue-giver-banner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: var(--bg-secondary);
-  padding: 8px 18px;
+  gap: 14px;
+  background: linear-gradient(135deg, rgba(116, 69, 126, 0.35) 0%, rgba(32, 24, 39, 0.9) 100%);
+  padding: 8px 22px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--border-color);
+  border: 2px solid rgba(245, 197, 66, 0.4);
+  box-shadow: 0 0 16px rgba(116, 69, 126, 0.3);
 }
 
-.banner-icon { font-size: 1.3rem; }
-.banner-text .label { font-size: 0.7rem; color: var(--text-muted); display: block; font-weight: 700; }
-.banner-text strong { font-size: 1.05rem; color: var(--accent-gold); }
+.banner-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 6px var(--cinema-gold));
+}
 
-/* Circular Countdown Timer */
+.banner-text .label {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: var(--friends-cream-muted);
+  display: block;
+}
+
+.banner-text strong {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  color: var(--cinema-gold-bright);
+}
+
+/* ================= 11. 35MM FILM REEL COUNTDOWN TIMER ================= */
 .arena-timer {
   display: flex;
   align-items: center;
 }
 
 .timer-circle {
-  width: 58px;
-  height: 58px;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
-  border: 3px solid var(--accent-primary);
+  border: 4px solid var(--cinema-gold);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-secondary);
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
-  transition: border-color var(--transition-normal);
+  background: radial-gradient(circle, #211929 40%, #0e0a13 100%);
+  box-shadow: 0 0 16px var(--cinema-gold-glow), inset 0 0 10px rgba(0, 0, 0, 0.8);
+  transition: all var(--transition-normal);
+  position: relative;
 }
 
+.timer-circle::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px dashed rgba(245, 197, 66, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Pulsing Red Alarm when Time is Running Out */
 .timer-circle.warning {
-  border-color: var(--accent-danger);
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+  border-color: var(--color-danger);
+  box-shadow: 0 0 20px rgba(230, 57, 70, 0.7), inset 0 0 12px rgba(230, 57, 70, 0.5);
+  animation: timerAlarm 1s infinite alternate ease-in-out;
+}
+
+@keyframes timerAlarm {
+  from { transform: scale(1); filter: brightness(1); }
+  to { transform: scale(1.08); filter: brightness(1.3); }
 }
 
 .timer-seconds {
-  font-family: var(--font-family-mono);
-  font-size: 1.35rem;
-  font-weight: 800;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  letter-spacing: 1px;
+  color: var(--friends-cream);
+  line-height: 1;
 }
 
-/* Arena Grid: Scoreboard (left), Main area (center), Activity (right) */
+.timer-circle.warning .timer-seconds {
+  color: #ff8b94;
+}
+
+/* ================= 12. ARENA THREE-COLUMN GRID ================= */
 .arena-grid {
   display: grid;
-  grid-template-columns: 240px 1fr 280px;
-  gap: 16px;
+  grid-template-columns: 260px 1fr 290px;
+  gap: 20px;
   align-items: start;
 }
 
-/* Scoreboard */
+/* ================= 13. RETRO CINEMA SCOREBOARD ================= */
+.arena-sidebar h3 {
+  font-size: 1.6rem;
+  color: var(--cinema-gold-bright);
+  border-bottom: 2px solid var(--cinema-border);
+  padding-bottom: 10px;
+}
+
 .scoreboard-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 10px;
+  margin-top: 14px;
 }
 
 .score-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
-  background: var(--bg-secondary);
+  padding: 10px 14px;
+  background: var(--cinema-surface);
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  font-size: 0.9rem;
+  border: 1px solid var(--cinema-border);
+  font-size: 0.95rem;
+  transition: all var(--transition-fast);
 }
 
+.score-item:hover {
+  background: var(--cinema-surface-elevated);
+  transform: translateX(2px);
+}
+
+/* Oscars Leader Styling */
 .score-item.leader {
-  border-color: rgba(245, 158, 11, 0.5);
-  background: rgba(245, 158, 11, 0.05);
+  border-color: var(--cinema-gold);
+  background: linear-gradient(135deg, rgba(245, 197, 66, 0.12) 0%, rgba(32, 24, 39, 0.9) 100%);
+  box-shadow: 0 0 14px rgba(245, 197, 66, 0.25);
 }
 
 .score-points {
-  font-family: var(--font-family-mono);
-  font-weight: 700;
-  color: var(--accent-gold);
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+  color: var(--cinema-gold-bright);
 }
 
-/* Clue-Giver Secret Panel */
+/* ================= 14. ARENA CENTER: CLUE & GUESSING ARENA ================= */
+/* Clue-Giver Secret Panel: Director's Top-Secret Cue Card */
 .clue-secret-card {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.15));
-  border: 1px solid rgba(99, 102, 241, 0.4);
+  background: linear-gradient(135deg, rgba(32, 24, 39, 0.95) 0%, rgba(20, 15, 25, 0.95) 100%);
   text-align: center;
-  padding: 24px;
-  margin-bottom: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
 }
 
 .secret-tag {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  color: var(--accent-secondary);
-  margin-bottom: 8px;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  color: var(--cinema-gold);
+  margin-bottom: 6px;
 }
 
 .secret-movie-title {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -0.5px;
-  margin-bottom: 8px;
+  font-family: var(--font-heading);
+  font-size: 2.8rem;
+  letter-spacing: 2px;
+  color: var(--cinema-gold-bright);
+  text-shadow: 0 0 16px var(--cinema-gold-glow);
+  margin-bottom: 12px;
 }
 
 .secret-details {
   display: flex;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .meta-pill {
-  background: var(--bg-secondary);
-  padding: 4px 12px;
+  background: var(--cinema-surface);
+  padding: 6px 16px;
   border-radius: var(--radius-full);
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: 1px solid var(--border-color);
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  letter-spacing: 1px;
+  border: 1px solid var(--cinema-gold-dim);
+  color: var(--friends-cream);
 }
 
-.voice-giver-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 14px;
+.secret-aliases {
+  color: var(--friends-cream-muted);
   font-size: 0.85rem;
-  color: #a5b4fc;
 }
 
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent-success);
-  box-shadow: 0 0 8px var(--accent-success);
-}
-
-/* Guesser Prompt Panel */
+/* Guesser Prompt Panel (Monica Apartment Cozy Living Room Vibe) */
 .guesser-prompt-card {
   text-align: center;
-  padding: 32px 20px;
-  margin-bottom: 16px;
+  padding: 36px 24px;
+  margin-bottom: 20px;
 }
 
-.prompt-icon { font-size: 2rem; margin-bottom: 8px; }
+.prompt-icon {
+  font-size: 2.6rem;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 2px 8px var(--cinema-gold));
+}
 
-/* Clue Feed */
+.guesser-prompt-card h3 {
+  font-size: 1.8rem;
+  color: var(--cinema-gold-bright);
+  margin-bottom: 8px;
+}
+
+/* Theatrical Clue Broadcast Feed */
 .clue-feed-container {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  background: var(--cinema-card);
 }
 
 .feed-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.feed-header h4 {
+  font-size: 1.4rem;
+  color: var(--cinema-gold-bright);
 }
 
 .clue-feed {
-  min-height: 120px;
-  max-height: 200px;
+  min-height: 130px;
+  max-height: 220px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-  background: var(--bg-secondary);
+  gap: 10px;
+  padding: 14px;
+  background: #110d16;
   border-radius: var(--radius-md);
-  margin-bottom: 10px;
+  border: 1px solid var(--cinema-border);
+  margin-bottom: 14px;
 }
 
 .clue-bubble {
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.25);
-  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(116, 69, 126, 0.25) 0%, rgba(32, 24, 39, 0.8) 100%);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  padding: 10px 16px;
   border-radius: var(--radius-md);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
+  color: var(--friends-cream);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .clue-input-form {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* Guess Submission Bar */
+/* Guess Submission Marquee Bar */
 .guess-bar-card {
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--cinema-surface) 0%, #1c1524 100%);
+  border: 2px solid rgba(245, 197, 66, 0.4);
 }
 
 .guess-form {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .guess-form input {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
 }
 
 .guess-feedback {
-  margin-top: 10px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  margin-top: 12px;
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  letter-spacing: 1px;
   text-align: center;
 }
 
 .guess-feedback.correct {
-  color: var(--accent-success);
+  color: var(--color-success);
+  text-shadow: 0 0 10px rgba(46, 196, 134, 0.6);
 }
 
 .guess-feedback.incorrect {
-  color: var(--accent-danger);
+  color: var(--color-danger);
+  text-shadow: 0 0 10px rgba(230, 57, 70, 0.6);
 }
 
-/* Clue-Giver Audit Log */
+/* Projectionist Verification Stream (Audit Log) */
 .audit-log-card {
-  background: rgba(15, 17, 26, 0.95);
-  border-color: rgba(99, 102, 241, 0.2);
+  background: #09070c;
+  border: 1px solid var(--cinema-border);
 }
 
 .audit-feed {
-  max-height: 120px;
+  max-height: 130px;
   overflow-y: auto;
-  font-family: var(--font-family-mono);
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .audit-entry {
-  color: var(--text-muted);
+  color: var(--friends-cream-muted);
 }
 
 .audit-entry.match {
-  color: var(--accent-success);
+  color: var(--color-success);
   font-weight: 700;
 }
 
-/* Activity Feed (Right Column) */
+/* Live Round Activity (Right Column) */
+.arena-right-sidebar h3 {
+  font-size: 1.6rem;
+  color: var(--cinema-gold-bright);
+  border-bottom: 2px solid var(--cinema-border);
+  padding-bottom: 10px;
+}
+
 .activity-feed {
-  height: 200px;
+  height: 220px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 10px;
-  font-size: 0.8rem;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 0.85rem;
 }
 
 .activity-item {
-  padding: 4px 8px;
+  padding: 6px 10px;
   border-radius: var(--radius-sm);
-  background: var(--bg-secondary);
+  background: var(--cinema-surface);
+  border-left: 3px solid var(--cinema-gold);
 }
 
 .round-chat-block {
-  margin-top: 16px;
-  border-top: 1px solid var(--border-color);
-  padding-top: 12px;
+  margin-top: 18px;
+  border-top: 2px solid var(--cinema-border);
+  padding-top: 14px;
 }
 
 .chat-disabled-warning {
-  font-size: 0.75rem;
-  color: var(--text-dim);
+  font-size: 0.8rem;
+  color: var(--friends-cream-dim);
   text-align: center;
-  padding: 6px;
+  padding: 8px;
 }
 
 .chat-feed-sm {
-  height: 100px;
+  height: 110px;
   overflow-y: auto;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
-/* ================= MODALS & OVERLAYS ================= */
+/* ================= 15. ROUND RESULTS MODAL: FILM PREMIERE UNVEILING ================= */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
+  background: rgba(10, 8, 14, 0.88);
+  backdrop-filter: blur(12px);
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.2s ease forwards;
+  animation: modalCurtainOpen 0.3s ease forwards;
+}
+
+@keyframes modalCurtainOpen {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .modal-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 32px;
-  max-width: 520px;
+  background: var(--cinema-card);
+  border: 4px solid var(--friends-yellow);
+  border-radius: var(--radius-xl);
+  padding: 36px 32px;
+  max-width: 560px;
   width: 90%;
   text-align: center;
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 0 0 4px var(--friends-yellow-dark), 0 16px 48px rgba(0, 0, 0, 0.9);
+}
+
+.modal-card h2 {
+  font-size: 2.4rem;
+  color: var(--cinema-gold-bright);
 }
 
 .revealed-movie-box {
-  background: var(--bg-secondary);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: linear-gradient(135deg, #100b16 0%, #1d1526 100%);
+  border: 2px dashed var(--cinema-gold);
   border-radius: var(--radius-md);
-  padding: 20px;
-  margin: 20px 0;
+  padding: 24px;
+  margin: 22px 0;
+  box-shadow: 0 0 20px rgba(245, 197, 66, 0.25);
 }
 
 .revealed-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--accent-gold);
-  margin-top: 4px;
+  font-family: var(--font-heading);
+  font-size: 2.8rem;
+  letter-spacing: 2px;
+  color: var(--cinema-gold-bright);
+  text-shadow: 0 0 16px var(--cinema-gold-glow);
+  margin: 6px 0 10px;
 }
 
 .round-winners-summary {
-  margin-bottom: 24px;
+  margin-bottom: 26px;
   text-align: left;
+}
+
+.round-winners-summary h3 {
+  font-size: 1.4rem;
+  color: var(--cinema-gold);
 }
 
 .round-points-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 8px;
-  max-height: 140px;
+  gap: 8px;
+  margin-top: 10px;
+  max-height: 150px;
   overflow-y: auto;
 }
 
 .modal-footer {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
 }
 
-/* Final Game Results */
+/* ================= 16. FINAL GAME RESULTS & OSCARS PODIUM ================= */
 .results-card {
-  max-width: 680px;
-  margin: 30px auto;
+  max-width: 720px;
+  margin: 36px auto;
   text-align: center;
-  padding: 40px 32px;
+  padding: 48px 36px;
 }
 
-.trophy-icon { font-size: 3.5rem; margin-bottom: 8px; }
-.winner-banner { font-size: 2rem; color: var(--accent-gold); margin-bottom: 24px; }
+.trophy-icon {
+  font-size: 4rem;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 16px var(--cinema-gold));
+}
+
+.results-card h1 {
+  font-size: 3.5rem;
+  letter-spacing: 2px;
+  color: var(--friends-cream);
+}
+
+.winner-banner {
+  font-family: var(--font-heading);
+  font-size: 2.4rem;
+  letter-spacing: 1.5px;
+  color: var(--cinema-gold-bright);
+  text-shadow: 0 0 14px var(--cinema-gold-glow);
+  margin-bottom: 28px;
+}
 
 .final-scoreboard-section {
   text-align: left;
-  margin-bottom: 28px;
+  margin-bottom: 32px;
+}
+
+.final-scoreboard-section h3 {
+  font-size: 1.6rem;
+  color: var(--cinema-gold);
 }
 
 .final-scoreboard-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 10px;
+  margin-top: 14px;
 }
 
 .results-actions {
   display: flex;
   justify-content: center;
+  gap: 20px;
+}
+
+/* ================= 17. CANCELLATION VOTE & RECONNECT TOAST ================= */
+.vote-countdown {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+  color: var(--cinema-gold-bright);
+  margin: 18px 0;
+}
+
+.vote-actions {
+  display: flex;
+  justify-content: center;
   gap: 16px;
 }
 
-/* Toast Reconnect Banner */
+/* 35mm Projector Warning Ribbon */
 .toast-banner {
   position: fixed;
-  bottom: 24px;
+  bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--bg-secondary);
-  border: 1px solid var(--accent-warning);
-  color: #fff;
-  padding: 10px 20px;
+  background: linear-gradient(135deg, #1f1728 0%, #110d16 100%);
+  border: 2px solid var(--friends-yellow);
+  color: var(--friends-cream);
+  padding: 12px 24px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
-  gap: 10px;
-  box-shadow: var(--shadow-lg);
+  gap: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), 0 0 16px rgba(248, 192, 47, 0.3);
   z-index: 200;
-  font-size: 0.9rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
 }
 
 .spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(245, 197, 66, 0.3);
+  border-top-color: var(--cinema-gold-bright);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: filmReelSpin 0.8s linear infinite;
 }
 
-@keyframes spin {
+@keyframes filmReelSpin {
   to { transform: rotate(360deg); }
 }
-

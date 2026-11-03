@@ -1,9 +1,12 @@
 .git
 .gitignore
-backend/target
+backend/target/classes
+backend/target/test-classes
+backend/target/generated-sources
+backend/target/maven-status
+backend/target/surefire-reports
 .system_generated
 .gemini
 *.log
 .idea
 .vscode
-

@@ -1,25 +1,43 @@
 /* ==========================================================================
    MovieClash — Responsive Stylesheet
-   Breakpoints for tablets and mobile screens
+   Theme: Dark Cinema + Friends Aesthetic
+   Breakpoints: Large Desktops (>1024px), Tablets (≤1024px, ≤860px), Mobile (≤640px, ≤480px)
    ========================================================================== */
 
+/* ================= 1. TABLETS & COMPACT DESKTOPS (<= 1024px) ================= */
 @media (max-width: 1024px) {
   .arena-grid {
-    grid-template-columns: 200px 1fr 220px;
-    gap: 12px;
+    grid-template-columns: 210px 1fr 230px;
+    gap: 14px;
+  }
+
+  .hero-title {
+    font-size: 2.8rem;
+  }
+
+  .secret-movie-title {
+    font-size: 2.3rem;
+  }
+
+  .revealed-title {
+    font-size: 2.3rem;
   }
 }
 
+/* ================= 2. TABLETS & PHABLETS (<= 860px) ================= */
 @media (max-width: 860px) {
   .lobby-grid {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
 
   .arena-grid {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
 
-  .arena-sidebar, .arena-right-sidebar {
+  .arena-sidebar,
+  .arena-right-sidebar {
     order: 2;
   }
 
@@ -27,73 +45,237 @@
     order: 1;
   }
 
+  .arena-header-bar {
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    padding: 18px 20px;
+  }
+
+  .clue-giver-banner {
+    order: 1;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .round-indicator {
+    order: 2;
+  }
+
+  .arena-timer {
+    order: 3;
+  }
+
+  .arena-controls {
+    order: 4;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
   .hero-title {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
   }
 
   .mode-preview-cards {
     grid-template-columns: 1fr;
   }
 
-  .arena-header-bar {
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 540px) {
-  .app-header {
-    padding: 10px 14px;
+  .lobby-header-bar {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 16px;
   }
 
-  .logo-text {
-    font-size: 1.15rem;
-  }
-
-  .main-container {
-    padding: 12px;
-  }
-
-  .hero-card {
-    padding: 28px 16px;
-    margin: 16px auto;
-  }
-
-  .action-buttons-group {
+  .room-code-block {
     flex-direction: column;
     gap: 10px;
   }
 
-  .btn-lg {
-    padding: 12px 20px;
+  .lobby-meta {
+    justify-content: center;
+  }
+}
+
+/* ================= 3. MOBILE PHONES (<= 640px) ================= */
+@media (max-width: 640px) {
+  .app-header {
+    padding: 0;
+  }
+
+  .marquee-bulbs-track {
+    padding: 4px 8px;
+  }
+
+  .marquee-bulbs-track .bulb {
+    width: 6px;
+    height: 6px;
+  }
+
+  .brand {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    font-size: 1.5rem;
+  }
+
+  .logo-text {
+    font-size: 1.6rem;
+  }
+
+  .header-right {
+    padding: 10px 14px;
+    gap: 8px;
+  }
+
+  .status-badge {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+  }
+
+  .main-container {
+    padding: 14px 10px;
+  }
+
+  .hero-card {
+    padding: 32px 18px;
+    margin: 16px auto;
+  }
+
+  .hero-title {
+    font-size: 2.1rem;
+    letter-spacing: 1px;
+  }
+
+  .hero-subtitle {
     font-size: 1rem;
+    margin-bottom: 26px;
+  }
+
+  .action-buttons-group {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .btn-lg {
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    width: 100%;
+  }
+
+  .form-card {
+    padding: 26px 18px;
+    margin: 20px auto;
   }
 
   .form-row {
     grid-template-columns: 1fr;
   }
 
-  .lobby-header-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+  .radio-toggle-group {
+    grid-template-columns: 1fr;
   }
 
   .code-display {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
+    letter-spacing: 4px;
+    padding: 4px 14px;
+  }
+
+  .input-with-button {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .input-with-button button {
+    width: 100%;
+  }
+
+  .guess-form {
+    flex-direction: column;
+  }
+
+  .guess-form button {
+    width: 100%;
+  }
+
+  .clue-input-form {
+    flex-direction: column;
+  }
+
+  .clue-input-form button {
+    width: 100%;
   }
 
   .secret-movie-title {
-    font-size: 1.6rem;
+    font-size: 2rem;
+    letter-spacing: 1px;
   }
 
   .revealed-title {
-    font-size: 1.5rem;
+    font-size: 2rem;
+    letter-spacing: 1px;
+  }
+
+  .revealed-movie-box {
+    padding: 16px;
+  }
+
+  .results-card {
+    padding: 32px 18px;
+    margin: 18px auto;
+  }
+
+  .results-card h1 {
+    font-size: 2.8rem;
+  }
+
+  .winner-banner {
+    font-size: 1.8rem;
   }
 
   .results-actions {
     flex-direction: column;
+    gap: 12px;
+  }
+
+  .vote-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .toast-banner {
+    width: 90%;
+    bottom: 16px;
+    font-size: 0.85rem;
+    justify-content: center;
   }
 }
 
+/* ================= 4. ULTRA-SMALL SCREENS (<= 380px) ================= */
+@media (max-width: 380px) {
+  .logo-text {
+    font-size: 1.35rem;
+  }
+
+  .hero-title {
+    font-size: 1.85rem;
+  }
+
+  .timer-circle {
+    width: 56px;
+    height: 56px;
+  }
+
+  .timer-seconds {
+    font-size: 1.6rem;
+  }
+
+  .round-indicator .round-number {
+    font-size: 1.8rem;
+  }
+}

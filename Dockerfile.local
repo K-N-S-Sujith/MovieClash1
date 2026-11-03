@@ -1,0 +1,28 @@
+# -------------------------------------------------------------
+# MovieClash — Fast Local Dockerfile (using prebuilt JAR)
+# Builds in ~2 seconds using local target/ and frontend/
+# -------------------------------------------------------------
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Non-root user for security
+RUN addgroup -S movieclash && adduser -S movieclash -G movieclash
+
+# Copy prebuilt Spring Boot executable JAR and frontend assets
+COPY backend/target/movieclash-backend-*.jar app.jar
+COPY frontend ./frontend
+
+RUN chown -R movieclash:movieclash /app
+
+USER movieclash
+
+ENV PORT=8080 \
+    JAVA_OPTS="-Xms128m -Xmx320m -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/./urandom"
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=20s --timeout=4s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-8080}/health || exit 1
+
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar --server.port=${PORT:-8080}"]
+
