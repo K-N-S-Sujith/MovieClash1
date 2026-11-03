@@ -85,6 +85,8 @@ public class GameCoordinator {
             case "CHAT_MESSAGE" -> handleChatMessage(session, envelope);
             case "EMOJI_REACTION" -> handleEmojiReaction(session, envelope);
             case "SWITCH_ROLE" -> handleSwitchRole(session, envelope);
+            case "UPDATE_ROOM_SETTINGS" -> handleUpdateRoomSettings(session, envelope);
+            case "RESET_TO_LOBBY" -> handleResetToLobby(session, envelope);
             case "RECONNECT" -> reconnectionManager.handleReconnect(session, envelope);
             case "CANCEL_PROPOSE" -> handleCancelPropose(session, envelope);
             case "CANCEL_VOTE" -> handleCancelVote(session, envelope);
@@ -187,6 +189,89 @@ public class GameCoordinator {
             log.info("Player [{}] ({}) in room [{}] switched spectator mode to: {}", p.getName(), playerId, roomId, newSpectator);
 
             playerSynchronizer.broadcastRosterDelta(roomId);
+        });
+    }
+
+    private void handleUpdateRoomSettings(WebSocketSession session, WsEnvelope envelope) {
+        String sessionId = session.getId();
+        String playerId = sessionTracker.getPlayerId(sessionId);
+        String roomId = sessionTracker.getRoomId(sessionId);
+
+        if (roomId == null || playerId == null) {
+            broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.UNAUTHORIZED, "Session not bound to room"));
+            return;
+        }
+
+        Room room = roomManager.getRoom(roomId);
+        if (room == null) {
+            broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.ROOM_NOT_FOUND, "Room not found"));
+            return;
+        }
+
+        room.executeLocked(() -> {
+            if (!playerId.equals(room.getHostId())) {
+                broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.NOT_HOST, "Only the host can modify room settings"));
+                return;
+            }
+
+            if (room.getStatus() != RoomStatus.LOBBY) {
+                broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.UNAUTHORIZED, "Settings can only be changed while in the lobby"));
+                return;
+            }
+
+            Map<String, Object> payload = envelope.getPayload() != null ? envelope.getPayload() : Map.of();
+            com.movieclash.config.GameConfig config = room.getConfig();
+
+            if (payload.get("roundDurationSec") instanceof Number n) {
+                config.setRoundDurationSec(Math.max(10, Math.min(600, n.intValue())));
+            }
+            if (payload.get("totalRounds") instanceof Number n) {
+                config.setTotalRounds(Math.max(1, Math.min(50, n.intValue())));
+            }
+            if (payload.get("autoStartRound") instanceof Boolean b) {
+                config.setAutoStartRound(b);
+            }
+
+            if (payload.get("gameMode") instanceof String rawMode) {
+                GameMode targetMode = "TEAM".equalsIgnoreCase(rawMode) ? GameMode.TEAM : GameMode.INDIVIDUAL;
+                if (targetMode != room.getGameMode()) {
+                    room.setGameMode(targetMode);
+                    if (targetMode == GameMode.TEAM && room.getTeams().isEmpty()) {
+                        room.initTeams(2);
+                    }
+                }
+            }
+
+            log.info("Room [{}] settings updated by host [{}]: duration={}s, rounds={}, mode={}, autoStart={}",
+                roomId, playerId, config.getRoundDurationSec(), config.getTotalRounds(), room.getGameMode(), config.isAutoStartRound());
+
+            Map<String, Object> updatePayload = Map.of(
+                "config", config,
+                "gameMode", room.getGameMode().name(),
+                "room", com.movieclash.model.dto.RoomSnapshotDTO.from(room)
+            );
+            broadcaster.broadcastToRoom(roomId, WsEnvelope.of("ROOM_SETTINGS_UPDATED", roomId, updatePayload));
+        });
+    }
+
+    private void handleResetToLobby(WebSocketSession session, WsEnvelope envelope) {
+        String sessionId = session.getId();
+        String playerId = sessionTracker.getPlayerId(sessionId);
+        String roomId = sessionTracker.getRoomId(sessionId);
+
+        if (roomId == null || playerId == null) {
+            broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.UNAUTHORIZED, "Session not bound to room"));
+            return;
+        }
+
+        Room room = roomManager.getRoom(roomId);
+        if (room == null) {
+            broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.ROOM_NOT_FOUND, "Room not found"));
+            return;
+        }
+
+        room.executeLocked(() -> {
+            roundManager.resetToLobby(room, playerId);
         });
     }
 

@@ -47,10 +47,8 @@ export class ResultsView {
     if (this.btnPlayAgain) {
       this.btnPlayAgain.addEventListener('click', () => {
         confettiEngine.clear();
-        // Return to lobby
-        store.set({
-          room: { ...store.get().room, status: 'LOBBY' }
-        });
+        this.hideRoundOverlay();
+        wsClient.send('RESET_TO_LOBBY', {});
       });
     }
 

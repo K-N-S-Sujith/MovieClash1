@@ -44,6 +44,10 @@ public class RoundManager {
         int totalLetters = 0;
         String currentMaskedTitle;
 
+        private static boolean isMaskable(char c) {
+            return Character.isLetterOrDigit(c) || c == '%';
+        }
+
         ActiveRoundHintState(String title, int year, String hint) {
             this.originalTitle = title != null ? title : "";
             this.year = year;
@@ -51,7 +55,7 @@ public class RoundManager {
 
             Set<Character> uniqueSet = new LinkedHashSet<>();
             for (char c : this.originalTitle.toCharArray()) {
-                if (Character.isLetter(c)) {
+                if (isMaskable(c)) {
                     this.totalLetters++;
                     uniqueSet.add(Character.toUpperCase(c));
                 }
@@ -64,7 +68,7 @@ public class RoundManager {
             if (title == null) return "";
             StringBuilder sb = new StringBuilder();
             for (char c : title.toCharArray()) {
-                if (Character.isLetter(c)) {
+                if (isMaskable(c)) {
                     char upper = Character.toUpperCase(c);
                     if (revealed.contains(upper)) {
                         sb.append(c);
@@ -81,7 +85,7 @@ public class RoundManager {
         int countRevealed() {
             int count = 0;
             for (char c : currentMaskedTitle.toCharArray()) {
-                if (Character.isLetter(c)) count++;
+                if (isMaskable(c) && c != '_') count++;
             }
             return count;
         }
@@ -321,7 +325,7 @@ public class RoundManager {
         roundStartedPayload.put("roundDurationMs", durationMs);
         roundStartedPayload.put("maskedTitle", hintState.currentMaskedTitle);
         roundStartedPayload.put("year", hintState.year > 0 ? String.valueOf(hintState.year) : "");
-        roundStartedPayload.put("hint", hintState.hint);
+        roundStartedPayload.put("hint", ""); // Kept private for clue-giver
         roundStartedPayload.put("totalLetters", hintState.totalLetters);
         roundStartedPayload.put("revealedCount", 0);
 
@@ -613,6 +617,41 @@ public class RoundManager {
         room.getRoundCorrectGuessers().clear();
         room.getRoundScoredTeams().clear();
         log.info("Game cancelled and room [{}] returned to LOBBY status", room.getRoomId());
+    }
+
+    public void resetToLobby(Room room, String requestingPlayerId) {
+        cancelRoundTimer(room.getRoomId());
+        activeRoundHints.remove(room.getRoomId());
+
+        room.setStatus(RoomStatus.LOBBY);
+        room.setCurrentRound(0);
+        room.setTurnIndex(0);
+        if (room.getTurnOrder() != null) {
+            room.getTurnOrder().clear();
+        }
+        room.setCurrentMovie(null);
+        room.setCurrentClueGiverId(null);
+        room.setCurrentClueGiverTeam(null);
+        room.setRoundDeadline(0L);
+        room.setRoundStartTime(0L);
+        room.resetGuessSequence();
+        room.getRoundCorrectGuessers().clear();
+        room.getRoundScoredTeams().clear();
+
+        // Reset scores for a fresh game
+        for (Player p : room.getPlayers().values()) {
+            p.setScore(0);
+        }
+        for (Team t : room.getTeams().values()) {
+            t.setScore(0);
+        }
+
+        log.info("Room [{}] reset to LOBBY by player [{}]", room.getRoomId(), requestingPlayerId);
+
+        Map<String, Object> payload = Map.of(
+            "room", com.movieclash.model.dto.RoomSnapshotDTO.from(room)
+        );
+        broadcaster.broadcastToRoom(room.getRoomId(), WsEnvelope.of("ROOM_RESET_TO_LOBBY", room.getRoomId(), payload));
     }
 
     public void triggerLetterHint(String roomId, int roundNumber) {

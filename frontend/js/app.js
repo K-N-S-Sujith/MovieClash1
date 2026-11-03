@@ -820,6 +820,44 @@ class MovieClashApp {
       this.switchView('viewLobby');
     });
 
+    // ---------------- Room Reset & Settings ----------------
+    wsClient.on('ROOM_RESET_TO_LOBBY', (payload) => {
+      roundTimer.stop();
+      confettiEngine.clear();
+      store.updateRoom({
+        status: 'LOBBY',
+        currentRound: 0,
+        players: payload.room?.players || [],
+        teams: payload.room?.teams || {},
+        config: payload.room?.config || store.get().room.config
+      });
+      store.updateRound({
+        isRoundActive: false,
+        isPreparing: false,
+        roundNumber: 0,
+        secretMovie: null,
+        maskedTitle: '',
+        clues: [],
+        alreadyScoredThisRound: false,
+        myGuessSubmitted: false
+      });
+      store.set({ auditLog: [], roundActivity: [] });
+      this.switchView('viewLobby');
+      store.addActivity('Returned to lobby. Scores reset for a new match!');
+    });
+
+    wsClient.on('ROOM_SETTINGS_UPDATED', (payload) => {
+      const { config, gameMode, room } = payload;
+      store.updateRoom({
+        config: config || room?.config || store.get().room.config,
+        gameMode: gameMode || room?.gameMode || store.get().room.gameMode,
+        teams: room?.teams || store.get().room.teams
+      });
+      const dur = config?.roundDurationSec || 60;
+      const rnd = config?.totalRounds || 2;
+      store.addActivity(`Room settings updated by host: ${dur}s per round, ${rnd} turns, ${gameMode || 'INDIVIDUAL'} mode`);
+    });
+
     // ---------------- Error Handling ----------------
     wsClient.on('ERROR', (payload) => {
       console.error('Server error received:', payload);

@@ -49,22 +49,25 @@ export class RoundTimer {
     const remainingMs = Math.max(0, this.deadline - currentAdjustedTime);
     const remainingSec = Math.ceil(remainingMs / 1000);
 
-    if (this.timerValueEl) {
-      this.timerValueEl.textContent = remainingSec;
-    }
-
-    if (this.timerCircleEl) {
-      if (remainingSec <= 10) {
-        this.timerCircleEl.classList.add('warning');
-      } else {
-        this.timerCircleEl.classList.remove('warning');
-      }
-    }
-
-    // Audio suspense tick in final 10 seconds
-    if (remainingSec !== this.lastTickedSec && remainingSec <= 10 && remainingSec > 0) {
+    if (remainingSec !== this.lastTickedSec) {
       this.lastTickedSec = remainingSec;
-      audioEngine.playTick(remainingSec <= 5);
+
+      if (this.timerValueEl) {
+        this.timerValueEl.textContent = remainingSec;
+      }
+
+      if (this.timerCircleEl) {
+        if (remainingSec <= 10) {
+          this.timerCircleEl.classList.add('warning');
+        } else {
+          this.timerCircleEl.classList.remove('warning');
+        }
+      }
+
+      // Audio suspense tick in final 10 seconds
+      if (remainingSec <= 10 && remainingSec > 0) {
+        audioEngine.playTick(remainingSec <= 5);
+      }
     }
 
     if (remainingMs <= 0) {

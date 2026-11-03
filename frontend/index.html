@@ -232,6 +232,7 @@
           </div>
           <div class="lobby-meta">
             <span class="badge" id="lobbyModeBadge">INDIVIDUAL</span>
+            <span class="badge" id="lobbySettingsBadge">60s • 2 Turns</span>
             <span class="badge" id="lobbyPlayerCountBadge">0 Players</span>
           </div>
         </div>
@@ -284,6 +285,7 @@
             <div class="lobby-actions">
               <div id="hostNotice" class="text-muted text-sm mb-2 hidden">Waiting for host to start game...</div>
               <button id="btnStartGame" class="btn btn-primary btn-block btn-lg hidden">Start Game</button>
+              <button id="btnOpenLobbySettings" class="btn btn-outline btn-block mt-2 hidden" type="button">⚙️ Change Room Settings</button>
               <button id="btnLeaveRoom" class="btn btn-outline btn-block mt-2">Leave Room</button>
             </div>
           </div>
@@ -540,6 +542,81 @@
         </div>
       </div>
     </section>
+
+    <!-- ================= VIEW 9: LOBBY ROOM SETTINGS MODAL ================= -->
+    <div id="lobbySettingsModal" class="modal-overlay hidden">
+      <div class="modal-card form-card">
+        <h2>⚙️ Room Settings</h2>
+        <p class="text-sm text-muted mb-3">Adjust gameplay rules for this match before starting.</p>
+        <form id="lobbySettingsForm">
+          <div class="form-group">
+            <label>Game Mode</label>
+            <div class="radio-toggle-group">
+              <label class="toggle-option selected" id="lobbyOptModeInd">
+                <input type="radio" name="lobbyGameMode" value="INDIVIDUAL" checked />
+                <span class="option-title">Individual Free-for-All</span>
+              </label>
+              <label class="toggle-option" id="lobbyOptModeTeam">
+                <input type="radio" name="lobbyGameMode" value="TEAM" />
+                <span class="option-title">Team Battle</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="lobbyRoundDuration">Round Duration</label>
+              <select id="lobbyRoundDuration">
+                <option value="30">30 Seconds (Blitz)</option>
+                <option value="45">45 Seconds (Fast)</option>
+                <option value="60">60 Seconds (Standard)</option>
+                <option value="90">90 Seconds (Relaxed)</option>
+                <option value="120">120 Seconds (2 Minutes)</option>
+                <option value="custom">⏱️ Custom Timer...</option>
+              </select>
+              <div id="lobbyCustomDurationBox" class="custom-input-box hidden">
+                <input type="number" id="lobbyCustomRoundDuration" min="10" max="600" placeholder="Seconds (10-600)" autocomplete="off" />
+                <span class="custom-input-unit">sec</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="lobbyTotalRounds">Total Rounds / Turns</label>
+              <select id="lobbyTotalRounds">
+                <option value="1">1 Turn per Player/Team</option>
+                <option value="2">2 Turns per Player/Team</option>
+                <option value="3">3 Turns per Player/Team</option>
+                <option value="4">4 Turns per Player/Team</option>
+                <option value="5">5 Turns per Player/Team</option>
+                <option value="custom">🎬 Custom Rounds...</option>
+              </select>
+              <div id="lobbyCustomRoundsBox" class="custom-input-box hidden">
+                <input type="number" id="lobbyCustomTotalRounds" min="1" max="50" placeholder="Turns (1-50)" autocomplete="off" />
+                <span class="custom-input-unit">turns</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Movie Selection</label>
+            <div class="radio-toggle-group">
+              <label class="toggle-option selected" id="lobbyOptMovieManual">
+                <input type="radio" name="lobbyMovieSelection" value="manual" checked />
+                <span class="option-title">Clue-Giver Chooses Movie</span>
+              </label>
+              <label class="toggle-option" id="lobbyOptMovieAuto">
+                <input type="radio" name="lobbyMovieSelection" value="auto" />
+                <span class="option-title">Random Auto-Pick</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="modal-actions mt-3">
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+            <button type="button" id="btnCloseLobbySettings" class="btn btn-outline">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <!-- ================= VIEW 8: CANCELLATION VOTE MODAL ================= -->
     <div id="cancelVoteModal" class="modal-overlay hidden">

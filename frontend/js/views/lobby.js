@@ -26,6 +26,21 @@ export class LobbyView {
     this.spectatorCountNum = document.getElementById('spectatorCountNum');
     this.spectatorPlayerList = document.getElementById('spectatorPlayerList');
 
+    // Lobby Settings elements
+    this.lobbySettingsBadge = document.getElementById('lobbySettingsBadge');
+    this.btnOpenSettings = document.getElementById('btnOpenLobbySettings');
+    this.settingsModal = document.getElementById('lobbySettingsModal');
+    this.settingsForm = document.getElementById('lobbySettingsForm');
+    this.btnCloseSettings = document.getElementById('btnCloseLobbySettings');
+
+    this.lobbyRoundDuration = document.getElementById('lobbyRoundDuration');
+    this.lobbyCustomDurationBox = document.getElementById('lobbyCustomDurationBox');
+    this.lobbyCustomRoundDuration = document.getElementById('lobbyCustomRoundDuration');
+
+    this.lobbyTotalRounds = document.getElementById('lobbyTotalRounds');
+    this.lobbyCustomRoundsBox = document.getElementById('lobbyCustomRoundsBox');
+    this.lobbyCustomTotalRounds = document.getElementById('lobbyCustomTotalRounds');
+
     this.initEvents();
   }
 
@@ -75,6 +90,70 @@ export class LobbyView {
       });
     }
 
+    // Lobby Settings Modal Controls
+    if (this.btnOpenSettings) {
+      this.btnOpenSettings.addEventListener('click', () => {
+        this.openSettingsModal();
+      });
+    }
+
+    if (this.btnCloseSettings) {
+      this.btnCloseSettings.addEventListener('click', () => {
+        this.closeSettingsModal();
+      });
+    }
+
+    if (this.lobbyRoundDuration && this.lobbyCustomDurationBox) {
+      this.lobbyRoundDuration.addEventListener('change', () => {
+        if (this.lobbyRoundDuration.value === 'custom') {
+          this.lobbyCustomDurationBox.classList.remove('hidden');
+          if (this.lobbyCustomRoundDuration) {
+            if (!this.lobbyCustomRoundDuration.value) this.lobbyCustomRoundDuration.value = '45';
+            this.lobbyCustomRoundDuration.focus();
+            this.lobbyCustomRoundDuration.select();
+          }
+        } else {
+          this.lobbyCustomDurationBox.classList.add('hidden');
+        }
+      });
+    }
+
+    if (this.lobbyTotalRounds && this.lobbyCustomRoundsBox) {
+      this.lobbyTotalRounds.addEventListener('change', () => {
+        if (this.lobbyTotalRounds.value === 'custom') {
+          this.lobbyCustomRoundsBox.classList.remove('hidden');
+          if (this.lobbyCustomTotalRounds) {
+            if (!this.lobbyCustomTotalRounds.value) this.lobbyCustomTotalRounds.value = '3';
+            this.lobbyCustomTotalRounds.focus();
+            this.lobbyCustomTotalRounds.select();
+          }
+        } else {
+          this.lobbyCustomRoundsBox.classList.add('hidden');
+        }
+      });
+    }
+
+    // Modal Radio visual toggle styling
+    const modalRadioGroups = ['lobbyGameMode', 'lobbyMovieSelection'];
+    modalRadioGroups.forEach(name => {
+      const radios = document.querySelectorAll(`input[name="${name}"]`);
+      radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+          radios.forEach(r => {
+            const label = r.closest('.toggle-option');
+            if (label) label.classList.toggle('selected', r.checked);
+          });
+        });
+      });
+    });
+
+    if (this.settingsForm) {
+      this.settingsForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleSaveSettings();
+      });
+    }
+
     // Subscribe to state changes to re-render lobby elements
     store.subscribe((state) => {
       if (state.room.status === 'LOBBY' && state.room.roomId) {
@@ -83,11 +162,117 @@ export class LobbyView {
     });
   }
 
+  openSettingsModal() {
+    if (!this.settingsModal) return;
+    const room = store.get().room;
+    const config = room.config || {};
+
+    // 1. Game mode
+    const mode = room.gameMode || 'INDIVIDUAL';
+    const modeRadio = document.querySelector(`input[name="lobbyGameMode"][value="${mode}"]`);
+    if (modeRadio) {
+      modeRadio.checked = true;
+      document.querySelectorAll('input[name="lobbyGameMode"]').forEach(r => {
+        r.closest('.toggle-option')?.classList.toggle('selected', r.checked);
+      });
+    }
+
+    // 2. Movie selection
+    const autoPick = Boolean(config.autoStartRound);
+    const movieRadio = document.querySelector(`input[name="lobbyMovieSelection"][value="${autoPick ? 'auto' : 'manual'}"]`);
+    if (movieRadio) {
+      movieRadio.checked = true;
+      document.querySelectorAll('input[name="lobbyMovieSelection"]').forEach(r => {
+        r.closest('.toggle-option')?.classList.toggle('selected', r.checked);
+      });
+    }
+
+    // 3. Duration
+    const dur = config.roundDurationSec || 60;
+    const standardDurations = ['30', '45', '60', '90', '120'];
+    if (this.lobbyRoundDuration) {
+      if (standardDurations.includes(String(dur))) {
+        this.lobbyRoundDuration.value = String(dur);
+        if (this.lobbyCustomDurationBox) this.lobbyCustomDurationBox.classList.add('hidden');
+      } else {
+        this.lobbyRoundDuration.value = 'custom';
+        if (this.lobbyCustomDurationBox) this.lobbyCustomDurationBox.classList.remove('hidden');
+        if (this.lobbyCustomRoundDuration) this.lobbyCustomRoundDuration.value = dur;
+      }
+    }
+
+    // 4. Rounds
+    const rounds = config.totalRounds || 2;
+    const standardRounds = ['1', '2', '3', '4', '5'];
+    if (this.lobbyTotalRounds) {
+      if (standardRounds.includes(String(rounds))) {
+        this.lobbyTotalRounds.value = String(rounds);
+        if (this.lobbyCustomRoundsBox) this.lobbyCustomRoundsBox.classList.add('hidden');
+      } else {
+        this.lobbyTotalRounds.value = 'custom';
+        if (this.lobbyCustomRoundsBox) this.lobbyCustomRoundsBox.classList.remove('hidden');
+        if (this.lobbyCustomTotalRounds) this.lobbyCustomTotalRounds.value = rounds;
+      }
+    }
+
+    this.settingsModal.classList.remove('hidden');
+  }
+
+  closeSettingsModal() {
+    if (this.settingsModal) {
+      this.settingsModal.classList.add('hidden');
+    }
+  }
+
+  handleSaveSettings() {
+    const modeRadio = document.querySelector('input[name="lobbyGameMode"]:checked');
+    const movieRadio = document.querySelector('input[name="lobbyMovieSelection"]:checked');
+
+    const gameMode = modeRadio ? modeRadio.value : 'INDIVIDUAL';
+    const autoStartRound = movieRadio ? movieRadio.value === 'auto' : false;
+
+    let roundDurationSec = 60;
+    if (this.lobbyRoundDuration) {
+      if (this.lobbyRoundDuration.value === 'custom') {
+        const val = parseInt(this.lobbyCustomRoundDuration?.value, 10);
+        roundDurationSec = (!isNaN(val) && val >= 10 && val <= 600) ? val : 60;
+      } else {
+        roundDurationSec = parseInt(this.lobbyRoundDuration.value, 10) || 60;
+      }
+    }
+
+    let totalRounds = 2;
+    if (this.lobbyTotalRounds) {
+      if (this.lobbyTotalRounds.value === 'custom') {
+        const val = parseInt(this.lobbyCustomTotalRounds?.value, 10);
+        totalRounds = (!isNaN(val) && val >= 1 && val <= 50) ? val : 2;
+      } else {
+        totalRounds = parseInt(this.lobbyTotalRounds.value, 10) || 2;
+      }
+    }
+
+    wsClient.send('UPDATE_ROOM_SETTINGS', {
+      roundDurationSec,
+      totalRounds,
+      autoStartRound,
+      gameMode
+    });
+
+    this.closeSettingsModal();
+  }
+
   render(state) {
     const { room, player } = state;
 
     if (this.roomCodeEl) this.roomCodeEl.textContent = room.roomId || '------';
     if (this.modeBadgeEl) this.modeBadgeEl.textContent = room.gameMode;
+
+    if (this.lobbySettingsBadge) {
+      const duration = room.config?.roundDurationSec || 60;
+      const rounds = room.config?.totalRounds || 2;
+      const auto = room.config?.autoStartRound ? 'Auto' : 'Manual';
+      this.lobbySettingsBadge.textContent = `${duration}s • ${rounds} Turn${rounds === 1 ? '' : 's'} • ${auto}`;
+    }
 
     const activePlayers = room.players.filter(p => !p.spectator);
     const spectators = room.players.filter(p => p.spectator);
@@ -109,6 +294,14 @@ export class LobbyView {
     const isHost = player.id && player.id === room.hostId;
     const isCoHost = (player.id && player.id === room.coHostId) || player.isCoHost;
     const canControl = isHost || isCoHost;
+
+    if (this.btnOpenSettings) {
+      if (canControl) {
+        this.btnOpenSettings.classList.remove('hidden');
+      } else {
+        this.btnOpenSettings.classList.add('hidden');
+      }
+    }
 
     if (this.btnStartGame && this.hostNotice) {
       if (canControl) {

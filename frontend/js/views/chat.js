@@ -29,6 +29,9 @@ export class ChatView {
     this.chatDisabledNotice = document.getElementById('chatDisabledNotice');
 
     this.lastMessageTime = 0;
+    this.renderedCluesCount = 0;
+    this.renderedLobbyChatCount = 0;
+    this.renderedRoundChatCount = 0;
 
     this.initEvents();
   }
@@ -140,50 +143,84 @@ export class ChatView {
       }
     }
 
-    // 3. Render Clues Feed
+    // 3. Render Clues Feed (Incremental)
     if (this.clueFeed) {
-      this.clueFeed.innerHTML = '';
       if (clues.length === 0) {
-        this.clueFeed.innerHTML = '<span class="text-muted text-sm">No clues posted yet. Listen to voice or watch here!</span>';
+        if (this.renderedCluesCount !== 0) {
+          this.clueFeed.innerHTML = '<span class="text-muted text-sm">No clues posted yet. Listen to voice or watch here!</span>';
+          this.renderedCluesCount = 0;
+        }
       } else {
-        clues.forEach(clue => {
-          const bubble = document.createElement('div');
-          bubble.className = 'clue-bubble';
-          bubble.textContent = `💡 "${clue.message}"`;
-          this.clueFeed.appendChild(bubble);
-        });
-        this.clueFeed.scrollTop = this.clueFeed.scrollHeight;
+        if (this.renderedCluesCount === 0) {
+          this.clueFeed.innerHTML = '';
+        }
+        if (clues.length > this.renderedCluesCount) {
+          const newClues = clues.slice(this.renderedCluesCount);
+          this.renderedCluesCount = clues.length;
+
+          newClues.forEach(clue => {
+            const bubble = document.createElement('div');
+            bubble.className = 'clue-bubble';
+            bubble.textContent = `💡 "${clue.message}"`;
+            this.clueFeed.appendChild(bubble);
+          });
+          this.clueFeed.scrollTop = this.clueFeed.scrollHeight;
+        }
       }
     }
 
-    // 4. Render Lobby Chat Messages
-    if (this.lobbyChatFeed) {
-      this.lobbyChatFeed.innerHTML = '';
-      chatMessages.forEach(msg => {
-        const item = document.createElement('div');
-        item.className = 'chat-msg';
-        item.innerHTML = `
-          <span class="sender">${this.escapeHtml(msg.senderName || 'Player')}:</span>
-          <span class="text">${this.escapeHtml(msg.message)}</span>
-        `;
-        this.lobbyChatFeed.appendChild(item);
-      });
-      this.lobbyChatFeed.scrollTop = this.lobbyChatFeed.scrollHeight;
+    // 4. Render Lobby Chat Messages (Only while in lobby)
+    if (this.lobbyChatFeed && room.status === 'LOBBY') {
+      if (chatMessages.length === 0) {
+        if (this.renderedLobbyChatCount !== 0) {
+          this.lobbyChatFeed.innerHTML = '';
+          this.renderedLobbyChatCount = 0;
+        }
+      } else if (chatMessages.length > this.renderedLobbyChatCount) {
+        const newMsgs = chatMessages.slice(this.renderedLobbyChatCount);
+        this.renderedLobbyChatCount = chatMessages.length;
+
+        newMsgs.forEach(msg => {
+          const item = document.createElement('div');
+          item.className = 'chat-msg';
+          item.innerHTML = `
+            <span class="sender">${this.escapeHtml(msg.senderName || 'Player')}:</span>
+            <span class="text">${this.escapeHtml(msg.message)}</span>
+          `;
+          this.lobbyChatFeed.appendChild(item);
+        });
+        while (this.lobbyChatFeed.children.length > 50) {
+          this.lobbyChatFeed.removeChild(this.lobbyChatFeed.firstChild);
+        }
+        this.lobbyChatFeed.scrollTop = this.lobbyChatFeed.scrollHeight;
+      }
     }
 
-    // 5. Render Round Chat Messages
-    if (this.roundChatFeed) {
-      this.roundChatFeed.innerHTML = '';
-      chatMessages.slice(-15).forEach(msg => {
-        const item = document.createElement('div');
-        item.className = 'chat-msg';
-        item.innerHTML = `
-          <span class="sender">${this.escapeHtml(msg.senderName || 'Player')}:</span>
-          <span class="text">${this.escapeHtml(msg.message)}</span>
-        `;
-        this.roundChatFeed.appendChild(item);
-      });
-      this.roundChatFeed.scrollTop = this.roundChatFeed.scrollHeight;
+    // 5. Render Round Chat Messages (Incremental)
+    if (this.roundChatFeed && room.status !== 'LOBBY') {
+      if (chatMessages.length === 0) {
+        if (this.renderedRoundChatCount !== 0) {
+          this.roundChatFeed.innerHTML = '';
+          this.renderedRoundChatCount = 0;
+        }
+      } else if (chatMessages.length > this.renderedRoundChatCount) {
+        const newMsgs = chatMessages.slice(this.renderedRoundChatCount);
+        this.renderedRoundChatCount = chatMessages.length;
+
+        newMsgs.forEach(msg => {
+          const item = document.createElement('div');
+          item.className = 'chat-msg';
+          item.innerHTML = `
+            <span class="sender">${this.escapeHtml(msg.senderName || 'Player')}:</span>
+            <span class="text">${this.escapeHtml(msg.message)}</span>
+          `;
+          this.roundChatFeed.appendChild(item);
+        });
+        while (this.roundChatFeed.children.length > 30) {
+          this.roundChatFeed.removeChild(this.roundChatFeed.firstChild);
+        }
+        this.roundChatFeed.scrollTop = this.roundChatFeed.scrollHeight;
+      }
     }
   }
 

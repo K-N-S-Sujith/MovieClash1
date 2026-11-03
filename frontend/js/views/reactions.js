@@ -12,6 +12,7 @@ export class ReactionsView {
     this.container = null;
     this.dock = null;
     this.lastSentTime = 0;
+    this.lastPopAudioTime = 0;
     this.COOLDOWN_MS = 250;
 
     this.init();
@@ -62,9 +63,6 @@ export class ReactionsView {
 
     // Send to WebSocket
     wsClient.send('EMOJI_REACTION', { emoji });
-
-    // Optimistically spawn locally if immediate feedback desired
-    // (Broadcast handler will display it for everyone)
   }
 
   /**
@@ -77,11 +75,20 @@ export class ReactionsView {
       if (!this.container) return;
     }
 
+    // Prevent DOM bloat during emoji rushes (max 15 concurrent)
+    while (this.container.children.length > 15) {
+      this.container.removeChild(this.container.firstChild);
+    }
+
+    // Throttle pop sound (min 150ms gap) to avoid Web Audio oscillator flooding
+    const now = Date.now();
+    if (!this.lastPopAudioTime || now - this.lastPopAudioTime > 150) {
+      this.lastPopAudioTime = now;
+      audioEngine.playPop();
+    }
+
     const { emoji, senderName } = payload;
     const isMe = payload.senderId === store.get().player.id;
-
-    // Play subtle pop audio
-    audioEngine.playPop();
 
     // Create reaction element
     const el = document.createElement('div');
@@ -104,7 +111,7 @@ export class ReactionsView {
       if (el.parentNode) {
         el.parentNode.removeChild(el);
       }
-    }, 2000);
+    }, 1900);
   }
 
   escapeHtml(str) {

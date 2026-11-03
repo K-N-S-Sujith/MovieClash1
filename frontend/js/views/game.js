@@ -76,6 +76,12 @@ export class GameView {
     // Cancellation
     this.btnProposeCancel = document.getElementById('btnProposeCancel');
 
+    // Performance optimization caches
+    this.lastRenderedMaskedTitle = null;
+    this.lastScoreboardKey = null;
+    this.lastAuditLength = 0;
+    this.lastActivityLength = 0;
+
     this.initEvents();
   }
 
@@ -298,6 +304,21 @@ export class GameView {
 
   renderScoreboard(room) {
     if (!this.scoreboardListEl) return;
+
+    let cacheKey = '';
+    if (room.gameMode === 'TEAM') {
+      cacheKey = Object.entries(room.teams || {})
+        .map(([id, t]) => `${id}:${t.score}:${t.name}`)
+        .join('|');
+    } else {
+      cacheKey = (room.players || [])
+        .map(p => `${p.id}:${p.score}:${p.name}`)
+        .join('|');
+    }
+
+    if (cacheKey === this.lastScoreboardKey) return;
+    this.lastScoreboardKey = cacheKey;
+
     this.scoreboardListEl.innerHTML = '';
 
     if (room.gameMode === 'TEAM') {
@@ -338,27 +359,53 @@ export class GameView {
 
   renderAuditLog(auditLogs) {
     if (!this.auditFeedEl) return;
-    this.auditFeedEl.innerHTML = '';
+    if (!auditLogs || auditLogs.length === 0) {
+      this.auditFeedEl.innerHTML = '';
+      this.lastAuditLength = 0;
+      return;
+    }
 
-    auditLogs.slice(-20).forEach(log => {
+    if (auditLogs.length <= this.lastAuditLength) return;
+
+    const newEntries = auditLogs.slice(this.lastAuditLength);
+    this.lastAuditLength = auditLogs.length;
+
+    newEntries.forEach(log => {
       const line = document.createElement('div');
       line.className = `audit-entry ${log.isMatch ? 'match' : ''}`;
       line.textContent = `[#${log.seq}] ${log.guesserName}: "${log.guessText}" -> ${log.isMatch ? `CORRECT! (${log.matchedWith})` : 'NO MATCH'}`;
       this.auditFeedEl.appendChild(line);
     });
+
+    while (this.auditFeedEl.children.length > 25) {
+      this.auditFeedEl.removeChild(this.auditFeedEl.firstChild);
+    }
     this.auditFeedEl.scrollTop = this.auditFeedEl.scrollHeight;
   }
 
   renderActivity(activities) {
     if (!this.activityFeedEl) return;
-    this.activityFeedEl.innerHTML = '';
+    if (!activities || activities.length === 0) {
+      this.activityFeedEl.innerHTML = '';
+      this.lastActivityLength = 0;
+      return;
+    }
 
-    activities.slice(-15).forEach(act => {
+    if (activities.length <= this.lastActivityLength) return;
+
+    const newEntries = activities.slice(this.lastActivityLength);
+    this.lastActivityLength = activities.length;
+
+    newEntries.forEach(act => {
       const item = document.createElement('div');
       item.className = 'activity-item';
       item.textContent = act.text;
       this.activityFeedEl.appendChild(item);
     });
+
+    while (this.activityFeedEl.children.length > 20) {
+      this.activityFeedEl.removeChild(this.activityFeedEl.firstChild);
+    }
     this.activityFeedEl.scrollTop = this.activityFeedEl.scrollHeight;
   }
 
@@ -368,6 +415,7 @@ export class GameView {
     const maskedTitle = round.maskedTitle || '';
     if (!maskedTitle) {
       this.hangmanWordSlots.innerHTML = '<span class="text-muted text-sm">Waiting for round to begin...</span>';
+      this.lastRenderedMaskedTitle = null;
       return;
     }
 
@@ -379,7 +427,7 @@ export class GameView {
       this.marqueeTotalCount.textContent = round.totalLettersCount || 0;
     }
 
-    // 2. Metadata pills (Year & Hint)
+    // 2. Metadata pills (Year only; plot hint is kept private for clue-givers)
     if (this.marqueeYearPill && this.marqueeYearValue) {
       if (round.movieYear) {
         this.marqueeYearValue.textContent = round.movieYear;
@@ -389,16 +437,16 @@ export class GameView {
       }
     }
 
-    if (this.marqueeHintPill && this.marqueeHintValue) {
-      if (round.movieHint) {
-        this.marqueeHintValue.textContent = round.movieHint;
-        this.marqueeHintPill.classList.remove('hidden');
-      } else {
-        this.marqueeHintPill.classList.add('hidden');
-      }
+    if (this.marqueeHintPill) {
+      this.marqueeHintPill.classList.add('hidden'); // Never show full secret plot hint in public marquee
     }
 
-    // 3. Render word clusters and letter tiles
+    // 3. Render word clusters and letter tiles only if maskedTitle changed
+    if (maskedTitle === this.lastRenderedMaskedTitle) {
+      return;
+    }
+    this.lastRenderedMaskedTitle = maskedTitle;
+
     const words = maskedTitle.split(' ');
     this.hangmanWordSlots.innerHTML = '';
 
@@ -413,7 +461,7 @@ export class GameView {
         if (ch === '_') {
           tile.className = 'hangman-tile blank';
           tile.textContent = '';
-        } else if (/[a-zA-Z0-9]/.test(ch)) {
+        } else if (/[a-zA-Z0-9%]/.test(ch)) {
           tile.className = 'hangman-tile revealed';
           tile.textContent = ch.toUpperCase();
         } else {
