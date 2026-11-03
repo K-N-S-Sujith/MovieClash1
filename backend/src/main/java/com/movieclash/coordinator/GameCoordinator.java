@@ -75,6 +75,9 @@ public class GameCoordinator {
             case "JOIN_ROOM" -> handleJoinRoom(session, envelope);
             case "LEAVE_ROOM" -> handleLeaveRoom(session, envelope);
             case "ASSIGN_TEAM" -> handleAssignTeam(session, envelope);
+            case "CREATE_TEAM" -> handleCreateTeam(session, envelope);
+            case "RENAME_TEAM" -> handleRenameTeam(session, envelope);
+            case "REMOVE_TEAM" -> handleRemoveTeam(session, envelope);
             case "START_GAME" -> handleStartGame(session, envelope);
             case "NEXT_ROUND" -> handleNextRound(session, envelope);
             case "CHOOSE_MOVIE" -> handleChooseMovie(session, envelope);
@@ -685,6 +688,58 @@ public class GameCoordinator {
                 playerSynchronizer.broadcastRosterDelta(roomId);
             } else {
                 broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.INVALID_TEAM, "Could not assign team"));
+            }
+        }
+    }
+
+    private void handleCreateTeam(WebSocketSession session, WsEnvelope envelope) {
+        String sessionId = session.getId();
+        String playerId = sessionTracker.getPlayerId(sessionId);
+        String roomId = sessionTracker.getRoomId(sessionId);
+        Map<String, Object> payload = envelope.getPayload() != null ? envelope.getPayload() : Map.of();
+        String teamName = (String) payload.get("teamName");
+
+        if (roomId != null && playerId != null) {
+            boolean success = roomManager.createTeam(roomId, playerId, teamName);
+            if (success) {
+                playerSynchronizer.broadcastRosterDelta(roomId);
+            } else {
+                broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.INVALID_TEAM, "Could not create team (max 5 teams)"));
+            }
+        }
+    }
+
+    private void handleRenameTeam(WebSocketSession session, WsEnvelope envelope) {
+        String sessionId = session.getId();
+        String playerId = sessionTracker.getPlayerId(sessionId);
+        String roomId = sessionTracker.getRoomId(sessionId);
+        Map<String, Object> payload = envelope.getPayload() != null ? envelope.getPayload() : Map.of();
+        String teamId = (String) payload.get("teamId");
+        String teamName = (String) payload.get("teamName");
+
+        if (roomId != null && playerId != null && teamId != null && teamName != null) {
+            boolean success = roomManager.renameTeam(roomId, playerId, teamId, teamName);
+            if (success) {
+                playerSynchronizer.broadcastRosterDelta(roomId);
+            } else {
+                broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.INVALID_TEAM, "Could not rename team"));
+            }
+        }
+    }
+
+    private void handleRemoveTeam(WebSocketSession session, WsEnvelope envelope) {
+        String sessionId = session.getId();
+        String playerId = sessionTracker.getPlayerId(sessionId);
+        String roomId = sessionTracker.getRoomId(sessionId);
+        Map<String, Object> payload = envelope.getPayload() != null ? envelope.getPayload() : Map.of();
+        String teamId = (String) payload.get("teamId");
+
+        if (roomId != null && playerId != null && teamId != null) {
+            boolean success = roomManager.removeTeam(roomId, playerId, teamId);
+            if (success) {
+                playerSynchronizer.broadcastRosterDelta(roomId);
+            } else {
+                broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.INVALID_TEAM, "Cannot delete team (must be empty and at least 2 teams remain)"));
             }
         }
     }

@@ -283,6 +283,92 @@ public class RoomManager {
         });
     }
 
+    public boolean createTeam(String roomId, String playerId, String customName) {
+        if (roomId == null) return false;
+        Room room = rooms.get(roomId.trim().toUpperCase());
+        if (room == null || room.getGameMode() != GameMode.TEAM) return false;
+
+        return room.executeLocked(() -> {
+            if (room.getStatus() != RoomStatus.LOBBY) return false;
+            if (room.getTeams().size() >= 5) {
+                log.warn("Cannot add team in room [{}]: maximum 5 teams reached", roomId);
+                return false;
+            }
+
+            String[] teamKeys = {"TEAM_A", "TEAM_B", "TEAM_C", "TEAM_D", "TEAM_E"};
+            String[] defaultNames = {"Team Alpha", "Team Beta", "Team Gamma", "Team Delta", "Team Epsilon"};
+
+            String newKey = null;
+            String defaultName = "New Team";
+            for (int i = 0; i < teamKeys.length; i++) {
+                if (!room.getTeams().containsKey(teamKeys[i])) {
+                    newKey = teamKeys[i];
+                    defaultName = defaultNames[i];
+                    break;
+                }
+            }
+
+            if (newKey == null) return false;
+
+            String name = (customName != null && !customName.trim().isEmpty())
+                ? customName.trim()
+                : defaultName;
+            if (name.length() > 24) name = name.substring(0, 24);
+
+            Team newTeam = new Team(newKey, name);
+            room.getTeams().put(newKey, newTeam);
+            log.info("Team [{}] ({}) created in room [{}] by player [{}]", name, newKey, roomId, playerId);
+            return true;
+        });
+    }
+
+    public boolean renameTeam(String roomId, String playerId, String teamId, String newName) {
+        if (roomId == null || teamId == null || newName == null) return false;
+        String cleanName = newName.trim();
+        if (cleanName.isEmpty()) return false;
+        if (cleanName.length() > 24) cleanName = cleanName.substring(0, 24);
+
+        Room room = rooms.get(roomId.trim().toUpperCase());
+        if (room == null || room.getGameMode() != GameMode.TEAM) return false;
+
+        String finalName = cleanName;
+        return room.executeLocked(() -> {
+            if (room.getStatus() != RoomStatus.LOBBY) return false;
+            Team team = room.getTeams().get(teamId);
+            if (team == null) return false;
+
+            team.setName(finalName);
+            log.info("Team [{}] in room [{}] renamed to [{}] by player [{}]", teamId, roomId, finalName, playerId);
+            return true;
+        });
+    }
+
+    public boolean removeTeam(String roomId, String playerId, String teamId) {
+        if (roomId == null || teamId == null) return false;
+        Room room = rooms.get(roomId.trim().toUpperCase());
+        if (room == null || room.getGameMode() != GameMode.TEAM) return false;
+
+        return room.executeLocked(() -> {
+            if (room.getStatus() != RoomStatus.LOBBY) return false;
+            if (room.getTeams().size() <= 2) {
+                log.warn("Cannot remove team [{}] in room [{}]: minimum 2 teams required", teamId, roomId);
+                return false;
+            }
+
+            Team team = room.getTeams().get(teamId);
+            if (team == null) return false;
+
+            if (!team.getPlayers().isEmpty()) {
+                log.warn("Cannot remove team [{}] in room [{}]: team still has active players", teamId, roomId);
+                return false;
+            }
+
+            room.getTeams().remove(teamId);
+            log.info("Team [{}] removed in room [{}] by player [{}]", teamId, roomId, playerId);
+            return true;
+        });
+    }
+
     public Room getRoom(String roomId) {
         return roomId != null ? rooms.get(roomId.toUpperCase()) : null;
     }

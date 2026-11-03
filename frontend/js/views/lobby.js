@@ -22,6 +22,7 @@ export class LobbyView {
     this.btnCopyCode = document.getElementById('btnCopyRoomCode');
     this.btnCopyLink = document.getElementById('btnCopyInviteLink');
     this.btnToggleRole = document.getElementById('btnToggleRole');
+    this.btnAddTeam = document.getElementById('btnAddTeam');
     this.spectatorsSection = document.getElementById('spectatorsSection');
     this.spectatorCountNum = document.getElementById('spectatorCountNum');
     this.spectatorPlayerList = document.getElementById('spectatorPlayerList');
@@ -49,6 +50,25 @@ export class LobbyView {
       this.btnToggleRole.addEventListener('click', () => {
         const isCurrentlySpectator = Boolean(store.get().player.isSpectator);
         wsClient.send('SWITCH_ROLE', { spectator: !isCurrentlySpectator });
+      });
+    }
+
+    if (this.btnAddTeam) {
+      this.btnAddTeam.addEventListener('click', () => {
+        const room = store.get().room;
+        const teams = room.teams || {};
+        const count = Object.keys(teams).length;
+        if (count >= 5) {
+          alert('Maximum 5 teams allowed in Team Mode.');
+          return;
+        }
+        const defaultNames = ['Team Alpha', 'Team Beta', 'Team Gamma', 'Team Delta', 'Team Epsilon'];
+        const suggestedName = defaultNames[count] || `Team ${count + 1}`;
+        const inputName = prompt('Enter group/team name:', suggestedName);
+        if (inputName !== null) {
+          const finalName = inputName.trim() || suggestedName;
+          wsClient.send('CREATE_TEAM', { teamName: finalName.slice(0, 24) });
+        }
       });
     }
 
@@ -413,6 +433,15 @@ export class LobbyView {
       TEAM_B: { name: 'Team Beta', players: [] }
     };
 
+    const teamCountTotal = Object.keys(availableTeams).length;
+    if (this.btnAddTeam) {
+      if (teamCountTotal >= 5) {
+        this.btnAddTeam.classList.add('hidden');
+      } else {
+        this.btnAddTeam.classList.remove('hidden');
+      }
+    }
+
     const isSpectator = Boolean(currentPlayer?.isSpectator);
 
     // Detect current player's actual team from roster only if NOT a spectator
@@ -449,7 +478,7 @@ export class LobbyView {
       this.teamButtonsEl.appendChild(btn);
     });
 
-    // Render team columns with direct switch action
+    // Render team columns with direct switch action, rename (✎), and delete (✕)
     this.teamsContainerEl.innerHTML = '';
     Object.keys(availableTeams).forEach(teamKey => {
       const team = availableTeams[teamKey];
@@ -490,10 +519,14 @@ export class LobbyView {
         actionHtml = `<button type="button" class="btn-sm btn-primary btn-switch-team" data-team="${teamKey}">⇄ Switch to ${this.escapeHtml(team.name || teamKey)}</button>`;
       }
 
+      const canDelete = teamCountTotal > 2 && teamCount === 0;
+
       box.innerHTML = `
         <div class="team-box-header">
           <div class="team-title-row">
-            <span class="team-name">${this.escapeHtml(team.name || teamKey)}</span>
+            <span class="team-name" title="Click ✎ to rename">${this.escapeHtml(team.name || teamKey)}</span>
+            <button type="button" class="btn-rename-team" data-team="${teamKey}" title="Rename team">✎</button>
+            ${canDelete ? `<button type="button" class="btn-remove-team" data-team="${teamKey}" title="Delete empty team">✕</button>` : ''}
             <span class="team-count text-muted text-xs">(${teamCount}/5)</span>
           </div>
           <div class="team-action-slot">${actionHtml}</div>
@@ -505,6 +538,29 @@ export class LobbyView {
       if (switchBtn) {
         switchBtn.addEventListener('click', () => {
           wsClient.send('ASSIGN_TEAM', { teamId: teamKey });
+        });
+      }
+
+      const renameBtn = box.querySelector('.btn-rename-team');
+      if (renameBtn) {
+        renameBtn.addEventListener('click', () => {
+          const currentName = team.name || teamKey;
+          const updated = prompt('Rename team:', currentName);
+          if (updated !== null && updated.trim()) {
+            wsClient.send('RENAME_TEAM', {
+              teamId: teamKey,
+              teamName: updated.trim().slice(0, 24)
+            });
+          }
+        });
+      }
+
+      const removeBtn = box.querySelector('.btn-remove-team');
+      if (removeBtn) {
+        removeBtn.addEventListener('click', () => {
+          if (confirm(`Are you sure you want to delete ${team.name || teamKey}?`)) {
+            wsClient.send('REMOVE_TEAM', { teamId: teamKey });
+          }
         });
       }
 

@@ -286,7 +286,7 @@ class MovieClashApp {
         store.updatePlayer({
           id: payload.yourPlayerId,
           reconnectToken: payload.reconnectToken,
-          teamId: myTeamId,
+          teamId: isSpectator ? null : myTeamId,
           isHost,
           isCoHost,
           isSpectator
