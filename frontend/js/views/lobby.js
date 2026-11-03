@@ -413,19 +413,23 @@ export class LobbyView {
       TEAM_B: { name: 'Team Beta', players: [] }
     };
 
-    // Detect current player's actual team from roster if not set
-    let myTeamId = currentPlayer?.teamId;
-    for (const [tKey, tVal] of Object.entries(availableTeams)) {
-      if ((tVal.players || []).some(p => p.id === currentPlayer?.id)) {
-        myTeamId = tKey;
-        break;
+    const isSpectator = Boolean(currentPlayer?.isSpectator);
+
+    // Detect current player's actual team from roster only if NOT a spectator
+    let myTeamId = null;
+    if (!isSpectator) {
+      myTeamId = currentPlayer?.teamId;
+      for (const [tKey, tVal] of Object.entries(availableTeams)) {
+        if ((tVal.players || []).some(p => p.id === currentPlayer?.id && !p.spectator)) {
+          myTeamId = tKey;
+          break;
+        }
       }
     }
+
     // Update store silently to avoid triggering recursive render loops
-    if (myTeamId && myTeamId !== currentPlayer?.teamId) {
-      if (store.state && store.state.player) {
-        store.state.player.teamId = myTeamId;
-      }
+    if (store.state && store.state.player) {
+      store.state.player.teamId = myTeamId;
     }
 
     // Render team select pills at top
@@ -434,7 +438,7 @@ export class LobbyView {
       const team = availableTeams[teamKey];
       const btn = document.createElement('button');
       btn.type = 'button';
-      const isMyTeam = (myTeamId === teamKey);
+      const isMyTeam = (!isSpectator && myTeamId === teamKey);
       btn.className = `team-pill-btn ${isMyTeam ? 'active' : ''}`;
       btn.innerHTML = `${this.escapeHtml(team.name || teamKey)} ${isMyTeam ? '✓ (Your Team)' : ''}`;
       btn.addEventListener('click', () => {
@@ -449,15 +453,16 @@ export class LobbyView {
     this.teamsContainerEl.innerHTML = '';
     Object.keys(availableTeams).forEach(teamKey => {
       const team = availableTeams[teamKey];
-      const isMyTeam = (myTeamId === teamKey);
-      const teamCount = (team.players || []).length;
+      const isMyTeam = (!isSpectator && myTeamId === teamKey);
+      const activeTeamPlayers = (team.players || []).filter(p => !p.spectator);
+      const teamCount = activeTeamPlayers.length;
       const isFull = teamCount >= 5;
 
       const box = document.createElement('div');
       box.className = `team-box ${isMyTeam ? 'my-team-box' : ''}`;
 
       let playersHtml = '';
-      (team.players || []).forEach(p => {
+      activeTeamPlayers.forEach(p => {
         const isHost = p.id === room.hostId || p.isHost;
         const isCoHost = (p.id === room.coHostId || p.isCoHost) && !isHost;
         const playerName = p.name || (p.id === currentPlayer?.id ? currentPlayer?.name : null) || 'Player';
@@ -470,15 +475,17 @@ export class LobbyView {
         `;
       });
 
-      if (!team.players || team.players.length === 0) {
+      if (activeTeamPlayers.length === 0) {
         playersHtml = '<span class="text-muted text-sm">No players yet</span>';
       }
 
       let actionHtml = '';
-      if (isMyTeam) {
+      if (!isSpectator && isMyTeam) {
         actionHtml = `<span class="badge-team-current">✓ Your Team</span>`;
       } else if (isFull) {
         actionHtml = `<span class="text-muted text-xs">Team Full (5/5)</span>`;
+      } else if (isSpectator) {
+        actionHtml = `<button type="button" class="btn-sm btn-primary btn-switch-team" data-team="${teamKey}">🎮 Join ${this.escapeHtml(team.name || teamKey)}</button>`;
       } else {
         actionHtml = `<button type="button" class="btn-sm btn-primary btn-switch-team" data-team="${teamKey}">⇄ Switch to ${this.escapeHtml(team.name || teamKey)}</button>`;
       }

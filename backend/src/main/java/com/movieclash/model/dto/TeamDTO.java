@@ -12,7 +12,10 @@ public record TeamDTO(
     public static TeamDTO from(Team team) {
         if (team == null) return null;
         List<PlayerDTO> playerDTOs = team.getPlayers() != null
-            ? team.getPlayers().stream().map(PlayerDTO::from).toList()
+            ? team.getPlayers().stream()
+                .filter(p -> !p.isSpectator())
+                .map(PlayerDTO::from)
+                .toList()
             : List.of();
         return new TeamDTO(team.getId(), team.getName(), team.getScore(), playerDTOs);
     }

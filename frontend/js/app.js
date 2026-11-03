@@ -477,11 +477,12 @@ class MovieClashApp {
         if (state.player.id && payload.delta.players) {
           const me = payload.delta.players.find(p => p.id === state.player.id);
           if (me) {
+            const isSpectator = Boolean(me.spectator);
             store.updatePlayer({
-              teamId: me.teamId || state.player.teamId,
+              teamId: isSpectator ? null : (me.teamId || null),
               isHost: me.isHost,
               isCoHost: me.isCoHost,
-              isSpectator: Boolean(me.spectator)
+              isSpectator
             });
           }
         }

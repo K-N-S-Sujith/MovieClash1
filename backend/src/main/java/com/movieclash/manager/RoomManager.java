@@ -184,14 +184,11 @@ public class RoomManager {
             player.setSpectator(spectator);
 
             if (spectator) {
-                // If spectator in team mode, remove from any assigned team
-                if (player.getTeamId() != null) {
-                    Team team = room.getTeams().get(player.getTeamId());
-                    if (team != null) {
-                        team.getPlayers().removeIf(p -> p.getId().equals(playerId));
-                    }
-                    player.setTeamId(null);
+                // If spectator in team mode, remove from any and all teams in the room
+                for (Team t : room.getTeams().values()) {
+                    t.getPlayers().removeIf(p -> p.getId().equals(playerId));
                 }
+                player.setTeamId(null);
             } else {
                 // If switching back to active player in team mode, assign to balanced team if no team
                 if (room.getGameMode() == GameMode.TEAM && player.getTeamId() == null) {
@@ -199,6 +196,7 @@ public class RoomManager {
                     player.setTeamId(targetTeam);
                     Team team = room.getTeams().get(targetTeam);
                     if (team != null) {
+                        team.getPlayers().removeIf(p -> p.getId().equals(playerId));
                         team.getPlayers().add(player);
                     }
                 }
@@ -268,6 +266,9 @@ public class RoomManager {
 
             Player player = room.getPlayer(playerId);
             if (player == null) return false;
+
+            // When assigning/switching to a team, player becomes an active player (not a spectator)
+            player.setSpectator(false);
 
             // Remove from current team and any other team in room to prevent duplicates
             for (Team t : room.getTeams().values()) {
