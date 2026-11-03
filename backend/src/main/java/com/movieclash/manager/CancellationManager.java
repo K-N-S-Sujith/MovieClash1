@@ -92,23 +92,28 @@ public class CancellationManager {
             Player host = room.getPlayer(playerId);
             if (host == null) return;
 
-            Set<String> connectedPlayers = room.getPlayers().values().stream()
-                    .filter(Player::isConnected)
+            if (host.isSpectator()) {
+                broadcaster.sendPrivate(playerId, WsEnvelope.error(roomId, ErrorCode.UNAUTHORIZED, "Spectators cannot propose game cancellation"));
+                return;
+            }
+
+            Set<String> eligibleActivePlayers = room.getPlayers().values().stream()
+                    .filter(p -> p.isConnected() && !p.isSpectator())
                     .map(Player::getId)
                     .collect(Collectors.toSet());
 
-            // If host is the only connected player, cancel immediately
-            if (connectedPlayers.size() <= 1) {
-                log.info("Host [{}] is solo connected. Cancelling game immediately in room [{}]", host.getName(), roomId);
+            // If host is the only connected active player, cancel immediately
+            if (eligibleActivePlayers.size() <= 1) {
+                log.info("Host [{}] is solo active player. Cancelling game immediately in room [{}]", host.getName(), roomId);
                 roundManager.cancelGame(room);
                 broadcaster.broadcastToRoom(roomId, WsEnvelope.of("GAME_CANCELLED", roomId, Map.of(
-                    "reason", "Host cancelled game (no other connected players)"
+                    "reason", "Host cancelled game (no other active players)"
                 )));
                 return;
             }
 
             long timeoutMs = room.getConfig().getCancelVoteTimeoutMs();
-            CancelVoteSession session = new CancelVoteSession(roomId, playerId, host.getName(), connectedPlayers);
+            CancelVoteSession session = new CancelVoteSession(roomId, playerId, host.getName(), eligibleActivePlayers);
             // Proposer automatically votes YES
             session.getVotes().put(playerId, true);
 
@@ -119,16 +124,20 @@ public class CancellationManager {
             session.setTimeoutFuture(timer);
             activeVotes.put(roomId, session);
 
-            log.info("Host [{}] proposed game cancellation in room [{}]. Timeout: {}ms, eligible voters: {}",
-                    host.getName(), roomId, timeoutMs, connectedPlayers.size());
+            log.info("Host [{}] proposed game cancellation in room [{}]. Timeout: {}ms, eligible active voters: {}",
+                    host.getName(), roomId, timeoutMs, eligibleActivePlayers.size());
 
             Map<String, Object> requestedPayload = Map.of(
                 "proposerId", playerId,
                 "proposerName", host.getName(),
                 "timeoutMs", timeoutMs,
-                "totalEligible", connectedPlayers.size()
+                "totalEligible", eligibleActivePlayers.size()
             );
-            broadcaster.broadcastToRoom(roomId, WsEnvelope.of("CANCEL_VOTE_REQUESTED", roomId, requestedPayload));
+
+            // Send vote request strictly to eligible active players, NOT spectators
+            for (String activePlayerId : eligibleActivePlayers) {
+                broadcaster.sendPrivate(activePlayerId, WsEnvelope.of("CANCEL_VOTE_REQUESTED", roomId, requestedPayload));
+            }
         });
     }
 

@@ -86,7 +86,16 @@ public class RoundManager {
             return count;
         }
 
-        Character revealNextRandomLetter() {
+        int getLetterFrequency(char c) {
+            char upper = Character.toUpperCase(c);
+            int freq = 0;
+            for (char ch : originalTitle.toCharArray()) {
+                if (Character.toUpperCase(ch) == upper) freq++;
+            }
+            return freq;
+        }
+
+        Character revealNextLetter(boolean boostToReachHalf) {
             List<Character> unrevealed = new ArrayList<>();
             for (Character c : uniqueLetters) {
                 if (!revealedLetters.contains(c)) {
@@ -95,10 +104,25 @@ public class RoundManager {
             }
             if (unrevealed.isEmpty()) return null;
 
-            Character chosen = unrevealed.get(ThreadLocalRandom.current().nextInt(unrevealed.size()));
+            Character chosen;
+            int currentlyRevealed = countRevealed();
+            int halfLetters = (int) Math.ceil(totalLetters / 2.0);
+
+            if (boostToReachHalf && currentlyRevealed < halfLetters) {
+                // Boost: pick unrevealed letter with highest occurrences in title to hit >= 50%
+                unrevealed.sort((a, b) -> Integer.compare(getLetterFrequency(b), getLetterFrequency(a)));
+                chosen = unrevealed.get(0);
+            } else {
+                chosen = unrevealed.get(ThreadLocalRandom.current().nextInt(unrevealed.size()));
+            }
+
             revealedLetters.add(chosen);
             currentMaskedTitle = buildMasked(originalTitle, revealedLetters);
             return chosen;
+        }
+
+        Character revealNextRandomLetter() {
+            return revealNextLetter(false);
         }
     }
 
@@ -337,25 +361,38 @@ public class RoundManager {
         roundTimers.put(roomId, timer);
 
         // 4. Schedule progressive Hangman marquee letter reveals
+        // Curve:
+        // - 0% to 30% of round duration: 0 letters revealed (pure movie trivia & clue listening)
+        // - 30% of time until last 10 seconds: progressively reveal letters based on length
+        // - At least half (>= 50%) of the movie letters revealed by the 10-second mark
+        // - Last 10 seconds: no new reveals, competitive final sprint with urgent ticking clock!
         List<ScheduledFuture<?>> hintFutures = new ArrayList<>();
-        List<Double> percentages = new ArrayList<>();
-        if (durationMs >= 80_000L) {
-            percentages.add(0.30);
-            percentages.add(0.60);
-            percentages.add(0.80);
-        } else if (durationMs >= 25_000L) {
-            percentages.add(0.40);
-            percentages.add(0.70);
-        } else if (durationMs >= 15_000L) {
-            percentages.add(0.50);
-        }
+        int uniqueCount = hintState.uniqueLetters.size();
 
-        for (double pct : percentages) {
-            long delayMs = (long) (durationMs * pct);
-            ScheduledFuture<?> hintFuture = scheduler.schedule(() -> {
-                triggerLetterHint(roomId, currentRoundNum);
-            }, delayMs, TimeUnit.MILLISECONDS);
-            hintFutures.add(hintFuture);
+        if (uniqueCount > 1) {
+            int halfLetters = (int) Math.ceil(hintState.totalLetters / 2.0);
+            int halfUnique = (int) Math.ceil(uniqueCount / 2.0);
+            int targetHints = Math.max(1, Math.min(uniqueCount - 1, Math.max(halfUnique, (int) Math.ceil(halfLetters / 2.0))));
+            targetHints = Math.max(1, Math.min(uniqueCount - 1, targetHints));
+
+            long startMs = (long) (durationMs * 0.30); // 30% mark
+            long endMs = durationMs - 10_000L;        // 10s remaining
+
+            if (endMs <= startMs + 2000L) {
+                // Fallback for very short rounds (e.g. fast integration tests)
+                startMs = (long) (durationMs * 0.30);
+                endMs = (long) (durationMs * 0.85);
+            }
+
+            long windowMs = endMs - startMs;
+            for (int i = 1; i <= targetHints; i++) {
+                long delayMs = startMs + (long) ((double) i / targetHints * windowMs);
+                final boolean isFinalHint = (i == targetHints);
+                ScheduledFuture<?> hintFuture = scheduler.schedule(() -> {
+                    triggerLetterHint(roomId, currentRoundNum, isFinalHint);
+                }, delayMs, TimeUnit.MILLISECONDS);
+                hintFutures.add(hintFuture);
+            }
         }
         roundHintTimers.put(roomId, hintFutures);
     }
@@ -579,6 +616,10 @@ public class RoundManager {
     }
 
     public void triggerLetterHint(String roomId, int roundNumber) {
+        triggerLetterHint(roomId, roundNumber, false);
+    }
+
+    public void triggerLetterHint(String roomId, int roundNumber, boolean isFinalHint) {
         Room room = roomManager.getRoom(roomId);
         if (room == null) return;
 
@@ -590,9 +631,10 @@ public class RoundManager {
             ActiveRoundHintState hintState = activeRoundHints.get(roomId);
             if (hintState == null) return;
 
-            Character revealedLetter = hintState.revealNextRandomLetter();
+            Character revealedLetter = hintState.revealNextLetter(isFinalHint);
             if (revealedLetter != null) {
-                log.info("Revealed letter hint [{}] for room [{}] round {}", revealedLetter, roomId, roundNumber);
+                log.info("Revealed letter hint [{}] (revealed {}/{} letters) for room [{}] round {}",
+                        revealedLetter, hintState.countRevealed(), hintState.totalLetters, roomId, roundNumber);
                 Map<String, Object> hintPayload = Map.of(
                     "maskedTitle", hintState.currentMaskedTitle,
                     "revealedLetter", String.valueOf(revealedLetter),

@@ -285,6 +285,15 @@ export class GameView {
 
     // 6. Render Round Activity
     this.renderActivity(state.roundActivity);
+
+    // 7. Cancellation propose visibility (Hosts/Co-Hosts only, not spectators)
+    if (this.btnProposeCancel) {
+      if (player.isSpectator || (!player.isHost && !player.isCoHost)) {
+        this.btnProposeCancel.classList.add('hidden');
+      } else {
+        this.btnProposeCancel.classList.remove('hidden');
+      }
+    }
   }
 
   renderScoreboard(room) {

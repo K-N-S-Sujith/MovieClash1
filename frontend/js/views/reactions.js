@@ -33,7 +33,11 @@ export class ReactionsView {
 
     // Subscribe to room status to show/hide reaction dock
     store.subscribe((state) => {
-      const inRoom = state.room.roomId && (state.room.status === 'LOBBY' || state.room.status === 'PLAYING');
+      const inRoom = Boolean(
+        state.room.roomId &&
+        state.room.status &&
+        (state.room.status === 'LOBBY' || state.room.status === 'IN_PROGRESS' || state.room.status === 'PAUSED' || state.room.status === 'FINISHED')
+      );
       if (this.dock) {
         if (inRoom) {
           this.dock.classList.remove('hidden');

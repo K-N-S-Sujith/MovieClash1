@@ -31,6 +31,12 @@ export class CancelModalView {
   show(payload) {
     if (!this.modalEl) return;
 
+    // Spectators do not participate in cancellation votes
+    const state = store.get();
+    if (state.player && state.player.isSpectator) {
+      return;
+    }
+
     const { proposerName, timeoutMs = 15000 } = payload;
     if (this.proposerNameEl) {
       this.proposerNameEl.textContent = proposerName || 'The Host';
