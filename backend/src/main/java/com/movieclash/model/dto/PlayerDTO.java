@@ -9,7 +9,8 @@ public record PlayerDTO(
     int score,
     String teamId,
     boolean isHost,
-    boolean isCoHost
+    boolean isCoHost,
+    boolean spectator
 ) {
     public static PlayerDTO from(Player player) {
         if (player == null) return null;
@@ -20,7 +21,8 @@ public record PlayerDTO(
             player.getScore(),
             player.getTeamId(),
             player.isHost(),
-            player.isCoHost()
+            player.isCoHost(),
+            player.isSpectator()
         );
     }
 }

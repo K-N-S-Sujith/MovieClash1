@@ -280,12 +280,16 @@ class MovieClashApp {
           const found = room.players.find(p => p.id === payload.yourPlayerId);
           if (found && found.teamId) myTeamId = found.teamId;
         }
+        const myPlayerObj = room?.players?.find(p => p.id === payload.yourPlayerId);
+        const isSpectator = payload.isSpectator != null ? payload.isSpectator : (myPlayerObj ? Boolean(myPlayerObj.spectator) : false);
+
         store.updatePlayer({
           id: payload.yourPlayerId,
           reconnectToken: payload.reconnectToken,
           teamId: myTeamId,
           isHost,
-          isCoHost
+          isCoHost,
+          isSpectator
         });
       } else if (player) {
         const existing = state.room.players.filter(p => p.id !== player.id);
@@ -294,7 +298,25 @@ class MovieClashApp {
 
       store.saveSession();
       store.addActivity(`${player ? player.name : 'A player'} joined the room`);
-      this.switchView('viewLobby');
+
+      if (room?.status === 'IN_PROGRESS') {
+        if (payload.currentRound) {
+          store.updateRound({
+            roundNumber: payload.currentRound,
+            totalRounds: payload.totalRounds || 5,
+            clueGiverId: payload.clueGiverId,
+            clueGiverName: payload.clueGiverName,
+            clueGiverTeam: payload.clueGiverTeam,
+            isMyClueGiverTurn: false,
+            serverTime: payload.serverTime || Date.now(),
+            deadline: payload.deadline || 0,
+            isRoundActive: Boolean(payload.deadline && payload.deadline > Date.now())
+          });
+        }
+        this.switchView('viewGame');
+      } else {
+        this.switchView('viewLobby');
+      }
     });
 
     wsClient.on('HOST_RESTORED', (payload) => {
@@ -458,7 +480,8 @@ class MovieClashApp {
             store.updatePlayer({
               teamId: me.teamId || state.player.teamId,
               isHost: me.isHost,
-              isCoHost: me.isCoHost
+              isCoHost: me.isCoHost,
+              isSpectator: Boolean(me.spectator)
             });
           }
         }

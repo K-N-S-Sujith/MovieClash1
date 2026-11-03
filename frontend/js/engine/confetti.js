@@ -257,3 +257,4 @@ class ConfettiEngine {
 
 export const confettiEngine = new ConfettiEngine();
 export default confettiEngine;
+

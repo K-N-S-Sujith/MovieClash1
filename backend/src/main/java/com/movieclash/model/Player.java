@@ -20,6 +20,7 @@ public class Player {
     private String teamId;
     private boolean isHost;
     private boolean isCoHost;
+    private boolean spectator;
 
     @JsonIgnore
     private long lastHeartbeat;
@@ -140,6 +141,14 @@ public class Player {
 
     public void setDisconnectedAt(long disconnectedAt) {
         this.disconnectedAt = disconnectedAt;
+    }
+
+    public boolean isSpectator() {
+        return spectator;
+    }
+
+    public void setSpectator(boolean spectator) {
+        this.spectator = spectator;
     }
 }
 

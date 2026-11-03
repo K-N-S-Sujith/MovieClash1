@@ -332,12 +332,14 @@ export class LandingView {
     }
 
     const userId = userProfile.getUserId();
-    store.updatePlayer({ userId, name: playerName, isHost: false });
+    const asSpectator = Boolean(document.getElementById('joinAsSpectator')?.checked);
+    store.updatePlayer({ userId, name: playerName, isHost: false, isSpectator: asSpectator });
 
     const sent = wsClient.send('JOIN_ROOM', {
       userId,
       roomId: roomCode,
-      playerName
+      playerName,
+      asSpectator
     });
 
     if (!sent) {

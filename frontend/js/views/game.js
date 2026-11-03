@@ -65,6 +65,7 @@ export class GameView {
     this.revealAlertTimeout = null;
 
     this.guessSection = document.getElementById('guessSubmissionSection');
+    this.spectatorAudienceBanner = document.getElementById('spectatorAudienceBanner');
     this.guessForm = document.getElementById('guessForm');
     this.guessInput = document.getElementById('guessInput');
     this.guessFeedbackEl = document.getElementById('guessFeedbackMsg');
@@ -139,6 +140,7 @@ export class GameView {
     if (!text) return;
 
     const state = store.get();
+    if (state.player.isSpectator) return; // Spectators cannot submit guesses
     const isClueTeam = state.round.isMyClueGiverTurn || (state.room.gameMode === 'TEAM' && state.player.teamId && state.player.teamId === state.round.clueGiverTeam);
     if (isClueTeam) return; // Clue team members cannot submit guesses
     if (state.round.alreadyScoredThisRound) return; // Already scored
@@ -214,6 +216,7 @@ export class GameView {
       if (this.clueGiverAuditLog) this.clueGiverAuditLog.classList.add('hidden');
       if (this.guesserPromptPanel) this.guesserPromptPanel.classList.add('hidden');
       if (this.guessSection) this.guessSection.classList.add('hidden');
+      if (this.spectatorAudienceBanner) this.spectatorAudienceBanner.classList.add('hidden');
     } else {
       // Round is active or concluded
       if (this.movieChoiceCard) this.movieChoiceCard.classList.add('hidden');
@@ -224,6 +227,7 @@ export class GameView {
         if (this.clueGiverSecretPanel) this.clueGiverSecretPanel.classList.remove('hidden');
         if (this.guesserPromptPanel) this.guesserPromptPanel.classList.add('hidden');
         if (this.guessSection) this.guessSection.classList.add('hidden');
+        if (this.spectatorAudienceBanner) this.spectatorAudienceBanner.classList.add('hidden');
 
         // Audit log only for lead clue-giver
         if (this.clueGiverAuditLog) {
@@ -244,17 +248,26 @@ export class GameView {
           }
         }
       } else {
-        // Guesser mode (Opposing teams / Other players)
+        // Guesser / Spectator mode (Opposing teams / Audience / Other players)
         if (this.clueGiverSecretPanel) this.clueGiverSecretPanel.classList.add('hidden');
         if (this.clueGiverAuditLog) this.clueGiverAuditLog.classList.add('hidden');
         if (this.guesserPromptPanel) this.guesserPromptPanel.classList.remove('hidden');
 
-        if (round.alreadyScoredThisRound) {
+        if (player.isSpectator) {
           if (this.guessSection) this.guessSection.classList.add('hidden');
-          if (this.guesserSubText) this.guesserSubText.textContent = 'You have already answered correctly this round! Sit back and enjoy the remaining time.';
+          if (this.spectatorAudienceBanner) this.spectatorAudienceBanner.classList.remove('hidden');
+          if (this.guesserSubText) {
+            this.guesserSubText.textContent = 'You are spectating! Follow the clues, watch the letter reveals, and cheer with live reactions.';
+          }
         } else {
-          if (this.guessSection) this.guessSection.classList.remove('hidden');
-          if (this.guesserSubText) this.guesserSubText.textContent = 'Type your answer below as fast as you can. Minor typos and articles are accepted!';
+          if (this.spectatorAudienceBanner) this.spectatorAudienceBanner.classList.add('hidden');
+          if (round.alreadyScoredThisRound) {
+            if (this.guessSection) this.guessSection.classList.add('hidden');
+            if (this.guesserSubText) this.guesserSubText.textContent = 'You have already answered correctly this round! Sit back and enjoy the remaining time.';
+          } else {
+            if (this.guessSection) this.guessSection.classList.remove('hidden');
+            if (this.guesserSubText) this.guesserSubText.textContent = 'Type your answer below as fast as you can. Minor typos and articles are accepted!';
+          }
         }
 
         // Render Hangman Marquee Board

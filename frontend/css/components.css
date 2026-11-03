@@ -1609,3 +1609,140 @@
   z-index: 9999;
 }
 
+/* ================= 22. SPECTATOR & AUDIENCE MODE ================= */
+.spectator-toggle-group {
+  margin: 12px 0 16px 0;
+}
+
+.spectator-join-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  background: rgba(107, 59, 167, 0.15);
+  border: 1px solid rgba(107, 59, 167, 0.4);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--friends-cream);
+  transition: all var(--transition-fast);
+}
+
+.spectator-join-toggle:hover {
+  background: rgba(107, 59, 167, 0.25);
+  border-color: var(--friends-yellow);
+}
+
+.spectator-join-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--friends-yellow);
+  cursor: pointer;
+}
+
+.role-toggle-btn {
+  background: rgba(107, 59, 167, 0.2);
+  border-color: rgba(107, 59, 167, 0.6);
+  color: var(--friends-cream);
+  font-family: var(--font-heading);
+  letter-spacing: 0.5px;
+}
+
+.role-toggle-btn:hover {
+  background: rgba(107, 59, 167, 0.4);
+  border-color: var(--friends-yellow);
+  color: var(--friends-yellow);
+}
+
+.role-toggle-btn.active-spectator {
+  background: linear-gradient(135deg, rgba(107, 59, 167, 0.6), rgba(42, 157, 143, 0.6));
+  border-color: var(--friends-yellow);
+  color: var(--friends-yellow);
+  box-shadow: 0 0 10px rgba(245, 197, 66, 0.3);
+}
+
+.spectator-tag {
+  background: rgba(107, 59, 167, 0.35);
+  color: var(--friends-yellow);
+  border: 1px solid rgba(245, 197, 66, 0.4);
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  margin-left: 6px;
+}
+
+.spectators-section {
+  margin-top: 20px;
+  border-top: 1px dashed var(--cinema-border);
+  padding-top: 14px;
+}
+
+.spectators-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--friends-cream-muted);
+}
+
+.spectators-header h4 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  color: var(--friends-yellow);
+  margin: 0;
+}
+
+.spectator-player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.spectator-item {
+  background: rgba(18, 14, 24, 0.7) !important;
+  border-color: rgba(107, 59, 167, 0.3) !important;
+  opacity: 0.9;
+}
+
+.spectator-avatar {
+  background: linear-gradient(135deg, var(--friends-purple), #4a2875) !important;
+  color: var(--friends-yellow) !important;
+}
+
+/* In-Game Audience Banner */
+.spectator-audience-card {
+  background: linear-gradient(135deg, rgba(28, 18, 42, 0.95), rgba(15, 12, 22, 0.98)) !important;
+  border: 2px dashed rgba(245, 197, 66, 0.5) !important;
+  border-radius: var(--radius-lg);
+  padding: 22px !important;
+  text-align: center;
+  margin-top: 14px;
+  box-shadow: 0 0 15px rgba(107, 59, 167, 0.25);
+}
+
+.audience-badge {
+  display: inline-block;
+  background: var(--friends-purple);
+  color: var(--friends-yellow);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--friends-yellow);
+  margin-bottom: 10px;
+}
+
+.spectator-audience-card h4 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  letter-spacing: 1.5px;
+  color: var(--friends-cream);
+  margin: 0 0 6px 0;
+}
+

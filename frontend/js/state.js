@@ -20,7 +20,8 @@ class GameStateStore {
         score: 0,
         teamId: null,
         isHost: false,
-        isCoHost: false
+        isCoHost: false,
+        isSpectator: false
       },
 
       // Room metadata

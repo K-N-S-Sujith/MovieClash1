@@ -152,7 +152,9 @@ public class RoundManager {
 
                 for (int roundCycle = 0; roundCycle < turnsPerTeam; roundCycle++) {
                     for (com.movieclash.model.Team team : activeTeams) {
-                        List<Player> teamPlayers = new ArrayList<>(team.getPlayers());
+                        List<Player> teamPlayers = team.getPlayers().stream()
+                                .filter(p -> !p.isSpectator())
+                                .collect(Collectors.toList());
                         if (teamPlayers.isEmpty()) continue;
                         int currentPointer = teamPointers.getOrDefault(team.getId(), 0);
                         Player clueGiver = teamPlayers.get(currentPointer % teamPlayers.size());
@@ -161,12 +163,15 @@ public class RoundManager {
                     }
                 }
             } else {
+                List<String> playerIds = room.getPlayers().values().stream()
+                        .filter(p -> !p.isSpectator())
+                        .map(Player::getId)
+                        .collect(Collectors.toList());
                 int minPlayers = room.getConfig().getMinRoomPlayers();
-                if (room.getPlayers().size() < minPlayers) {
+                if (playerIds.size() < minPlayers) {
                     throw new IllegalStateException("At least " + minPlayers + " players are required to start");
                 }
 
-                List<String> playerIds = new ArrayList<>(room.getPlayers().keySet());
                 Collections.shuffle(playerIds);
 
                 int turnsPerPlayer = room.getConfig().getTotalRounds();
@@ -440,9 +445,9 @@ public class RoundManager {
                 finishRoundInternal(room, "ALL_GUESSED");
             }
         } else {
-            // In individual battle, all connected players except clue-giver
+            // In individual battle, all connected non-spectator players except clue-giver
             eligibleGuesserIds = room.getPlayers().values().stream()
-                    .filter(p -> p.isConnected() && !p.getId().equals(clueGiverId))
+                    .filter(p -> p.isConnected() && !p.isSpectator() && !p.getId().equals(clueGiverId))
                     .map(Player::getId)
                     .collect(Collectors.toSet());
 

@@ -76,10 +76,14 @@ public class RoomManager {
     }
 
     public JoinRoomResult joinRoom(String roomId, String rawPlayerName) {
-        return joinRoom(roomId, rawPlayerName, null);
+        return joinRoom(roomId, rawPlayerName, null, false);
     }
 
     public JoinRoomResult joinRoom(String roomId, String rawPlayerName, String userId) {
+        return joinRoom(roomId, rawPlayerName, userId, false);
+    }
+
+    public JoinRoomResult joinRoom(String roomId, String rawPlayerName, String userId, boolean asSpectator) {
         if (roomId == null) {
             throw new IllegalStateException(ErrorCode.INVALID_ROOM_CODE.name());
         }
@@ -119,7 +123,7 @@ public class RoomManager {
                 return new JoinRoomResult(room, existingPlayer, existingPlayer.getReconnectToken());
             }
 
-            if (room.getStatus() != RoomStatus.LOBBY) {
+            if (!asSpectator && room.getStatus() != RoomStatus.LOBBY) {
                 throw new IllegalStateException(ErrorCode.GAME_ALREADY_STARTED.name());
             }
 
@@ -140,6 +144,7 @@ public class RoomManager {
             String reconnectToken = sessionManager.generateReconnectToken();
             Player player = new Player(playerId, finalName, reconnectToken);
             player.setUserId(userId != null && !userId.isBlank() ? userId : "usr_" + UUID.randomUUID().toString().substring(0, 8));
+            player.setSpectator(asSpectator);
 
             boolean isCreator = userId != null && userId.equals(room.getCreatorUserId());
             if (isCreator) {
@@ -152,8 +157,8 @@ public class RoomManager {
                 player.setHost(true);
             }
 
-            // In team mode, auto-balance onto team with fewer players
-            if (room.getGameMode() == GameMode.TEAM) {
+            // In team mode, auto-balance onto team with fewer players (non-spectators only)
+            if (!asSpectator && room.getGameMode() == GameMode.TEAM) {
                 String targetTeam = findBalancedTeam(room);
                 player.setTeamId(targetTeam);
                 Team team = room.getTeams().get(targetTeam);
@@ -163,8 +168,41 @@ public class RoomManager {
             }
 
             room.addPlayer(player);
-            log.info("Player [{}] ({}) joined room [{}] (isHost: {})", player.getName(), playerId, code, player.isHost());
+            log.info("Player [{}] ({}) joined room [{}] (isHost: {}, spectator: {})", player.getName(), playerId, code, player.isHost(), player.isSpectator());
             return new JoinRoomResult(room, player, reconnectToken);
+        });
+    }
+
+    public void setPlayerSpectator(String roomId, String playerId, boolean spectator) {
+        Room room = rooms.get(roomId.toUpperCase());
+        if (room == null) return;
+
+        room.executeLocked(() -> {
+            Player player = room.getPlayer(playerId);
+            if (player == null) return;
+
+            player.setSpectator(spectator);
+
+            if (spectator) {
+                // If spectator in team mode, remove from any assigned team
+                if (player.getTeamId() != null) {
+                    Team team = room.getTeams().get(player.getTeamId());
+                    if (team != null) {
+                        team.getPlayers().removeIf(p -> p.getId().equals(playerId));
+                    }
+                    player.setTeamId(null);
+                }
+            } else {
+                // If switching back to active player in team mode, assign to balanced team if no team
+                if (room.getGameMode() == GameMode.TEAM && player.getTeamId() == null) {
+                    String targetTeam = findBalancedTeam(room);
+                    player.setTeamId(targetTeam);
+                    Team team = room.getTeams().get(targetTeam);
+                    if (team != null) {
+                        team.getPlayers().add(player);
+                    }
+                }
+            }
         });
     }
 

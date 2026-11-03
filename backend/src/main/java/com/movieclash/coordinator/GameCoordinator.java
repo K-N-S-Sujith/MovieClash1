@@ -84,6 +84,7 @@ public class GameCoordinator {
             case "CLUE_MESSAGE" -> handleClueMessage(session, envelope);
             case "CHAT_MESSAGE" -> handleChatMessage(session, envelope);
             case "EMOJI_REACTION" -> handleEmojiReaction(session, envelope);
+            case "SWITCH_ROLE" -> handleSwitchRole(session, envelope);
             case "RECONNECT" -> reconnectionManager.handleReconnect(session, envelope);
             case "CANCEL_PROPOSE" -> handleCancelPropose(session, envelope);
             case "CANCEL_VOTE" -> handleCancelVote(session, envelope);
@@ -164,6 +165,31 @@ public class GameCoordinator {
         }
     }
 
+    private void handleSwitchRole(WebSocketSession session, WsEnvelope envelope) {
+        String sessionId = session.getId();
+        String playerId = sessionTracker.getPlayerId(sessionId);
+        String roomId = sessionTracker.getRoomId(sessionId);
+
+        if (roomId == null || playerId == null) return;
+
+        Room room = roomManager.getRoom(roomId);
+        if (room == null) return;
+
+        Map<String, Object> payload = envelope.getPayload() != null ? envelope.getPayload() : Map.of();
+        Boolean targetSpectator = (Boolean) payload.get("spectator");
+
+        room.executeLocked(() -> {
+            Player p = room.getPlayer(playerId);
+            if (p == null) return;
+
+            boolean newSpectator = targetSpectator != null ? targetSpectator : !p.isSpectator();
+            roomManager.setPlayerSpectator(roomId, playerId, newSpectator);
+            log.info("Player [{}] ({}) in room [{}] switched spectator mode to: {}", p.getName(), playerId, roomId, newSpectator);
+
+            playerSynchronizer.broadcastRosterDelta(roomId);
+        });
+    }
+
     private void handleScoreUpdate(WebSocketSession session, WsEnvelope envelope) {
         String sessionId = session.getId();
         String playerId = sessionTracker.getPlayerId(sessionId);
@@ -241,6 +267,12 @@ public class GameCoordinator {
 
             Player guesser = room.getPlayer(playerId);
             if (guesser == null) return;
+
+            // Spectators cannot submit guesses
+            if (guesser.isSpectator()) {
+                broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.UNAUTHORIZED, "Spectators cannot submit guesses"));
+                return;
+            }
 
             // Clue-giver cannot submit guesses
             if (playerId.equals(room.getCurrentClueGiverId())) {
@@ -470,11 +502,15 @@ public class GameCoordinator {
         String roomId = (String) payload.get("roomId");
         String playerName = (String) payload.get("playerName");
         String userId = (String) payload.get("userId");
+        Boolean asSpectator = (Boolean) payload.get("asSpectator");
+        if (asSpectator == null && payload.get("spectator") != null) {
+            asSpectator = (Boolean) payload.get("spectator");
+        }
 
         if (roomId == null) roomId = envelope.getRoomId();
 
         try {
-            RoomManager.JoinRoomResult res = roomManager.joinRoom(roomId, playerName, userId);
+            RoomManager.JoinRoomResult res = roomManager.joinRoom(roomId, playerName, userId, Boolean.TRUE.equals(asSpectator));
             Room room = res.room();
             Player player = res.player();
 
@@ -484,11 +520,23 @@ public class GameCoordinator {
             sessionTracker.bindPlayer(session.getId(), player.getId(), room.getRoomId());
 
             // 1. Send confirmation to joining player with sanitized room snapshot
-            Map<String, Object> selfPayload = Map.of(
-                "yourPlayerId", player.getId(),
-                "reconnectToken", res.reconnectToken(),
-                "room", com.movieclash.model.dto.RoomSnapshotDTO.from(room)
-            );
+            Map<String, Object> selfPayload = new HashMap<>();
+            selfPayload.put("yourPlayerId", player.getId());
+            selfPayload.put("reconnectToken", res.reconnectToken());
+            selfPayload.put("room", com.movieclash.model.dto.RoomSnapshotDTO.from(room));
+            selfPayload.put("isSpectator", player.isSpectator());
+
+            if (room.getStatus() == RoomStatus.IN_PROGRESS) {
+                Player clueGiver = room.getPlayer(room.getCurrentClueGiverId());
+                selfPayload.put("currentRound", room.getCurrentRound());
+                selfPayload.put("totalRounds", room.getTotalRounds());
+                selfPayload.put("clueGiverId", room.getCurrentClueGiverId());
+                selfPayload.put("clueGiverName", clueGiver != null ? clueGiver.getName() : "");
+                selfPayload.put("clueGiverTeam", room.getCurrentClueGiverTeam() != null ? room.getCurrentClueGiverTeam() : "");
+                selfPayload.put("serverTime", System.currentTimeMillis());
+                selfPayload.put("deadline", room.getRoundDeadline());
+            }
+
             broadcaster.sendToSessionDirect(session, WsEnvelope.of("PLAYER_JOINED", room.getRoomId(), selfPayload));
 
             // 2. Broadcast PLAYER_JOINED to existing players

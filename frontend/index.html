@@ -206,6 +206,13 @@
             <input type="text" id="joinRoomCode" class="input-code" maxlength="6" placeholder="XYZ123" required autocomplete="off" style="text-transform:uppercase" />
           </div>
 
+          <div class="form-group spectator-toggle-group">
+            <label class="spectator-join-toggle">
+              <input type="checkbox" id="joinAsSpectator" />
+              <span>🍿 Join as Audience / Spectator (watch, chat & react)</span>
+            </label>
+          </div>
+
           <button type="submit" class="btn btn-secondary btn-block">Join Battle</button>
         </form>
       </div>
@@ -221,6 +228,7 @@
             <span id="lobbyRoomCode" class="code-display">------</span>
             <button id="btnCopyRoomCode" class="btn-sm btn-outline" title="Copy Room Code">Copy Code</button>
             <button id="btnCopyInviteLink" class="btn-sm btn-outline" title="Copy Invite Link">Copy Link</button>
+            <button id="btnToggleRole" class="btn-sm btn-outline role-toggle-btn" type="button" title="Toggle between Player and Spectator">🍿 Watch as Spectator</button>
           </div>
           <div class="lobby-meta">
             <span class="badge" id="lobbyModeBadge">INDIVIDUAL</span>
@@ -248,6 +256,15 @@
                 </div>
               </div>
               <div id="teamsContainer" class="teams-container"></div>
+            </div>
+
+            <!-- Audience & Spectators Section -->
+            <div id="spectatorsSection" class="spectators-section hidden">
+              <div class="spectators-header">
+                <span class="icon">🍿</span>
+                <h4>Audience & Spectators (<span id="spectatorCountNum">0</span>)</h4>
+              </div>
+              <div id="spectatorPlayerList" class="spectator-player-list"></div>
             </div>
           </div>
 
@@ -430,6 +447,13 @@
                 <input type="text" id="clueTextInput" placeholder="Type a text clue (e.g., 'Directed by Christopher Nolan')..." maxlength="200" autocomplete="off" />
                 <button type="submit" class="btn btn-primary">Post Clue</button>
               </form>
+            </div>
+
+            <!-- AUDIENCE SPECTATOR BANNER (Visible to spectators instead of guess input) -->
+            <div id="spectatorAudienceBanner" class="spectator-audience-card card hidden">
+              <div class="audience-badge">🍿 AUDIENCE SEAT</div>
+              <h4>You are spectating this match!</h4>
+              <p class="text-muted text-sm">Watch the clues and letter reveals unfold in real-time, chat with everyone, and cheer with live floating reactions below.</p>
             </div>
 
             <!-- GUESS SUBMISSION BAR (Visible and active for eligible guessers) -->

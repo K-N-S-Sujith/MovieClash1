@@ -21,11 +21,22 @@ export class LobbyView {
     this.btnLeaveRoom = document.getElementById('btnLeaveRoom');
     this.btnCopyCode = document.getElementById('btnCopyRoomCode');
     this.btnCopyLink = document.getElementById('btnCopyInviteLink');
+    this.btnToggleRole = document.getElementById('btnToggleRole');
+    this.spectatorsSection = document.getElementById('spectatorsSection');
+    this.spectatorCountNum = document.getElementById('spectatorCountNum');
+    this.spectatorPlayerList = document.getElementById('spectatorPlayerList');
 
     this.initEvents();
   }
 
   initEvents() {
+    if (this.btnToggleRole) {
+      this.btnToggleRole.addEventListener('click', () => {
+        const isCurrentlySpectator = Boolean(store.get().player.isSpectator);
+        wsClient.send('SWITCH_ROLE', { spectator: !isCurrentlySpectator });
+      });
+    }
+
     if (this.btnStartGame) {
       this.btnStartGame.addEventListener('click', () => {
         wsClient.send('START_GAME', {});
@@ -77,7 +88,23 @@ export class LobbyView {
 
     if (this.roomCodeEl) this.roomCodeEl.textContent = room.roomId || '------';
     if (this.modeBadgeEl) this.modeBadgeEl.textContent = room.gameMode;
-    if (this.playerCountBadgeEl) this.playerCountBadgeEl.textContent = `${room.players.length} Player${room.players.length === 1 ? '' : 's'}`;
+
+    const activePlayers = room.players.filter(p => !p.spectator);
+    const spectators = room.players.filter(p => p.spectator);
+
+    if (this.playerCountBadgeEl) {
+      this.playerCountBadgeEl.textContent = `${activePlayers.length} Player${activePlayers.length === 1 ? '' : 's'}${spectators.length > 0 ? ` (${spectators.length} 🍿)` : ''}`;
+    }
+
+    if (this.btnToggleRole) {
+      if (player.isSpectator) {
+        this.btnToggleRole.textContent = '🎮 Join as Player';
+        this.btnToggleRole.classList.add('active-spectator');
+      } else {
+        this.btnToggleRole.textContent = '🍿 Watch as Spectator';
+        this.btnToggleRole.classList.remove('active-spectator');
+      }
+    }
 
     const isHost = player.id && player.id === room.hostId;
     const isCoHost = (player.id && player.id === room.coHostId) || player.isCoHost;
@@ -95,12 +122,12 @@ export class LobbyView {
           this.btnStartGame.textContent = 'Start Game';
           this.btnStartGame.title = '';
         }
-        
-        // Can start if >= 2 players (or Team conditions met)
-        let canStart = room.players.length >= 2;
+
+        // Can start if >= 2 active players (or Team conditions met)
+        let canStart = activePlayers.length >= 2;
         if (room.gameMode === 'TEAM') {
           // At least 2 teams with at least 1 player each
-          const activeTeams = Object.values(room.teams || {}).filter(t => t.players && t.players.length > 0);
+          const activeTeams = Object.values(room.teams || {}).filter(t => t.players && t.players.some(p => !p.spectator));
           canStart = activeTeams.length >= 2;
         }
         this.btnStartGame.disabled = !canStart;
@@ -119,13 +146,50 @@ export class LobbyView {
       if (this.individualListEl) this.individualListEl.classList.remove('hidden');
       this.renderIndividualMode(room, player);
     }
+
+    this.renderSpectators(spectators, player);
+  }
+
+  renderSpectators(spectators, currentPlayer) {
+    if (!this.spectatorsSection || !this.spectatorPlayerList) return;
+
+    if (!spectators || spectators.length === 0) {
+      this.spectatorsSection.classList.add('hidden');
+      return;
+    }
+
+    this.spectatorsSection.classList.remove('hidden');
+    if (this.spectatorCountNum) {
+      this.spectatorCountNum.textContent = spectators.length;
+    }
+
+    this.spectatorPlayerList.innerHTML = '';
+    spectators.forEach(p => {
+      const item = document.createElement('div');
+      item.className = `roster-item spectator-item ${p.id === currentPlayer?.id ? 'is-me' : ''}`;
+      const playerName = p.name || 'Spectator';
+      const initial = playerName.charAt(0).toUpperCase();
+
+      item.innerHTML = `
+        <div class="roster-player-info">
+          <div class="player-avatar spectator-avatar">${initial}</div>
+          <span class="player-name">${this.escapeHtml(playerName)} ${p.id === currentPlayer?.id ? '(You)' : ''}</span>
+        </div>
+        <div>
+          <span class="spectator-tag">🍿 Audience</span>
+        </div>
+      `;
+      this.spectatorPlayerList.appendChild(item);
+    });
   }
 
   renderIndividualMode(room, currentPlayer) {
     if (!this.individualListEl) return;
     this.individualListEl.innerHTML = '';
 
-    room.players.forEach(p => {
+    const activePlayers = room.players.filter(p => !p.spectator);
+
+    activePlayers.forEach(p => {
       const item = document.createElement('div');
       item.className = `roster-item ${p.id === currentPlayer?.id ? 'is-me' : ''}`;
 
