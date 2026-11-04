@@ -44,6 +44,13 @@ export class RoundTimer {
     }
   }
 
+  pause() {
+    this.stop();
+    if (this.timerValueEl) {
+      this.timerValueEl.textContent = '⏸';
+    }
+  }
+
   tick() {
     const currentAdjustedTime = Date.now() + this.clockOffsetMs;
     const remainingMs = Math.max(0, this.deadline - currentAdjustedTime);

@@ -35,6 +35,8 @@ public class Room {
     private int turnIndex = 0;
     private long roundStartTime = 0L;
     private long roundDeadline = 0L;
+    private volatile boolean roundPaused = false;
+    private volatile long remainingRoundMs = 0L;
     private long lastActivityTime = System.currentTimeMillis();
 
     @JsonIgnore
@@ -265,6 +267,22 @@ public class Room {
 
     public void setRoundDeadline(long roundDeadline) {
         this.roundDeadline = roundDeadline;
+    }
+
+    public boolean isRoundPaused() {
+        return roundPaused;
+    }
+
+    public void setRoundPaused(boolean roundPaused) {
+        this.roundPaused = roundPaused;
+    }
+
+    public long getRemainingRoundMs() {
+        return remainingRoundMs;
+    }
+
+    public void setRemainingRoundMs(long remainingRoundMs) {
+        this.remainingRoundMs = remainingRoundMs;
     }
 
     public long getLastActivityTime() {

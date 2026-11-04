@@ -289,6 +289,7 @@
               <div id="hostNotice" class="text-muted text-sm mb-2 hidden">Waiting for host to start game...</div>
               <button id="btnStartGame" class="btn btn-primary btn-block btn-lg hidden">Start Game</button>
               <button id="btnOpenLobbySettings" class="btn btn-outline btn-block mt-2 hidden" type="button">⚙️ Change Room Settings</button>
+              <button id="btnDisbandRoom" class="btn btn-danger btn-block mt-2 hidden" type="button">🗑️ Disband Room</button>
               <button id="btnLeaveRoom" class="btn btn-outline btn-block mt-2">Leave Room</button>
             </div>
           </div>
@@ -379,6 +380,13 @@
               <h3>Secret Movie Being Chosen</h3>
               <p><strong id="waitingClueGiverName">Player</strong> is thinking of a movie and preparing clues...</p>
               <p class="text-sm text-muted">Get your typing fingers ready! Round starts the moment they submit.</p>
+            </div>
+
+            <!-- CLUE-GIVER DISCONNECTED / ROUND PAUSED BANNER -->
+            <div id="roundPausedBanner" class="card round-paused-card hidden">
+              <div class="paused-icon">⏸️</div>
+              <h3 id="roundPausedTitle">Round Paused</h3>
+              <p id="roundPausedText">The clue-giver disconnected. Waiting for them to reconnect...</p>
             </div>
             
             <!-- CLUE-GIVER SECRET PANEL (Visible ONLY to clue-giver) -->
@@ -487,12 +495,9 @@
             <div id="roundActivityFeed" class="activity-feed"></div>
 
             <div class="round-chat-block">
-              <div class="chat-disabled-warning" id="chatDisabledNotice">
-                Chat is disabled during active round to prevent leaks.
-              </div>
               <div id="roundChatFeed" class="chat-feed-sm"></div>
-              <form id="roundChatForm" class="chat-input-row hidden">
-                <input type="text" id="roundChatInput" placeholder="Chat between rounds..." maxlength="200" autocomplete="off" />
+              <form id="roundChatForm" class="chat-input-row">
+                <input type="text" id="roundChatInput" placeholder="Chat with everyone..." maxlength="200" autocomplete="off" />
                 <button type="submit" class="btn btn-sm btn-secondary">Send</button>
               </form>
             </div>
@@ -542,6 +547,7 @@
         <div class="results-actions">
           <button id="btnPlayAgain" class="btn btn-primary btn-lg">Back to Lobby</button>
           <button id="btnExitToHome" class="btn btn-outline btn-lg">Home Screen</button>
+          <button id="btnDisbandRoomResults" class="btn btn-danger btn-lg hidden">🗑️ Disband Room</button>
         </div>
       </div>
     </section>

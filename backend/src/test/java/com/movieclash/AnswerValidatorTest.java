@@ -26,9 +26,34 @@ public class AnswerValidatorTest {
 
     @Test
     void testLevenshteinTypoTolerance() {
-        // "Inceptoin" vs "Inception" (length 9 -> allowed distance 2)
+        // "Inceptoin" vs "Inception"
         AnswerValidator.MatchResult res = AnswerValidator.evaluate("Inceptoin", "Inception", List.of());
         assertTrue(res.isMatch());
+    }
+
+    @Test
+    void testExtraLettersMatching() {
+        // 1 or 2 extra letters as requested by user
+        assertTrue(AnswerValidator.evaluate("Pushpaa", "Pushpa", List.of()).isMatch());
+        assertTrue(AnswerValidator.evaluate("Pushpaaa", "Pushpa", List.of()).isMatch());
+        assertTrue(AnswerValidator.evaluate("Inceptions", "Inception", List.of()).isMatch());
+        assertTrue(AnswerValidator.evaluate("RRRR", "RRR", List.of()).isMatch());
+        assertTrue(AnswerValidator.evaluate("Kalkii", "Kalki", List.of()).isMatch());
+        assertTrue(AnswerValidator.evaluate("Jailerr", "Jailer", List.of()).isMatch());
+    }
+
+    @Test
+    void testColonAndSubtitlePrefixMatching() {
+        // Subtitle titles matched by main name
+        assertTrue(AnswerValidator.evaluate("Baahubali", "Baahubali: The Beginning", List.of()).isMatch());
+        assertTrue(AnswerValidator.evaluate("KGF", "K.G.F: Chapter 1", List.of()).isMatch());
+    }
+
+    @Test
+    void testSpacelessAndTrailingNoiseMatching() {
+        // "spiderman" vs "Spider Man", trailing "movie"
+        assertTrue(AnswerValidator.evaluate("spiderman", "Spider-Man", List.of()).isMatch());
+        assertTrue(AnswerValidator.evaluate("Pushpa movie", "Pushpa", List.of()).isMatch());
     }
 
     @Test
@@ -44,4 +69,3 @@ public class AnswerValidatorTest {
         assertFalse(res.isMatch());
     }
 }
-

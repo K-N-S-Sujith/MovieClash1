@@ -64,6 +64,17 @@ public class ChatRelayService {
             String sanitized = sanitizeMessage(messageText);
             if (sanitized.isEmpty()) return;
 
+            // Prevent clue-giver from leaking the exact answer in the clue feed
+            if (room.getCurrentMovie() != null) {
+                com.movieclash.model.Movie movie = room.getCurrentMovie();
+                boolean isMatch = com.movieclash.util.AnswerValidator.evaluate(sanitized, movie.getTitle(), movie.getAliases()).isMatch();
+                if (isMatch) {
+                    broadcaster.sendPrivate(playerId, WsEnvelope.error(roomId, ErrorCode.UNAUTHORIZED,
+                            "You cannot post the movie title as a clue!"));
+                    return;
+                }
+            }
+
             long now = System.currentTimeMillis();
             Map<String, Object> cluePayload = Map.of(
                 "clueGiverId", playerId,
@@ -85,12 +96,9 @@ public class ChatRelayService {
             Player sender = room.getPlayer(playerId);
             if (sender == null) return;
 
-            // 1. Block guessers from chatting during an active round (prevents answer leaks)
-            if (room.getStatus() == RoomStatus.IN_PROGRESS) {
-                broadcaster.sendPrivate(playerId, WsEnvelope.error(roomId, ErrorCode.UNAUTHORIZED,
-                        "Chat is disabled for guessers during an active round to prevent leaks. Submit guesses via the guess box!"));
-                return;
-            }
+            // 1. Sanitize and validate length
+            String sanitized = sanitizeMessage(messageText);
+            if (sanitized.isEmpty()) return;
 
             // 2. Rate limiting (1 msg/sec)
             if (!checkChatRateLimit(playerId)) {
@@ -99,9 +107,22 @@ public class ChatRelayService {
                 return;
             }
 
-            // 3. Sanitize and validate length
-            String sanitized = sanitizeMessage(messageText);
-            if (sanitized.isEmpty()) return;
+            // 3. Prevent answer leakage in public chat during an active round
+            if (room.getStatus() == RoomStatus.IN_PROGRESS && room.getCurrentMovie() != null) {
+                com.movieclash.model.Movie movie = room.getCurrentMovie();
+                boolean isMatch = com.movieclash.util.AnswerValidator.evaluate(sanitized, movie.getTitle(), movie.getAliases()).isMatch();
+                if (isMatch) {
+                    boolean isClueGiver = playerId.equals(room.getCurrentClueGiverId());
+                    if (isClueGiver) {
+                        broadcaster.sendPrivate(playerId, WsEnvelope.error(roomId, ErrorCode.UNAUTHORIZED,
+                                "You cannot send the answer in chat!"));
+                    } else {
+                        broadcaster.sendPrivate(playerId, WsEnvelope.error(roomId, ErrorCode.UNAUTHORIZED,
+                                "That looks like the answer! Submit it in the Guess box above to score points!"));
+                    }
+                    return;
+                }
+            }
 
             long now = System.currentTimeMillis();
             ChatMessage chatMsg = new ChatMessage(playerId, sender.getName(), sanitized, now);

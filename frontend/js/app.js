@@ -355,9 +355,12 @@ class MovieClashApp {
         coHostId: isCoHost ? newHostId : state.room.coHostId
       });
 
+      const isGameOver = state.room.status === 'FINISHED' || document.getElementById('viewResults')?.classList.contains('active');
       if (newHostId && newHostId === state.player.id) {
         store.updatePlayer({ isHost: true, isCoHost: !!isCoHost });
-        alert('The room host left or disconnected. You are now Acting Co-Host with room controls!');
+        if (!isGameOver) {
+          alert('The room host left or disconnected. You are now Acting Co-Host with room controls!');
+        }
       }
 
       store.addActivity(`${playerName || 'A player'} left the room`);
@@ -785,9 +788,37 @@ class MovieClashApp {
       });
     });
 
+    // ---------------- Clue Giver Pause / Resume ----------------
+    wsClient.on('ROUND_PAUSED', (payload) => {
+      roundTimer.pause();
+      const banner = document.getElementById('roundPausedBanner');
+      const text = document.getElementById('roundPausedText');
+      if (banner) {
+        banner.classList.remove('hidden');
+        if (text && payload.clueGiverName) {
+          text.textContent = `Clue-giver (${payload.clueGiverName}) disconnected. Round paused until they reconnect...`;
+        }
+      }
+      store.addActivity(`⏸️ Round paused: waiting for ${payload.clueGiverName || 'clue-giver'} to reconnect`);
+    });
+
+    wsClient.on('ROUND_RESUMED', (payload) => {
+      const banner = document.getElementById('roundPausedBanner');
+      if (banner) banner.classList.add('hidden');
+      const { serverTime, deadline } = payload;
+      if (deadline) {
+        roundTimer.start(serverTime || Date.now(), deadline, () => {
+          wsClient.send('NEXT_ROUND', {});
+        });
+      }
+      store.addActivity(`▶️ Round resumed! Clue-giver ${payload.clueGiverName || ''} reconnected.`);
+    });
+
     // ---------------- Round & Game Termination ----------------
     wsClient.on('ROUND_FINISHED', (payload) => {
       roundTimer.stop();
+      const pausedBanner = document.getElementById('roundPausedBanner');
+      if (pausedBanner) pausedBanner.classList.add('hidden');
       // liveKitVoice.disablePublishing(); // [TEMPORARILY DISABLED VOICE CLUE]
       store.updateRound({ isRoundActive: false });
       resultsView.showRoundFinished(payload);
@@ -795,6 +826,8 @@ class MovieClashApp {
 
     wsClient.on('GAME_FINISHED', (payload) => {
       roundTimer.stop();
+      const pausedBanner = document.getElementById('roundPausedBanner');
+      if (pausedBanner) pausedBanner.classList.add('hidden');
       audioEngine.playFanfare();
       confettiEngine.firePodiumCelebration();
       // liveKitVoice.disconnect(); // [TEMPORARILY DISABLED VOICE CLUE]
@@ -819,6 +852,15 @@ class MovieClashApp {
       alert(`Game cancelled: ${payload.reason || 'Vote passed'}`);
       store.updateRoom({ status: 'LOBBY' });
       this.switchView('viewLobby');
+    });
+
+    wsClient.on('ROOM_DISBANDED', (payload) => {
+      roundTimer.stop();
+      confettiEngine.clear();
+      store.clearSavedSession();
+      store.reset();
+      alert(payload.reason || 'The room was disbanded by the host.');
+      window.location.href = window.location.pathname;
     });
 
     // ---------------- Room Reset & Settings ----------------
@@ -884,8 +926,16 @@ class MovieClashApp {
           this.switchView('viewLanding');
         }
 
-        alert(`Session ended: ${message || 'Room no longer exists or session expired'}`);
+        const isGameOver = store.get().room.status === 'FINISHED' || document.getElementById('viewResults')?.classList.contains('active');
+        if (!isGameOver) {
+          alert(`Session ended: ${message || 'Room no longer exists or session expired'}`);
+        }
         return;
+      }
+
+      const isGameOver = store.get().room.status === 'FINISHED' || document.getElementById('viewResults')?.classList.contains('active');
+      if (isGameOver) {
+        return; // Suppress miscellaneous error alerts after game over
       }
 
       // Normal in-game or lobby errors (e.g. invalid guess, deadline passed, unauthorized guesser)

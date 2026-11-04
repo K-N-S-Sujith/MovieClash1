@@ -69,18 +69,12 @@ public class ReconnectionManager {
                 "gracePeriodMs", room.getConfig().getReconnectGracePeriodMs()
             )));
 
-            // If clue-giver disconnected mid-round, start timeout to pause or skip turn
+            // If clue-giver disconnected mid-round, pause the round and wait until they reconnect (do NOT skip turn automatically)
             if (playerId.equals(room.getCurrentClueGiverId()) && room.getStatus() == RoomStatus.IN_PROGRESS) {
-                long timeoutMs = room.getConfig().getClueGiverDisconnectTimeoutMs();
-                log.warn("Active clue-giver [{}] disconnected in room [{}]. Setting {}ms turn skip timer.",
-                        player.getName(), roomId, timeoutMs);
-
+                log.warn("Active clue-giver [{}] disconnected in room [{}]. Pausing round until reconnection.",
+                        player.getName(), roomId);
                 cancelClueGiverTimeout(roomId);
-                ScheduledFuture<?> future = scheduler.schedule(() -> {
-                    handleClueGiverTimeout(roomId, playerId);
-                }, timeoutMs, TimeUnit.MILLISECONDS);
-
-                clueGiverTimeoutFutures.put(roomId, future);
+                roundManager.pauseRound(roomId);
             }
         });
     }
@@ -156,10 +150,13 @@ public class ReconnectionManager {
                 )));
             }
 
-            // If clue-giver reconnected, cancel turn skip timer
+            // If clue-giver reconnected, cancel timeout and resume round if paused
             if (playerId.equals(room.getCurrentClueGiverId())) {
                 cancelClueGiverTimeout(roomId);
-                log.info("Clue-giver [{}] reconnected in room [{}]. Timeout timer cancelled.", player.getName(), roomId);
+                if (room.isRoundPaused()) {
+                    roundManager.resumeRound(roomId);
+                }
+                log.info("Clue-giver [{}] reconnected in room [{}].", player.getName(), roomId);
             }
 
             log.info("Player [{}] ({}) successfully reconnected to room [{}]", player.getName(), playerId, roomId);

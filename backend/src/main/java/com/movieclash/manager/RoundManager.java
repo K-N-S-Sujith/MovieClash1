@@ -634,6 +634,8 @@ public class RoundManager {
         room.setCurrentClueGiverTeam(null);
         room.setRoundDeadline(0L);
         room.setRoundStartTime(0L);
+        room.setRoundPaused(false);
+        room.setRemainingRoundMs(0L);
         room.resetGuessSequence();
         room.getRoundCorrectGuessers().clear();
         room.getRoundScoredTeams().clear();
@@ -683,6 +685,84 @@ public class RoundManager {
                 );
                 broadcaster.broadcastToRoom(roomId, WsEnvelope.of("LETTER_HINT", roomId, hintPayload));
             }
+        });
+    }
+
+    public void pauseRound(String roomId) {
+        Room room = roomManager.getRoom(roomId);
+        if (room == null || room.getStatus() != RoomStatus.IN_PROGRESS) return;
+
+        room.executeLocked(() -> {
+            if (room.isRoundPaused()) return;
+
+            long now = System.currentTimeMillis();
+            long remainingMs = Math.max(0, room.getRoundDeadline() - now);
+            room.setRemainingRoundMs(remainingMs);
+            room.setRoundPaused(true);
+
+            // Cancel running deadline timer
+            ScheduledFuture<?> timer = roundTimers.remove(roomId);
+            if (timer != null && !timer.isDone()) {
+                timer.cancel(false);
+            }
+
+            // Cancel running hint timers
+            List<ScheduledFuture<?>> hintFutures = roundHintTimers.remove(roomId);
+            if (hintFutures != null) {
+                for (ScheduledFuture<?> f : hintFutures) {
+                    if (f != null && !f.isDone()) f.cancel(false);
+                }
+            }
+
+            Player clueGiver = room.getPlayer(room.getCurrentClueGiverId());
+            String clueGiverName = clueGiver != null ? clueGiver.getName() : "Clue-Giver";
+
+            log.info("Round paused in room [{}] with {}ms remaining (clue-giver [{}] disconnected)",
+                    roomId, remainingMs, clueGiverName);
+
+            Map<String, Object> payload = Map.of(
+                "clueGiverId", room.getCurrentClueGiverId() != null ? room.getCurrentClueGiverId() : "",
+                "clueGiverName", clueGiverName,
+                "remainingMs", remainingMs,
+                "message", "Clue-giver disconnected. Round paused until they reconnect."
+            );
+            broadcaster.broadcastToRoom(roomId, WsEnvelope.of("ROUND_PAUSED", roomId, payload));
+        });
+    }
+
+    public void resumeRound(String roomId) {
+        Room room = roomManager.getRoom(roomId);
+        if (room == null || room.getStatus() != RoomStatus.IN_PROGRESS) return;
+
+        room.executeLocked(() -> {
+            if (!room.isRoundPaused()) return;
+
+            long remainingMs = Math.max(5000L, room.getRemainingRoundMs());
+            long newDeadline = System.currentTimeMillis() + remainingMs;
+            room.setRoundDeadline(newDeadline);
+            room.setRoundPaused(false);
+            room.setRemainingRoundMs(0L);
+
+            final int currentRoundNum = room.getCurrentRound();
+            ScheduledFuture<?> timer = scheduler.schedule(() -> {
+                handleRoundDeadline(roomId, currentRoundNum);
+            }, remainingMs + 200, TimeUnit.MILLISECONDS);
+            roundTimers.put(roomId, timer);
+
+            Player clueGiver = room.getPlayer(room.getCurrentClueGiverId());
+            String clueGiverName = clueGiver != null ? clueGiver.getName() : "Clue-Giver";
+
+            log.info("Round resumed in room [{}] with {}ms remaining (clue-giver [{}] reconnected)",
+                    roomId, remainingMs, clueGiverName);
+
+            Map<String, Object> payload = Map.of(
+                "clueGiverId", room.getCurrentClueGiverId() != null ? room.getCurrentClueGiverId() : "",
+                "clueGiverName", clueGiverName,
+                "deadline", newDeadline,
+                "serverTime", System.currentTimeMillis(),
+                "remainingMs", remainingMs
+            );
+            broadcaster.broadcastToRoom(roomId, WsEnvelope.of("ROUND_RESUMED", roomId, payload));
         });
     }
 

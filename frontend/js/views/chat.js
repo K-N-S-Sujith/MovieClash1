@@ -131,16 +131,12 @@ export class ChatView {
       this.feedClueGiverName.textContent = round.clueGiverName || 'Clue-Giver';
     }
 
-    // 2. Chat disabled state during round
-    const isRoundRunning = round.isRoundActive;
-    if (this.chatDisabledNotice && this.roundChatForm) {
-      if (isRoundRunning) {
-        this.chatDisabledNotice.classList.remove('hidden');
-        this.roundChatForm.classList.add('hidden');
-      } else {
-        this.chatDisabledNotice.classList.add('hidden');
-        this.roundChatForm.classList.remove('hidden');
-      }
+    // 2. Chat is enabled and visible throughout the game
+    if (this.roundChatForm) {
+      this.roundChatForm.classList.remove('hidden');
+    }
+    if (this.chatDisabledNotice) {
+      this.chatDisabledNotice.classList.add('hidden');
     }
 
     // 3. Render Clues Feed (Incremental)

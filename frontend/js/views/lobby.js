@@ -19,6 +19,7 @@ export class LobbyView {
     this.btnStartGame = document.getElementById('btnStartGame');
     this.hostNotice = document.getElementById('hostNotice');
     this.btnLeaveRoom = document.getElementById('btnLeaveRoom');
+    this.btnDisbandRoom = document.getElementById('btnDisbandRoom');
     this.btnCopyCode = document.getElementById('btnCopyRoomCode');
     this.btnCopyLink = document.getElementById('btnCopyInviteLink');
     this.btnToggleRole = document.getElementById('btnToggleRole');
@@ -84,6 +85,14 @@ export class LobbyView {
         store.clearSavedSession();
         store.reset();
         window.location.href = window.location.pathname;
+      });
+    }
+
+    if (this.btnDisbandRoom) {
+      this.btnDisbandRoom.addEventListener('click', () => {
+        if (confirm('Are you sure you want to delete this room and disband the entire group? Everyone will be returned to the home screen.')) {
+          wsClient.send('DISBAND_ROOM', {});
+        }
       });
     }
 
@@ -320,6 +329,14 @@ export class LobbyView {
         this.btnOpenSettings.classList.remove('hidden');
       } else {
         this.btnOpenSettings.classList.add('hidden');
+      }
+    }
+
+    if (this.btnDisbandRoom) {
+      if (canControl) {
+        this.btnDisbandRoom.classList.remove('hidden');
+      } else {
+        this.btnDisbandRoom.classList.add('hidden');
       }
     }
 

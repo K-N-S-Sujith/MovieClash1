@@ -78,6 +78,7 @@ public class GameCoordinator {
             case "CREATE_TEAM" -> handleCreateTeam(session, envelope);
             case "RENAME_TEAM" -> handleRenameTeam(session, envelope);
             case "REMOVE_TEAM" -> handleRemoveTeam(session, envelope);
+            case "DISBAND_ROOM" -> handleDisbandRoom(session, envelope);
             case "START_GAME" -> handleStartGame(session, envelope);
             case "NEXT_ROUND" -> handleNextRound(session, envelope);
             case "CHOOSE_MOVIE" -> handleChooseMovie(session, envelope);
@@ -742,6 +743,39 @@ public class GameCoordinator {
                 broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.INVALID_TEAM, "Cannot delete team (must be empty and at least 2 teams remain)"));
             }
         }
+    }
+
+    private void handleDisbandRoom(WebSocketSession session, WsEnvelope envelope) {
+        String sessionId = session.getId();
+        String playerId = sessionTracker.getPlayerId(sessionId);
+        String roomId = sessionTracker.getRoomId(sessionId);
+
+        if (roomId == null || playerId == null) return;
+
+        Room room = roomManager.getRoom(roomId);
+        if (room == null) return;
+
+        boolean isAuthorized = playerId.equals(room.getHostId())
+                || playerId.equals(room.getOriginalHostPlayerId())
+                || (room.getCreatorUserId() != null && room.getPlayer(playerId) != null && room.getCreatorUserId().equals(room.getPlayer(playerId).getUserId()));
+
+        if (!isAuthorized) {
+            broadcaster.sendToSessionDirect(session, WsEnvelope.error(roomId, ErrorCode.NOT_HOST, "Only the room creator/host can disband the room"));
+            return;
+        }
+
+        // Cancel any running timers
+        roundManager.cancelRoundTimer(roomId);
+
+        // Broadcast to all players that room is disbanded
+        Map<String, Object> payload = Map.of(
+            "reason", "The room was disbanded by the host.",
+            "disbandedBy", playerId
+        );
+        broadcaster.broadcastToRoom(roomId, WsEnvelope.of("ROOM_DISBANDED", roomId, payload));
+
+        // Disband room
+        roomManager.disbandRoom(roomId, playerId);
     }
 
     public void handleDisconnect(String sessionId) {

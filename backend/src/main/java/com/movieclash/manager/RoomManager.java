@@ -369,6 +369,25 @@ public class RoomManager {
         });
     }
 
+    public boolean disbandRoom(String roomId, String playerId) {
+        if (roomId == null || playerId == null) return false;
+        Room room = rooms.get(roomId.toUpperCase());
+        if (room == null) return false;
+
+        boolean isAuthorized = playerId.equals(room.getHostId())
+                || playerId.equals(room.getOriginalHostPlayerId())
+                || (room.getCreatorUserId() != null && room.getPlayer(playerId) != null && room.getCreatorUserId().equals(room.getPlayer(playerId).getUserId()));
+
+        if (!isAuthorized) {
+            log.warn("Player [{}] is not authorized to disband room [{}]", playerId, roomId);
+            return false;
+        }
+
+        rooms.remove(roomId.toUpperCase());
+        log.info("Room [{}] was permanently disbanded by host/creator [{}]", roomId, playerId);
+        return true;
+    }
+
     public Room getRoom(String roomId) {
         return roomId != null ? rooms.get(roomId.toUpperCase()) : null;
     }

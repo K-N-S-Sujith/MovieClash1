@@ -23,6 +23,7 @@ export class ResultsView {
     this.finalScoreboardList = document.getElementById('finalScoreboardList');
     this.btnPlayAgain = document.getElementById('btnPlayAgain');
     this.btnExitToHome = document.getElementById('btnExitToHome');
+    this.btnDisbandRoomResults = document.getElementById('btnDisbandRoomResults');
 
     this.roundCountdownTimer = null;
 
@@ -55,8 +56,20 @@ export class ResultsView {
     if (this.btnExitToHome) {
       this.btnExitToHome.addEventListener('click', () => {
         confettiEngine.clear();
+        try {
+          wsClient.send('LEAVE_ROOM', {});
+        } catch (e) {}
         store.clearSavedSession();
+        store.reset();
         window.location.href = window.location.pathname;
+      });
+    }
+
+    if (this.btnDisbandRoomResults) {
+      this.btnDisbandRoomResults.addEventListener('click', () => {
+        if (confirm('Are you sure you want to delete this room and disband the entire group? Everyone will be returned to the home screen.')) {
+          wsClient.send('DISBAND_ROOM', {});
+        }
       });
     }
   }
@@ -185,6 +198,17 @@ export class ResultsView {
     if (this.viewResults) {
       this.viewResults.classList.remove('hidden');
       this.viewResults.classList.add('active');
+    }
+
+    if (this.btnDisbandRoomResults) {
+      const state = store.get();
+      const isHost = state.player.id === state.room.hostId;
+      const isCreator = (state.player.userId && state.player.userId === state.room.creatorUserId) || (state.player.id === state.room.originalHostPlayerId);
+      if (isHost || isCreator || state.player.isCoHost) {
+        this.btnDisbandRoomResults.classList.remove('hidden');
+      } else {
+        this.btnDisbandRoomResults.classList.add('hidden');
+      }
     }
   }
 
