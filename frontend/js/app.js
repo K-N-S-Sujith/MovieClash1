@@ -21,6 +21,7 @@ import cancelModalView from './views/cancelModal.js';
 import audioEngine from './engine/audio.js';
 import reactionsView from './views/reactions.js';
 import confettiEngine from './engine/confetti.js';
+import toast from './utils/toast.js';
 
 class MovieClashApp {
   constructor() {
@@ -359,7 +360,7 @@ class MovieClashApp {
       if (newHostId && newHostId === state.player.id) {
         store.updatePlayer({ isHost: true, isCoHost: !!isCoHost });
         if (!isGameOver) {
-          alert('The room host left or disconnected. You are now Acting Co-Host with room controls!');
+          toast.show('The room host left or disconnected. You are now Acting Co-Host with room controls!', 'warning', 4500);
         }
       }
 
@@ -367,7 +368,19 @@ class MovieClashApp {
     });
 
     wsClient.on('PLAYER_DISCONNECTED', (payload) => {
-      const { playerName } = payload;
+      const { playerId, playerName } = payload;
+      const state = store.get();
+      if (playerId && state.room.players) {
+        const updatedPlayers = state.room.players.map(p => {
+          if (p.id === playerId) return { ...p, connected: false };
+          return p;
+        });
+        store.updateRoom({ players: updatedPlayers });
+      }
+      if (document.getElementById('viewGame')?.classList.contains('active')) {
+        gameView.renderPlayerStatus(store.get().room, store.get().player, store.get().round);
+      }
+      toast.show(`${playerName || 'A player'} disconnected (grace period active)`, 'warning', 3000);
       store.addActivity(`${playerName || 'A player'} disconnected (grace period active)`);
     });
 
@@ -466,16 +479,25 @@ class MovieClashApp {
         // Another player in the room reconnected
         if (room) {
           store.updateRoom(room);
+        } else if (player && player.id) {
+          const currentPlayers = store.get().room.players || [];
+          const updatedPlayers = currentPlayers.map(p => {
+            if (p.id === player.id) return { ...p, connected: true };
+            return p;
+          });
+          store.updateRoom({ players: updatedPlayers });
         }
+        if (document.getElementById('viewGame')?.classList.contains('active')) {
+          gameView.renderPlayerStatus(store.get().room, store.get().player, store.get().round);
+        }
+        toast.show(`${player ? player.name : 'A player'} reconnected!`, 'success', 3000);
         store.addActivity(`${player ? player.name : 'A player'} reconnected`);
       }
     });
 
     wsClient.on('ROOM_UPDATED', (payload) => {
       if (payload.delta) {
-        store.updateRoom(payload.delta);
-
-        // Update local player state if present in delta
+        // Update local player state first if present in delta
         const state = store.get();
         if (state.player.id && payload.delta.players) {
           const me = payload.delta.players.find(p => p.id === state.player.id);
@@ -488,6 +510,12 @@ class MovieClashApp {
               isSpectator
             });
           }
+        }
+
+        store.updateRoom(payload.delta);
+
+        if (document.getElementById('viewGame')?.classList.contains('active')) {
+          gameView.renderPlayerStatus(store.get().room, store.get().player, store.get().round);
         }
       }
     });
@@ -843,13 +871,13 @@ class MovieClashApp {
 
     wsClient.on('CANCEL_VOTE_RESULT', (payload) => {
       const { approved, yesVotes, noVotes } = payload;
-      alert(`Cancel vote finished. Result: ${approved ? 'Game Cancelled' : 'Keep Playing'} (${yesVotes} Yes vs ${noVotes} No)`);
+      toast.show(`Cancel vote finished. Result: ${approved ? 'Game Cancelled' : 'Keep Playing'} (${yesVotes} Yes vs ${noVotes} No)`, 'info', 4000);
     });
 
     wsClient.on('GAME_CANCELLED', (payload) => {
       roundTimer.stop();
       // liveKitVoice.disconnect(); // [TEMPORARILY DISABLED VOICE CLUE]
-      alert(`Game cancelled: ${payload.reason || 'Vote passed'}`);
+      toast.show(`Game cancelled: ${payload.reason || 'Vote passed'}`, 'warning', 4000);
       store.updateRoom({ status: 'LOBBY' });
       this.switchView('viewLobby');
     });
@@ -859,8 +887,10 @@ class MovieClashApp {
       confettiEngine.clear();
       store.clearSavedSession();
       store.reset();
-      alert(payload.reason || 'The room was disbanded by the host.');
-      window.location.href = window.location.pathname;
+      toast.show(payload.reason || 'The room was disbanded by the host.', 'warning', 4000);
+      setTimeout(() => {
+        window.location.href = window.location.pathname;
+      }, 1500);
     });
 
     // ---------------- Room Reset & Settings ----------------
@@ -928,7 +958,7 @@ class MovieClashApp {
 
         const isGameOver = store.get().room.status === 'FINISHED' || document.getElementById('viewResults')?.classList.contains('active');
         if (!isGameOver) {
-          alert(`Session ended: ${message || 'Room no longer exists or session expired'}`);
+          toast.show(`Session ended: ${message || 'Room no longer exists or session expired'}`, 'error', 4500);
         }
         return;
       }
@@ -943,7 +973,7 @@ class MovieClashApp {
       if (gameView && typeof gameView.showFeedback === 'function') {
         gameView.showFeedback(message || 'Action not permitted', 'warning');
       } else {
-        alert(`Notice: ${message || 'An error occurred'}`);
+        toast.show(`Notice: ${message || 'An error occurred'}`, 'warning', 3500);
       }
     });
   }

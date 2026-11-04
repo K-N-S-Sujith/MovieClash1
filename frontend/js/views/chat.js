@@ -1,13 +1,11 @@
 /**
- * MovieClash — Text Chat & Clue Broadcast Controller
- * Rules:
- * - Clue-giver clues: CLUE_MESSAGE -> CLUE_BROADCAST
- * - Chat: CHAT_MESSAGE -> CHAT_BROADCAST (disabled during round for guessers)
- * - Rate limited: 1 msg/second, max 200 chars, plain text sanitized
+ * MovieClash — Lobby Chat & Clue Broadcast Controller
+ * Note: In-game chat has been removed per UI/UX cleanup. Lobby Chat is preserved.
  */
 
 import store from '../state.js';
 import wsClient from '../api/websocket.js';
+import toast from '../utils/toast.js';
 
 export class ChatView {
   constructor() {
@@ -16,22 +14,15 @@ export class ChatView {
     this.lobbyChatInput = document.getElementById('lobbyChatInput');
     this.lobbyChatFeed = document.getElementById('lobbyChatMessages');
 
-    // Clue Form & Feed
+    // Clue Form & Feed (During active rounds)
     this.clueForm = document.getElementById('clueMessageForm');
     this.clueInput = document.getElementById('clueTextInput');
     this.clueFeed = document.getElementById('clueMessagesFeed');
     this.feedClueGiverName = document.getElementById('feedClueGiverName');
 
-    // Round Chat (Between rounds)
-    this.roundChatForm = document.getElementById('roundChatForm');
-    this.roundChatInput = document.getElementById('roundChatInput');
-    this.roundChatFeed = document.getElementById('roundChatFeed');
-    this.chatDisabledNotice = document.getElementById('chatDisabledNotice');
-
     this.lastMessageTime = 0;
     this.renderedCluesCount = 0;
     this.renderedLobbyChatCount = 0;
-    this.renderedRoundChatCount = 0;
 
     this.initEvents();
   }
@@ -53,14 +44,6 @@ export class ChatView {
       });
     }
 
-    // Round between-turn chat
-    if (this.roundChatForm) {
-      this.roundChatForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        this.handleSendChatMessage(this.roundChatInput);
-      });
-    }
-
     // Subscribe to state updates
     store.subscribe((state) => {
       this.render(state);
@@ -73,7 +56,7 @@ export class ChatView {
     if (!text) return;
 
     if (text.length > 200) {
-      alert('Message must be under 200 characters.');
+      toast.show('Message must be under 200 characters.', 'warning');
       return;
     }
 
@@ -94,14 +77,14 @@ export class ChatView {
     if (!text) return;
 
     if (text.length > 200) {
-      alert('Clue must be under 200 characters.');
+      toast.show('Clue must be under 200 characters.', 'warning');
       return;
     }
 
     const state = store.get();
     const isClueTeam = state.round.isMyClueGiverTurn || (state.room.gameMode === 'TEAM' && state.player.teamId && state.player.teamId === state.round.clueGiverTeam);
     if (!isClueTeam) {
-      alert('Only members of the active clue team can post clues.');
+      toast.show('Only members of the active clue team can post clues.', 'warning');
       return;
     }
 
@@ -131,15 +114,7 @@ export class ChatView {
       this.feedClueGiverName.textContent = round.clueGiverName || 'Clue-Giver';
     }
 
-    // 2. Chat is enabled and visible throughout the game
-    if (this.roundChatForm) {
-      this.roundChatForm.classList.remove('hidden');
-    }
-    if (this.chatDisabledNotice) {
-      this.chatDisabledNotice.classList.add('hidden');
-    }
-
-    // 3. Render Clues Feed (Incremental)
+    // 2. Render Clues Feed (Incremental)
     if (this.clueFeed) {
       if (clues.length === 0) {
         if (this.renderedCluesCount !== 0) {
@@ -165,7 +140,7 @@ export class ChatView {
       }
     }
 
-    // 4. Render Lobby Chat Messages (Only while in lobby)
+    // 3. Render Lobby Chat Messages (Only while in lobby)
     if (this.lobbyChatFeed && room.status === 'LOBBY') {
       if (chatMessages.length === 0) {
         if (this.renderedLobbyChatCount !== 0) {
@@ -191,33 +166,6 @@ export class ChatView {
         this.lobbyChatFeed.scrollTop = this.lobbyChatFeed.scrollHeight;
       }
     }
-
-    // 5. Render Round Chat Messages (Incremental)
-    if (this.roundChatFeed && room.status !== 'LOBBY') {
-      if (chatMessages.length === 0) {
-        if (this.renderedRoundChatCount !== 0) {
-          this.roundChatFeed.innerHTML = '';
-          this.renderedRoundChatCount = 0;
-        }
-      } else if (chatMessages.length > this.renderedRoundChatCount) {
-        const newMsgs = chatMessages.slice(this.renderedRoundChatCount);
-        this.renderedRoundChatCount = chatMessages.length;
-
-        newMsgs.forEach(msg => {
-          const item = document.createElement('div');
-          item.className = 'chat-msg';
-          item.innerHTML = `
-            <span class="sender">${this.escapeHtml(msg.senderName || 'Player')}:</span>
-            <span class="text">${this.escapeHtml(msg.message)}</span>
-          `;
-          this.roundChatFeed.appendChild(item);
-        });
-        while (this.roundChatFeed.children.length > 30) {
-          this.roundChatFeed.removeChild(this.roundChatFeed.firstChild);
-        }
-        this.roundChatFeed.scrollTop = this.roundChatFeed.scrollHeight;
-      }
-    }
   }
 
   escapeHtml(str) {
@@ -228,4 +176,3 @@ export class ChatView {
 
 export const chatView = new ChatView();
 export default chatView;
-

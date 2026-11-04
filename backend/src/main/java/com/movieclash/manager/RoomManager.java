@@ -418,8 +418,8 @@ public class RoomManager {
                               .replaceAll("<[^>]*>", "")
                               .replaceAll("[^a-zA-Z0-9 _-]", "")
                               .trim();
-        if (cleaned.length() > 18) {
-            cleaned = cleaned.substring(0, 18).trim();
+        if (cleaned.length() > 14) {
+            cleaned = cleaned.substring(0, 14).trim();
         }
         return cleaned;
     }

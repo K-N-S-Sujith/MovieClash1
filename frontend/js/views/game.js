@@ -5,6 +5,7 @@
 
 import store from '../state.js';
 import wsClient from '../api/websocket.js';
+import toast from '../utils/toast.js';
 
 const FALLBACK_MOVIES = [
   { title: "Mayabazar", hint: "Mythological fantasy about the Pandavas, Krishna and Ghatotkacha", year: "1957" },
@@ -70,8 +71,9 @@ export class GameView {
     this.guessInput = document.getElementById('guessInput');
     this.guessFeedbackEl = document.getElementById('guessFeedbackMsg');
 
-    // Activity feed
-    this.activityFeedEl = document.getElementById('roundActivityFeed');
+    // Compact Player Status List (Replaces Round Activity)
+    this.playerStatusListEl = document.getElementById('gamePlayerStatusList');
+    this.gamePlayerCountEl = document.getElementById('gamePlayerCount');
 
     // Cancellation
     this.btnProposeCancel = document.getElementById('btnProposeCancel');
@@ -80,7 +82,6 @@ export class GameView {
     this.lastRenderedMaskedTitle = null;
     this.lastScoreboardKey = null;
     this.lastAuditLength = 0;
-    this.lastActivityLength = 0;
 
     this.initEvents();
   }
@@ -128,7 +129,7 @@ export class GameView {
   handleChooseMovieSubmit() {
     const title = this.customMovieTitle?.value.trim();
     if (!title) {
-      alert('Please enter a secret movie title.');
+      toast.show('Please enter a secret movie title.', 'warning');
       return;
     }
     const hint = this.customMovieHint?.value.trim() || '';
@@ -289,8 +290,8 @@ export class GameView {
       this.renderAuditLog(state.auditLog);
     }
 
-    // 6. Render Round Activity
-    this.renderActivity(state.roundActivity);
+    // 6. Render Compact Player Status (Replaces Round Activity)
+    this.renderPlayerStatus(room, player, round);
 
     // 7. Cancellation propose visibility (Hosts/Co-Hosts only, not spectators)
     if (this.btnProposeCancel) {
@@ -383,30 +384,54 @@ export class GameView {
     this.auditFeedEl.scrollTop = this.auditFeedEl.scrollHeight;
   }
 
-  renderActivity(activities) {
-    if (!this.activityFeedEl) return;
-    if (!activities || activities.length === 0) {
-      this.activityFeedEl.innerHTML = '';
-      this.lastActivityLength = 0;
-      return;
+  renderPlayerStatus(room, currentPlayer, round) {
+    if (!this.playerStatusListEl) return;
+
+    const players = room?.players || [];
+    if (this.gamePlayerCountEl) {
+      this.gamePlayerCountEl.textContent = players.length;
     }
 
-    if (activities.length <= this.lastActivityLength) return;
+    const hostId = room?.hostId;
+    const clueGiverId = round?.clueGiverId || room?.currentClueGiverId;
 
-    const newEntries = activities.slice(this.lastActivityLength);
-    this.lastActivityLength = activities.length;
+    this.playerStatusListEl.innerHTML = '';
 
-    newEntries.forEach(act => {
+    players.forEach(p => {
+      const isConnected = p.connected !== false;
+      const isHost = p.id === hostId || p.isHost;
+      const isClueGiver = p.id === clueGiverId;
+      const isSpectator = Boolean(p.spectator);
+      const isMe = p.id === currentPlayer?.id;
+
+      const playerName = p.name || 'Player';
+      const initial = playerName.charAt(0).toUpperCase();
+
       const item = document.createElement('div');
-      item.className = 'activity-item';
-      item.textContent = act.text;
-      this.activityFeedEl.appendChild(item);
-    });
+      item.className = `player-status-item ${isConnected ? 'is-connected' : 'is-disconnected'} ${isMe ? 'is-me' : ''} ${isHost ? 'is-host' : ''}`;
 
-    while (this.activityFeedEl.children.length > 20) {
-      this.activityFeedEl.removeChild(this.activityFeedEl.firstChild);
-    }
-    this.activityFeedEl.scrollTop = this.activityFeedEl.scrollHeight;
+      item.innerHTML = `
+        <div class="status-avatar-wrapper">
+          <div class="player-avatar-sm ${isHost ? 'host-avatar' : ''}">${initial}</div>
+          <span class="presence-dot ${isConnected ? 'online' : 'offline'}" title="${isConnected ? 'Connected' : 'Disconnected'}"></span>
+        </div>
+        <div class="status-player-details">
+          <div class="status-name-row">
+            <span class="player-status-name" title="${this.escapeHtml(playerName)}">
+              ${this.escapeHtml(playerName)} ${isMe ? '<span class="you-tag">(You)</span>' : ''}
+            </span>
+          </div>
+          <div class="player-status-tags">
+            ${isHost ? '<span class="status-tag-mini host">👑 Host</span>' : ''}
+            ${isClueGiver ? '<span class="status-tag-mini clue">🎙️ Clue</span>' : ''}
+            ${isSpectator ? '<span class="status-tag-mini spectator">🍿 Audience</span>' : ''}
+            ${!isConnected ? '<span class="status-tag-mini offline">🔴 Disconnected</span>' : ''}
+          </div>
+        </div>
+      `;
+
+      this.playerStatusListEl.appendChild(item);
+    });
   }
 
   renderMarqueeBoard(round) {

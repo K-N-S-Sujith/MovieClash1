@@ -5,6 +5,7 @@
 
 import store from '../state.js';
 import wsClient from '../api/websocket.js';
+import toast from '../utils/toast.js';
 
 export class LobbyView {
   constructor() {
@@ -60,7 +61,7 @@ export class LobbyView {
         const teams = room.teams || {};
         const count = Object.keys(teams).length;
         if (count >= 5) {
-          alert('Maximum 5 teams allowed in Team Mode.');
+          toast.show('Maximum 5 teams allowed in Team Mode.', 'warning');
           return;
         }
         const defaultNames = ['Team Alpha', 'Team Beta', 'Team Gamma', 'Team Delta', 'Team Epsilon'];
@@ -383,29 +384,41 @@ export class LobbyView {
   renderSpectators(spectators, currentPlayer) {
     if (!this.spectatorsSection || !this.spectatorPlayerList) return;
 
-    if (!spectators || spectators.length === 0) {
+    // Filter spectators strictly: currentPlayer only appears here if currentPlayer.isSpectator is true
+    const isMeSpectator = Boolean(currentPlayer?.isSpectator);
+    const validSpectators = (spectators || []).filter(p => {
+      if (currentPlayer && p.id === currentPlayer.id) return isMeSpectator;
+      return Boolean(p.spectator);
+    });
+
+    if (validSpectators.length === 0) {
       this.spectatorsSection.classList.add('hidden');
       return;
     }
 
     this.spectatorsSection.classList.remove('hidden');
     if (this.spectatorCountNum) {
-      this.spectatorCountNum.textContent = spectators.length;
+      this.spectatorCountNum.textContent = validSpectators.length;
     }
 
     this.spectatorPlayerList.innerHTML = '';
-    spectators.forEach(p => {
+    validSpectators.forEach(p => {
       const item = document.createElement('div');
-      item.className = `roster-item spectator-item ${p.id === currentPlayer?.id ? 'is-me' : ''}`;
+      const isMe = p.id === currentPlayer?.id;
+      item.className = `lobby-player-card spectator-card ${isMe ? 'is-me' : ''}`;
       const playerName = p.name || 'Spectator';
       const initial = playerName.charAt(0).toUpperCase();
 
       item.innerHTML = `
-        <div class="roster-player-info">
+        <div class="player-card-content">
           <div class="player-avatar spectator-avatar">${initial}</div>
-          <span class="player-name">${this.escapeHtml(playerName)} ${p.id === currentPlayer?.id ? '(You)' : ''}</span>
+          <div class="player-info">
+            <span class="player-name" title="${this.escapeHtml(playerName)}">
+              ${this.escapeHtml(playerName)} ${isMe ? '<span class="you-tag">(You)</span>' : ''}
+            </span>
+          </div>
         </div>
-        <div>
+        <div class="player-card-badges">
           <span class="spectator-tag">🍿 Audience</span>
         </div>
       `;
@@ -417,25 +430,36 @@ export class LobbyView {
     if (!this.individualListEl) return;
     this.individualListEl.innerHTML = '';
 
-    const activePlayers = room.players.filter(p => !p.spectator);
+    const isMeSpectator = Boolean(currentPlayer?.isSpectator);
+    const activePlayers = (room.players || []).filter(p => {
+      if (p.id === currentPlayer?.id && isMeSpectator) return false;
+      return !p.spectator;
+    });
 
     activePlayers.forEach(p => {
       const item = document.createElement('div');
-      item.className = `roster-item ${p.id === currentPlayer?.id ? 'is-me' : ''}`;
-
       const isHost = p.id === room.hostId || p.isHost;
       const isCoHost = (p.id === room.coHostId || p.isCoHost) && !isHost;
-      const playerName = p.name || (p.id === currentPlayer?.id ? currentPlayer?.name : null) || 'Player';
+      const isMe = p.id === currentPlayer?.id;
+      const isConnected = p.connected !== false;
+      const playerName = p.name || (isMe ? currentPlayer?.name : null) || 'Player';
       const initial = playerName.charAt(0).toUpperCase();
 
+      item.className = `lobby-player-card ${isHost ? 'host-card' : ''} ${isMe ? 'is-me' : ''} ${!isConnected ? 'is-disconnected' : ''}`;
+
       item.innerHTML = `
-        <div class="roster-player-info">
-          <div class="player-avatar">${initial}</div>
-          <span class="player-name">${this.escapeHtml(playerName)} ${p.id === currentPlayer?.id ? '(You)' : ''}</span>
+        <div class="player-card-content">
+          <div class="player-avatar ${isHost ? 'host-avatar' : ''}">${initial}</div>
+          <div class="player-info">
+            <span class="player-name" title="${this.escapeHtml(playerName)}">
+              ${this.escapeHtml(playerName)} ${isMe ? '<span class="you-tag">(You)</span>' : ''}
+            </span>
+          </div>
         </div>
-        <div>
-          ${isHost ? '<span class="host-tag">👑 Host</span>' : ''}
-          ${isCoHost ? '<span class="co-host-tag">⭐ Co-Host</span>' : ''}
+        <div class="player-card-badges">
+          ${isHost ? '<span class="host-tag">👑 HOST</span>' : ''}
+          ${isCoHost ? '<span class="co-host-tag">⭐ CO-HOST</span>' : ''}
+          ${!isConnected ? '<span class="offline-tag">🔴 Offline</span>' : ''}
         </div>
       `;
       this.individualListEl.appendChild(item);
@@ -489,6 +513,9 @@ export class LobbyView {
       btn.innerHTML = `${this.escapeHtml(team.name || teamKey)} ${isMyTeam ? '✓ (Your Team)' : ''}`;
       btn.addEventListener('click', () => {
         if (!isMyTeam) {
+          if (isSpectator) {
+            store.updatePlayer({ isSpectator: false, teamId: teamKey });
+          }
           wsClient.send('ASSIGN_TEAM', { teamId: teamKey });
         }
       });
@@ -500,7 +527,15 @@ export class LobbyView {
     Object.keys(availableTeams).forEach(teamKey => {
       const team = availableTeams[teamKey];
       const isMyTeam = (!isSpectator && myTeamId === teamKey);
-      const activeTeamPlayers = (team.players || []).filter(p => !p.spectator);
+
+      // Filter out any spectators strictly from team roster
+      const activeTeamPlayers = (team.players || []).filter(p => {
+        if (p.spectator) return false;
+        const roomPlayer = (room.players || []).find(rp => rp.id === p.id);
+        if (roomPlayer && roomPlayer.spectator) return false;
+        if (currentPlayer && p.id === currentPlayer.id && isSpectator) return false;
+        return true;
+      });
       const teamCount = activeTeamPlayers.length;
       const isFull = teamCount >= 5;
 
@@ -511,12 +546,26 @@ export class LobbyView {
       activeTeamPlayers.forEach(p => {
         const isHost = p.id === room.hostId || p.isHost;
         const isCoHost = (p.id === room.coHostId || p.isCoHost) && !isHost;
-        const playerName = p.name || (p.id === currentPlayer?.id ? currentPlayer?.name : null) || 'Player';
+        const isMe = p.id === currentPlayer?.id;
+        const isConnected = p.connected !== false;
+        const playerName = p.name || (isMe ? currentPlayer?.name : null) || 'Player';
+        const initial = playerName.charAt(0).toUpperCase();
+
         playersHtml += `
-          <div class="roster-item ${p.id === currentPlayer?.id ? 'is-me' : ''}" style="margin-bottom:6px">
-            <span class="player-name">${this.escapeHtml(playerName)} ${p.id === currentPlayer?.id ? '(You)' : ''}</span>
-            ${isHost ? '<span class="host-tag">👑 Host</span>' : ''}
-            ${isCoHost ? '<span class="co-host-tag">⭐ Co-Host</span>' : ''}
+          <div class="lobby-player-card team-player-card ${isHost ? 'host-card' : ''} ${isMe ? 'is-me' : ''} ${!isConnected ? 'is-disconnected' : ''}" style="margin-bottom:8px">
+            <div class="player-card-content">
+              <div class="player-avatar ${isHost ? 'host-avatar' : ''}">${initial}</div>
+              <div class="player-info">
+                <span class="player-name" title="${this.escapeHtml(playerName)}">
+                  ${this.escapeHtml(playerName)} ${isMe ? '<span class="you-tag">(You)</span>' : ''}
+                </span>
+              </div>
+            </div>
+            <div class="player-card-badges">
+              ${isHost ? '<span class="host-tag">👑 HOST</span>' : ''}
+              ${isCoHost ? '<span class="co-host-tag">⭐ CO-HOST</span>' : ''}
+              ${!isConnected ? '<span class="offline-tag">🔴 Offline</span>' : ''}
+            </div>
           </div>
         `;
       });
@@ -554,6 +603,9 @@ export class LobbyView {
       const switchBtn = box.querySelector('.btn-switch-team');
       if (switchBtn) {
         switchBtn.addEventListener('click', () => {
+          if (isSpectator) {
+            store.updatePlayer({ isSpectator: false, teamId: teamKey });
+          }
           wsClient.send('ASSIGN_TEAM', { teamId: teamKey });
         });
       }

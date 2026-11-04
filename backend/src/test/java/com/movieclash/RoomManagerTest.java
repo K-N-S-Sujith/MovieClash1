@@ -104,7 +104,7 @@ public class RoomManagerTest {
     @Test
     void testSanitizePlayerName() {
         assertEquals("CleanName", roomManager.sanitizePlayerName("<script>alert('xss')</script>CleanName"));
-        assertEquals("VeryLongPlayerName", roomManager.sanitizePlayerName("VeryLongPlayerNameWithMoreThanEighteenChars"));
+        assertEquals("VeryLongPlayer", roomManager.sanitizePlayerName("VeryLongPlayerNameWithMoreThanFourteenChars"));
         assertEquals("Normal", roomManager.sanitizePlayerName("   Normal   \n\t"));
     }
 

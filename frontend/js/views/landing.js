@@ -5,6 +5,7 @@
 import store from '../state.js';
 import wsClient from '../api/websocket.js';
 import userProfile from '../profile.js';
+import toast from '../utils/toast.js';
 
 export class LandingView {
   constructor() {
@@ -33,11 +34,17 @@ export class LandingView {
   }
 
   initProfile() {
-    const currentName = userProfile.getName();
+    const currentName = userProfile.getName().slice(0, 14);
     if (this.profileDisplayName) this.profileDisplayName.textContent = currentName;
     if (this.createPlayerNameInput) this.createPlayerNameInput.value = currentName;
     if (this.joinPlayerNameInput) this.joinPlayerNameInput.value = currentName;
     if (this.inputProfileName) this.inputProfileName.value = currentName;
+
+    const countText = `${currentName.length}/14`;
+    const createCounter = document.getElementById('createNameCounter');
+    const joinCounter = document.getElementById('joinNameCounter');
+    if (createCounter) createCounter.textContent = countText;
+    if (joinCounter) joinCounter.textContent = countText;
 
     // Auto-sync store with initial user profile identity
     store.updatePlayer({
@@ -210,7 +217,7 @@ export class LandingView {
 
   syncName(val) {
     if (!val || !val.trim()) return;
-    const clean = userProfile.setName(val);
+    const clean = userProfile.setName((val || '').slice(0, 14));
     if (this.profileDisplayName) this.profileDisplayName.textContent = clean;
     if (this.createPlayerNameInput && this.createPlayerNameInput.value !== clean) {
       this.createPlayerNameInput.value = clean;
@@ -218,6 +225,12 @@ export class LandingView {
     if (this.joinPlayerNameInput && this.joinPlayerNameInput.value !== clean) {
       this.joinPlayerNameInput.value = clean;
     }
+    const countText = `${clean.length}/14`;
+    const createCounter = document.getElementById('createNameCounter');
+    const joinCounter = document.getElementById('joinNameCounter');
+    if (createCounter) createCounter.textContent = countText;
+    if (joinCounter) joinCounter.textContent = countText;
+
     store.updatePlayer({ name: clean });
   }
 
@@ -260,7 +273,12 @@ export class LandingView {
 
   handleCreateRoom() {
     const rawName = document.getElementById('createPlayerName').value.trim();
-    const playerName = rawName || userProfile.getName();
+    const playerName = (rawName || userProfile.getName()).slice(0, 14);
+    if (!playerName || playerName.length < 2) {
+      toast.show('Please enter a player name with at least 2 characters.', 'warning');
+      document.getElementById('createPlayerName')?.focus();
+      return;
+    }
     this.syncName(playerName);
 
     const gameMode = document.querySelector('input[name="gameMode"]:checked')?.value || 'INDIVIDUAL';
@@ -273,7 +291,7 @@ export class LandingView {
     if (durationSelectVal === 'custom') {
       const customVal = parseInt(document.getElementById('customRoundDuration')?.value, 10);
       if (!customVal || customVal < 10 || customVal > 600) {
-        alert('Please enter a valid round duration between 10 and 600 seconds.');
+        toast.show('Please enter a valid round duration between 10 and 600 seconds.', 'warning');
         document.getElementById('customRoundDuration')?.focus();
         return;
       }
@@ -288,7 +306,7 @@ export class LandingView {
     if (roundsSelectVal === 'custom') {
       const customVal = parseInt(document.getElementById('customTotalRounds')?.value, 10);
       if (!customVal || customVal < 1 || customVal > 50) {
-        alert('Please enter a valid number of turns/rounds between 1 and 50.');
+        toast.show('Please enter a valid number of turns/rounds between 1 and 50.', 'warning');
         document.getElementById('customTotalRounds')?.focus();
         return;
       }
@@ -315,19 +333,25 @@ export class LandingView {
     });
 
     if (!sent) {
-      alert('Cannot connect to game server. Please make sure the Spring Boot backend is running on port 8080.');
+      toast.show('Cannot connect to game server. Please make sure the Spring Boot backend is running on port 8080.', 'error');
     }
   }
 
   handleJoinRoom() {
     const rawName = document.getElementById('joinPlayerName').value.trim();
-    const playerName = rawName || userProfile.getName();
+    const playerName = (rawName || userProfile.getName()).slice(0, 14);
+    if (!playerName || playerName.length < 2) {
+      toast.show('Please enter a player name with at least 2 characters.', 'warning');
+      document.getElementById('joinPlayerName')?.focus();
+      return;
+    }
     this.syncName(playerName);
 
     const roomCode = document.getElementById('joinRoomCode').value.trim().toUpperCase();
 
-    if (!roomCode) {
-      alert('Please enter a valid 6-character room code.');
+    if (!roomCode || roomCode.length < 4) {
+      toast.show('Please enter a valid 6-character room code.', 'warning');
+      document.getElementById('joinRoomCode')?.focus();
       return;
     }
 
@@ -343,7 +367,7 @@ export class LandingView {
     });
 
     if (!sent) {
-      alert('Cannot connect to game server. Please make sure the Spring Boot backend is running on port 8080.');
+      toast.show('Cannot connect to game server. Please make sure the Spring Boot backend is running on port 8080.', 'error');
     }
   }
 }

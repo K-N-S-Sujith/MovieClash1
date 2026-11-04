@@ -114,9 +114,12 @@
         <h2>Create a Room</h2>
         <form id="createRoomForm" class="app-form">
           <div class="form-group profile-helper-group">
-            <label for="createPlayerName">Your Nickname <span class="badge-saved">Saved</span></label>
-            <input type="text" id="createPlayerName" maxlength="18" placeholder="e.g. CinemaWizard" required autocomplete="off" />
-            <small class="helper-text">Standard profile — saved across visits</small>
+            <div class="label-with-counter">
+              <label for="createPlayerName">Your Nickname <span class="badge-saved">Saved</span></label>
+              <span id="createNameCounter" class="char-counter">0/14</span>
+            </div>
+            <input type="text" id="createPlayerName" maxlength="14" placeholder="e.g. CinemaWizard" required autocomplete="off" />
+            <small class="helper-text" id="createNameHelper">Max 14 characters — saved across visits</small>
           </div>
 
           <div class="form-group">
@@ -196,9 +199,12 @@
         <h2>Join Game Room</h2>
         <form id="joinRoomForm" class="app-form">
           <div class="form-group profile-helper-group">
-            <label for="joinPlayerName">Your Nickname <span class="badge-saved">Saved</span></label>
-            <input type="text" id="joinPlayerName" maxlength="18" placeholder="e.g. MovieBuff" required autocomplete="off" />
-            <small class="helper-text">Standard profile — saved across visits</small>
+            <div class="label-with-counter">
+              <label for="joinPlayerName">Your Nickname <span class="badge-saved">Saved</span></label>
+              <span id="joinNameCounter" class="char-counter">0/14</span>
+            </div>
+            <input type="text" id="joinPlayerName" maxlength="14" placeholder="e.g. MovieBuff" required autocomplete="off" />
+            <small class="helper-text" id="joinNameHelper">Max 14 characters — saved across visits</small>
           </div>
 
           <div class="form-group">
@@ -489,17 +495,13 @@
 
           </div>
 
-          <!-- Column 3: Live Round Activity / Chat -->
-          <div class="arena-right-sidebar card">
-            <h3>Round Activity</h3>
-            <div id="roundActivityFeed" class="activity-feed"></div>
-
-            <div class="round-chat-block">
-              <div id="roundChatFeed" class="chat-feed-sm"></div>
-              <form id="roundChatForm" class="chat-input-row">
-                <input type="text" id="roundChatInput" placeholder="Chat with everyone..." maxlength="200" autocomplete="off" />
-                <button type="submit" class="btn btn-sm btn-secondary">Send</button>
-              </form>
+          <!-- Column 3: Compact Player Status Section (Replaces Round Activity & In-Game Chat) -->
+          <div class="arena-right-sidebar card player-status-sidebar">
+            <div class="sidebar-header">
+              <h3>Players (<span id="gamePlayerCount">0</span>)</h3>
+            </div>
+            <div id="gamePlayerStatusList" class="player-status-list">
+              <!-- Compact player items with avatar, name, and connection/role badges -->
             </div>
           </div>
 
