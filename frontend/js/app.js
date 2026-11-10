@@ -44,9 +44,34 @@ class MovieClashApp {
     };
     updateAudioIcon();
     if (btnAudio) {
-      btnAudio.addEventListener('click', () => {
+      btnAudio.addEventListener('click', (e) => {
+        e.stopPropagation();
         audioEngine.toggleMute();
         updateAudioIcon();
+      });
+    }
+
+    // Setup Collapsible Status Bar Pill (Default collapsed per specification)
+    const collapsibleStatusBar = document.getElementById('collapsibleStatusBar');
+    const btnToggleStatusBar = document.getElementById('btnToggleStatusBar');
+    if (collapsibleStatusBar) {
+      const toggleStatusBar = (e) => {
+        if (e && e.target && e.target.closest('#btnAudioToggle')) return;
+        collapsibleStatusBar.classList.toggle('expanded');
+        collapsibleStatusBar.classList.toggle('collapsed');
+      };
+
+      if (btnToggleStatusBar) {
+        btnToggleStatusBar.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleStatusBar(e);
+        });
+      }
+
+      collapsibleStatusBar.addEventListener('click', (e) => {
+        if (!e.target.closest('#btnAudioToggle') && !e.target.closest('#btnToggleStatusBar')) {
+          toggleStatusBar(e);
+        }
       });
     }
 

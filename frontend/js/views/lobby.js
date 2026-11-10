@@ -29,6 +29,11 @@ export class LobbyView {
     this.spectatorCountNum = document.getElementById('spectatorCountNum');
     this.spectatorPlayerList = document.getElementById('spectatorPlayerList');
 
+    // Compact Room Info Chips
+    this.lobbyModeBadge = document.getElementById('lobbyModeBadge');
+    this.lobbyAutoBadge = document.getElementById('lobbyAutoBadge');
+    this.lobbyPlayerCountText = document.getElementById('lobbyPlayerCountText');
+
     // Lobby Settings elements
     this.lobbySettingsBadge = document.getElementById('lobbySettingsBadge');
     this.btnOpenSettings = document.getElementById('btnOpenLobbySettings');
@@ -295,20 +300,35 @@ export class LobbyView {
     const { room, player } = state;
 
     if (this.roomCodeEl) this.roomCodeEl.textContent = room.roomId || '------';
+
+    // Game Config Chips per Image 2
+    if (this.lobbyModeBadge) {
+      this.lobbyModeBadge.textContent = room.gameMode === 'TEAM' ? 'Team' : 'Individual';
+    }
     if (this.modeBadgeEl) this.modeBadgeEl.textContent = room.gameMode;
 
     if (this.lobbySettingsBadge) {
       const duration = room.config?.roundDurationSec || 60;
       const rounds = room.config?.totalRounds || 2;
-      const auto = room.config?.autoStartRound ? 'Auto' : 'Manual';
-      this.lobbySettingsBadge.textContent = `${duration}s • ${rounds} Turn${rounds === 1 ? '' : 's'} • ${auto}`;
+      this.lobbySettingsBadge.textContent = `${duration}s - ${rounds} Turn${rounds === 1 ? '' : 's'}`;
     }
 
-    const activePlayers = room.players.filter(p => !p.spectator);
-    const spectators = room.players.filter(p => p.spectator);
+    if (this.lobbyAutoBadge) {
+      this.lobbyAutoBadge.textContent = room.config?.autoStartRound ? 'Auto' : 'Manual';
+    }
 
+    const activePlayers = (room.players || []).filter(p => !p.spectator);
+    const spectators = (room.players || []).filter(p => p.spectator);
+
+    const activeCount = activePlayers.length;
+    const specCount = spectators.length;
+    const countText = `${activeCount} Player${activeCount === 1 ? '' : 's'}${specCount > 0 ? ` (${specCount} 🍿)` : ''}`;
+
+    if (this.lobbyPlayerCountText) {
+      this.lobbyPlayerCountText.textContent = countText;
+    }
     if (this.playerCountBadgeEl) {
-      this.playerCountBadgeEl.textContent = `${activePlayers.length} Player${activePlayers.length === 1 ? '' : 's'}${spectators.length > 0 ? ` (${spectators.length} 🍿)` : ''}`;
+      this.playerCountBadgeEl.title = `${activeCount} active players in room`;
     }
 
     if (this.btnToggleRole) {
@@ -405,21 +425,19 @@ export class LobbyView {
     validSpectators.forEach(p => {
       const item = document.createElement('div');
       const isMe = p.id === currentPlayer?.id;
-      item.className = `lobby-player-card spectator-card ${isMe ? 'is-me' : ''}`;
-      const playerName = p.name || 'Spectator';
+      const isConnected = p.connected !== false;
+      const playerName = p.name || (isMe ? currentPlayer?.name : null) || 'Spectator';
       const initial = playerName.charAt(0).toUpperCase();
 
+      item.className = `player-avatar-tile spectator-avatar-tile ${isMe ? 'is-me' : ''} ${!isConnected ? 'offline-dim is-disconnected' : ''}`;
+
       item.innerHTML = `
-        <div class="player-card-content">
-          <div class="player-avatar spectator-avatar">${initial}</div>
-          <div class="player-info">
-            <span class="player-name" title="${this.escapeHtml(playerName)}">
-              ${this.escapeHtml(playerName)} ${isMe ? '<span class="you-tag">(You)</span>' : ''}
-            </span>
-          </div>
+        <div class="avatar-ring-wrapper">
+          <div class="player-avatar-circle ${isConnected ? 'online-glow' : 'offline-dim'}">${initial}</div>
+          <span class="presence-dot-indicator ${isConnected ? 'online' : 'offline'}" title="${isConnected ? 'Online' : 'Offline'}"></span>
         </div>
-        <div class="player-card-badges">
-          <span class="spectator-tag">🍿 Audience</span>
+        <div class="player-tile-username" title="${this.escapeHtml(playerName)}">
+          ${this.escapeHtml(playerName)}${isMe ? ' <span class="you-text">(You)</span>' : ''}
         </div>
       `;
       this.spectatorPlayerList.appendChild(item);
@@ -445,21 +463,17 @@ export class LobbyView {
       const playerName = p.name || (isMe ? currentPlayer?.name : null) || 'Player';
       const initial = playerName.charAt(0).toUpperCase();
 
-      item.className = `lobby-player-card ${isHost ? 'host-card' : ''} ${isMe ? 'is-me' : ''} ${!isConnected ? 'is-disconnected' : ''}`;
+      item.className = `player-avatar-tile ${isMe ? 'is-me' : ''} ${!isConnected ? 'offline-dim is-disconnected' : ''}`;
 
       item.innerHTML = `
-        <div class="player-card-content">
-          <div class="player-avatar ${isHost ? 'host-avatar' : ''}">${initial}</div>
-          <div class="player-info">
-            <span class="player-name" title="${this.escapeHtml(playerName)}">
-              ${this.escapeHtml(playerName)} ${isMe ? '<span class="you-tag">(You)</span>' : ''}
-            </span>
-          </div>
+        <div class="avatar-ring-wrapper">
+          <div class="player-avatar-circle ${isConnected ? 'online-glow' : 'offline-dim'}">${initial}</div>
+          ${isHost ? '<span class="host-crown-badge" title="Room Host">👑</span>' : ''}
+          ${isCoHost ? '<span class="cohost-star-badge" title="Co-Host">⭐</span>' : ''}
+          <span class="presence-dot-indicator ${isConnected ? 'online' : 'offline'}" title="${isConnected ? 'Online' : 'Offline'}"></span>
         </div>
-        <div class="player-card-badges">
-          ${isHost ? '<span class="host-tag">👑 HOST</span>' : ''}
-          ${isCoHost ? '<span class="co-host-tag">⭐ CO-HOST</span>' : ''}
-          ${!isConnected ? '<span class="offline-tag">🔴 Offline</span>' : ''}
+        <div class="player-tile-username" title="${this.escapeHtml(playerName)}">
+          ${this.escapeHtml(playerName)}${isMe ? ' <span class="you-text">(You)</span>' : ''}
         </div>
       `;
       this.individualListEl.appendChild(item);
@@ -515,6 +529,7 @@ export class LobbyView {
         if (!isMyTeam) {
           if (isSpectator) {
             store.updatePlayer({ isSpectator: false, teamId: teamKey });
+            wsClient.send('SWITCH_ROLE', { spectator: false });
           }
           wsClient.send('ASSIGN_TEAM', { teamId: teamKey });
         }
@@ -552,19 +567,15 @@ export class LobbyView {
         const initial = playerName.charAt(0).toUpperCase();
 
         playersHtml += `
-          <div class="lobby-player-card team-player-card ${isHost ? 'host-card' : ''} ${isMe ? 'is-me' : ''} ${!isConnected ? 'is-disconnected' : ''}" style="margin-bottom:8px">
-            <div class="player-card-content">
-              <div class="player-avatar ${isHost ? 'host-avatar' : ''}">${initial}</div>
-              <div class="player-info">
-                <span class="player-name" title="${this.escapeHtml(playerName)}">
-                  ${this.escapeHtml(playerName)} ${isMe ? '<span class="you-tag">(You)</span>' : ''}
-                </span>
-              </div>
+          <div class="player-avatar-tile ${isMe ? 'is-me' : ''} ${!isConnected ? 'offline-dim is-disconnected' : ''}">
+            <div class="avatar-ring-wrapper">
+              <div class="player-avatar-circle ${isConnected ? 'online-glow' : 'offline-dim'}">${initial}</div>
+              ${isHost ? '<span class="host-crown-badge" title="Room Host">👑</span>' : ''}
+              ${isCoHost ? '<span class="cohost-star-badge" title="Co-Host">⭐</span>' : ''}
+              <span class="presence-dot-indicator ${isConnected ? 'online' : 'offline'}" title="${isConnected ? 'Online' : 'Offline'}"></span>
             </div>
-            <div class="player-card-badges">
-              ${isHost ? '<span class="host-tag">👑 HOST</span>' : ''}
-              ${isCoHost ? '<span class="co-host-tag">⭐ CO-HOST</span>' : ''}
-              ${!isConnected ? '<span class="offline-tag">🔴 Offline</span>' : ''}
+            <div class="player-tile-username" title="${this.escapeHtml(playerName)}">
+              ${this.escapeHtml(playerName)}${isMe ? ' <span class="you-text">(You)</span>' : ''}
             </div>
           </div>
         `;
@@ -597,7 +608,7 @@ export class LobbyView {
           </div>
           <div class="team-action-slot">${actionHtml}</div>
         </div>
-        <div class="team-roster">${playersHtml}</div>
+        <div class="team-roster player-avatar-grid">${playersHtml}</div>
       `;
 
       const switchBtn = box.querySelector('.btn-switch-team');
@@ -605,6 +616,7 @@ export class LobbyView {
         switchBtn.addEventListener('click', () => {
           if (isSpectator) {
             store.updatePlayer({ isSpectator: false, teamId: teamKey });
+            wsClient.send('SWITCH_ROLE', { spectator: false });
           }
           wsClient.send('ASSIGN_TEAM', { teamId: teamKey });
         });

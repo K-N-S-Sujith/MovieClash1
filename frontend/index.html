@@ -12,47 +12,50 @@
   <link rel="stylesheet" href="css/responsive.css" />
 </head>
 <body class="dark-theme">
-  <!-- Top Navigation & Latency / Connection Bar (Cinema Marquee Header) -->
+  <!-- Top Navigation & Collapsible Connection Status Bar -->
   <header class="app-header">
-    <div class="marquee-bulbs-track" aria-hidden="true">
-      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
-      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
-      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
-      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
-      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
-      <span class="bulb"></span><span class="bulb"></span><span class="bulb"></span><span class="bulb"></span>
-    </div>
     <div class="brand">
       <span class="logo-icon">🎬</span>
-      <span class="logo-text">Movie<span class="highlight">Clash</span></span>
+      <span class="logo-text">MOVIE<span class="highlight">CLASH</span></span>
     </div>
     
     <div class="header-right">
-      <!-- Latency Badge -->
-      <div id="latencyBadge" class="status-badge latency-badge" title="WebSocket Roundtrip Latency">
-        <span class="dot"></span>
-        <span class="label">WS: -- ms</span>
-      </div>
+      <!-- Collapsible Status Bar Pill (Collapsed by default per specification) -->
+      <div id="collapsibleStatusBar" class="collapsible-status-bar collapsed" title="Click arrow to expand/collapse connection details">
+        <!-- Expanded Status Items -->
+        <div class="status-expandable-content">
+          <!-- Latency Badge -->
+          <div id="latencyBadge" class="status-badge latency-badge" title="WebSocket Roundtrip Latency">
+            <span class="dot"></span>
+            <span class="label">WS: -- ms</span>
+          </div>
 
-      <!-- Server Wakeup / Health Badge -->
-      <div id="serverStatusBadge" class="status-badge server-badge" title="Backend Health Status">
-        <span class="dot"></span>
-        <span class="label">Connecting...</span>
-      </div>
+          <span class="status-item-divider"></span>
 
-      <!-- Cinema Audio Sound Toggle -->
-      <button type="button" id="btnAudioToggle" class="btn-icon audio-toggle-btn" title="Toggle Sound (Mute/Unmute)" aria-label="Toggle Sound">
-        <span id="audioIcon">🔊</span>
-      </button>
-      
-      <!-- Microphone Status & Quick Toggle (Voice clue temporarily commented out)
-      <div id="voiceControlBadge" class="voice-badge hidden">
-        <button id="micToggleBtn" class="btn-icon" title="Toggle Microphone" aria-label="Toggle Microphone">
-          <span class="mic-icon">🎙️</span>
+          <!-- Server Wakeup / Health Badge -->
+          <div id="serverStatusBadge" class="status-badge server-badge" title="Backend Health Status">
+            <span class="dot"></span>
+            <span class="label">Server: Online</span>
+          </div>
+
+          <span class="status-item-divider"></span>
+        </div>
+
+        <!-- Collapsed Indicator (shows dot when collapsed) -->
+        <div class="status-collapsed-dot" id="statusCollapsedDot" title="Connection status">
+          <span class="dot-live"></span>
+        </div>
+
+        <!-- Cinema Audio Sound Toggle -->
+        <button type="button" id="btnAudioToggle" class="btn-icon audio-toggle-btn" title="Toggle Sound (Mute/Unmute)" aria-label="Toggle Sound">
+          <span id="audioIcon">🔊</span>
         </button>
-        <span id="voiceStatusText" class="voice-status">Voice: Off</span>
+
+        <!-- Toggle Arrow Button -->
+        <button type="button" id="btnToggleStatusBar" class="btn-icon status-expand-toggle" title="Toggle connection details" aria-label="Toggle connection details">
+          <span class="toggle-arrow-icon">⌄</span>
+        </button>
       </div>
-      -->
     </div>
   </header>
 
@@ -227,19 +230,49 @@
     <!-- ================= VIEW 4: LOBBY ================= -->
     <section id="viewLobby" class="view-section hidden">
       <div class="lobby-layout">
-        <!-- Room Code & Share Header -->
-        <div class="lobby-header-bar card">
-          <div class="room-code-block">
-            <span class="meta-label">ROOM CODE:</span>
-            <span id="lobbyRoomCode" class="code-display">------</span>
-            <button id="btnCopyRoomCode" class="btn-sm btn-outline" title="Copy Room Code">Copy Code</button>
-            <button id="btnCopyInviteLink" class="btn-sm btn-outline" title="Copy Invite Link">Copy Link</button>
-            <button id="btnToggleRole" class="btn-sm btn-outline role-toggle-btn" type="button" title="Toggle between Player and Spectator">🍿 Watch as Spectator</button>
+        <!-- Compact Room Details Card -->
+        <div class="room-info-compact-bar card">
+          <!-- Row 1: Code and Links -->
+          <div class="room-code-links-row">
+            <div class="room-code-pill-group">
+              <span class="room-pill-label">Room</span>
+              <div class="room-code-highlight-box">
+                <span id="lobbyRoomCode" class="room-code-text">------</span>
+                <button type="button" id="btnCopyRoomCode" class="btn-icon-copy" title="Copy Room Code" aria-label="Copy Room Code">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+              </div>
+            </div>
+            
+            <button type="button" id="btnCopyInviteLink" class="btn-copy-link-pill" title="Copy Invite Link">
+              <span class="icon">🔗</span>
+              <span id="copyLinkText">Copy Link</span>
+            </button>
           </div>
-          <div class="lobby-meta">
-            <span class="badge" id="lobbyModeBadge">INDIVIDUAL</span>
-            <span class="badge" id="lobbySettingsBadge">60s • 2 Turns</span>
-            <span class="badge" id="lobbyPlayerCountBadge">0 Players</span>
+
+          <!-- Row 2: Secondary Spectator Action with Dividers -->
+          <div class="spectator-secondary-action">
+            <span class="divider-line"></span>
+            <button type="button" id="btnToggleRole" class="btn-secondary-spectator role-toggle-btn" title="Toggle between Player and Spectator">
+              <span id="spectatorBtnIcon">🍿</span>
+              <span id="spectatorBtnText">WATCH AS SPECTATOR</span>
+            </button>
+            <span class="divider-line"></span>
+          </div>
+
+          <!-- Row 3: Game Config Chips -->
+          <div class="lobby-chips-row">
+            <span class="chip chip-mode active" id="lobbyModeBadge">Individual</span>
+            <span class="chip chip-settings" id="lobbySettingsBadge">60s - 2 Turns</span>
+            <span class="chip chip-auto" id="lobbyAutoBadge">Manual</span>
+          </div>
+
+          <!-- Row 4: Player Count Chip -->
+          <div class="lobby-player-count-row">
+            <span class="chip-player-count" id="lobbyPlayerCountBadge">
+              <span class="icon">👤</span>
+              <span id="lobbyPlayerCountText">1 Player</span>
+            </span>
           </div>
         </div>
 
@@ -247,12 +280,15 @@
           <!-- Left Column: Players / Teams -->
           <div class="lobby-roster card">
             <div class="roster-header">
-              <h3>Players in Lobby</h3>
-              <span id="playerSlotsInfo" class="text-muted">Min 2 players required</span>
+              <div class="roster-title-group">
+                <span class="roster-title-icon">👥</span>
+                <h3>Players in Lobby</h3>
+              </div>
+              <span id="playerSlotsInfo" class="text-muted text-xs">Min 2 players required</span>
             </div>
             
-            <!-- Shown in Individual Mode -->
-            <div id="individualPlayerList" class="player-roster-list"></div>
+            <!-- Shown in Individual Mode: Compact Avatar Grid -->
+            <div id="individualPlayerList" class="player-avatar-grid"></div>
 
             <!-- Shown in Team Mode -->
             <div id="teamSelectorBlock" class="team-roster-grid hidden">
@@ -274,7 +310,7 @@
                 <span class="icon">🍿</span>
                 <h4>Audience & Spectators (<span id="spectatorCountNum">0</span>)</h4>
               </div>
-              <div id="spectatorPlayerList" class="spectator-player-list"></div>
+              <div id="spectatorPlayerList" class="player-avatar-grid spectator-avatar-grid"></div>
             </div>
           </div>
 
@@ -282,12 +318,15 @@
           <div class="lobby-controls card">
             <div class="chat-wrapper">
               <div class="chat-header">
+                <span class="chat-header-icon">💬</span>
                 <h4>Lobby Chat</h4>
               </div>
               <div id="lobbyChatMessages" class="chat-feed"></div>
               <form id="lobbyChatForm" class="chat-input-row">
                 <input type="text" id="lobbyChatInput" placeholder="Say hi (max 200 chars)..." maxlength="200" autocomplete="off" />
-                <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                <button type="submit" class="btn-chat-send" title="Send message" aria-label="Send message">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
               </form>
             </div>
 
@@ -332,6 +371,18 @@
 
           <div class="arena-controls">
             <button id="btnProposeCancel" class="btn-sm btn-danger-outline" title="Propose game cancellation">Cancel Game</button>
+          </div>
+        </div>
+
+        <!-- Persistent In-Game Player Strip (Accessible throughout gameplay) -->
+        <div id="arenaPlayerStripBar" class="arena-player-strip-bar card" title="Click to view full player list and status">
+          <div class="strip-header-info">
+            <span class="strip-icon">👥</span>
+            <span class="strip-title">PLAYERS (<span id="arenaStripPlayerCount">0</span>)</span>
+            <span class="strip-expand-hint">View Roster ↗</span>
+          </div>
+          <div id="arenaAvatarScrollStrip" class="arena-avatar-scroll-strip">
+            <!-- Dynamically populated avatar pills with green glow if online, host crown -->
           </div>
         </div>
 
@@ -643,6 +694,22 @@
         <div class="vote-actions">
           <button id="btnVoteCancelYes" class="btn btn-danger">Yes, Cancel Game</button>
           <button id="btnVoteCancelNo" class="btn btn-secondary">No, Keep Playing</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= VIEW 10: COMPLETE IN-GAME PLAYERS ROSTER MODAL ================= -->
+    <div id="arenaPlayersModal" class="modal-overlay hidden">
+      <div class="modal-card arena-players-modal-card">
+        <div class="modal-header-row">
+          <div class="modal-header-title">
+            <span class="icon">👥</span>
+            <h3>Players &amp; Status (<span id="modalPlayerTotalCount">0</span>)</h3>
+          </div>
+          <button type="button" id="btnCloseArenaPlayersModal" class="btn-icon btn-close-modal" aria-label="Close">✕</button>
+        </div>
+        <div id="arenaPlayersModalList" class="arena-players-modal-list">
+          <!-- Dynamic complete player roster cards with glowing avatars, roles, online status -->
         </div>
       </div>
     </div>

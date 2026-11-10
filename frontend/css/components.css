@@ -271,89 +271,203 @@
   gap: 22px;
 }
 
-/* Golden VIP Admission Ticket Stub Header */
-.lobby-header-bar {
-  position: relative;
+/* ================= 5. COMPACT ROOM INFORMATION SECTION ================= */
+.room-info-compact-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 18px 16px;
+  background: #171122;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* Row 1: Code and Links */
+.room-code-links-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 32px;
-  background: linear-gradient(135deg, var(--cinema-card) 0%, #1e1728 100%);
-  border: 2px dashed var(--cinema-gold);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md), 0 0 20px rgba(245, 197, 66, 0.2);
-  overflow: visible;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-/* Ticket Notches for Lobby Header */
-.lobby-header-bar::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: -13px;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  background-color: var(--cinema-black);
-  border-radius: 50%;
-  border-right: 2px solid var(--cinema-gold);
-  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.8);
+.room-code-pill-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.lobby-header-bar::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: -13px;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  background-color: var(--cinema-black);
-  border-radius: 50%;
-  border-left: 2px solid var(--cinema-gold);
-  box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.8);
+.room-pill-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: #c4b5d4;
 }
 
-.room-code-block {
+.room-code-highlight-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px 3px 14px;
+  border-radius: 9999px;
+  background: #0d0815;
+  border: 1.5px solid var(--cinema-gold);
+  box-shadow: 0 0 12px rgba(245, 197, 66, 0.25);
+}
+
+.room-code-text {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  letter-spacing: 2.5px;
+  font-weight: 700;
+  color: var(--cinema-gold-bright);
+  text-shadow: 0 0 10px rgba(245, 197, 66, 0.4);
+}
+
+.btn-icon-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--friends-cream-muted);
+  padding: 3px;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.btn-icon-copy:hover {
+  color: var(--cinema-gold);
+  transform: scale(1.15);
+}
+
+.btn-copy-link-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  color: #e4d7ee;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-copy-link-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(245, 197, 66, 0.4);
+  color: var(--cinema-gold);
+  transform: translateY(-1px);
+}
+
+/* Row 2: Secondary Spectator Action with Dividers */
+.spectator-secondary-action {
   display: flex;
   align-items: center;
-  gap: 14px;
-}
-
-.meta-label {
-  font-family: var(--font-heading);
-  font-size: 1rem;
-  letter-spacing: 2px;
-  color: var(--friends-cream-muted);
-}
-
-.code-display {
-  font-family: var(--font-heading);
-  font-size: 2.2rem;
-  letter-spacing: 6px;
-  color: var(--cinema-gold-bright);
-  background: #0d0912;
-  padding: 4px 18px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--cinema-gold);
-  text-shadow: 0 0 12px var(--cinema-gold-glow);
-}
-
-.lobby-meta {
-  display: flex;
   gap: 12px;
+  margin: 2px 0;
 }
 
-.badge {
-  display: inline-block;
-  padding: 6px 16px;
-  border-radius: var(--radius-full);
+.spectator-secondary-action .divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+}
+
+.btn-secondary-spectator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 18px;
+  border-radius: 9999px;
+  background: rgba(107, 59, 167, 0.22);
+  border: 1px solid rgba(168, 85, 247, 0.35);
   font-family: var(--font-heading);
-  font-size: 1.05rem;
+  font-size: 0.8rem;
   letter-spacing: 1px;
-  background-color: var(--cinema-surface-elevated);
-  border: 1px solid rgba(245, 197, 66, 0.3);
-  color: var(--friends-cream);
+  color: #d8b4fe;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-secondary-spectator:hover {
+  background: rgba(107, 59, 167, 0.4);
+  border-color: var(--cinema-gold);
+  color: var(--cinema-gold-bright);
+  transform: scale(1.02);
+}
+
+.btn-secondary-spectator.active-spectator {
+  background: linear-gradient(135deg, rgba(46, 196, 134, 0.3), rgba(107, 59, 167, 0.4));
+  border-color: #2ec486;
+  color: #2ec486;
+  box-shadow: 0 0 12px rgba(46, 196, 134, 0.35);
+}
+
+/* Row 3: Game Config Chips */
+.lobby-chips-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 16px;
+  border-radius: 9999px;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #ccc;
+  transition: all var(--transition-fast);
+}
+
+.chip.active,
+.chip-mode {
+  border-color: var(--cinema-gold);
+  color: var(--cinema-gold-bright);
+  background: rgba(245, 197, 66, 0.08);
+  box-shadow: 0 0 10px rgba(245, 197, 66, 0.2);
+}
+
+/* Row 4: Player Count Chip */
+.lobby-player-count-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chip-player-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 20px;
+  border-radius: 9999px;
+  background: rgba(107, 59, 167, 0.32);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  letter-spacing: 0.8px;
+  color: #f3e8ff;
+  box-shadow: 0 0 14px rgba(107, 59, 167, 0.25);
 }
 
 /* ================= 6. LOBBY GRID & ROSTER ================= */
@@ -375,6 +489,209 @@
 .roster-header h3 {
   font-size: 1.6rem;
   color: var(--cinema-gold-bright);
+}
+
+.roster-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.roster-title-icon {
+  font-size: 1.3rem;
+}
+
+/* ================= COMPACT AVATAR GRID & TILES (IMAGE 2 DESIGN) ================= */
+.player-avatar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+  max-height: 440px;
+  overflow-y: auto;
+  padding: 4px 2px 10px;
+}
+
+.player-avatar-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 104px;
+  min-height: 114px;
+  padding: 14px 10px 10px;
+  background: #191224;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  text-align: center;
+  position: relative;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.player-avatar-tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 197, 66, 0.35);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+}
+
+.player-avatar-tile.is-me {
+  background: linear-gradient(180deg, rgba(107, 59, 167, 0.22) 0%, #171122 100%);
+  border-color: rgba(245, 197, 66, 0.45);
+}
+
+.player-avatar-tile.is-disconnected,
+.player-avatar-tile.offline-dim {
+  opacity: 0.48;
+  filter: grayscale(0.75);
+}
+
+/* Avatar Ring Wrapper */
+.avatar-ring-wrapper {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 8px;
+}
+
+.player-avatar-circle {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: #241638;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  user-select: none;
+  transition: all 0.25s ease;
+}
+
+/* Online Glow Ring - per Image 2 */
+.player-avatar-circle.online-glow {
+  border: 2.5px solid #2ec486;
+  box-shadow: 0 0 16px rgba(46, 196, 134, 0.7), inset 0 0 8px rgba(46, 196, 134, 0.25);
+}
+
+.player-avatar-circle.offline-dim {
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: none;
+  background: #1a1622;
+  color: #71717a;
+}
+
+/* Presence Dot Indicator (Bottom Right on Ring per Image 2) */
+.presence-dot-indicator {
+  position: absolute;
+  bottom: 0px;
+  right: 1px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #2ec486;
+  border: 2.5px solid #191224;
+  box-shadow: 0 0 8px rgba(46, 196, 134, 0.85);
+  z-index: 2;
+}
+
+.presence-dot-indicator.offline {
+  background: #71717a;
+  box-shadow: none;
+}
+
+/* Host Crown Badge (Small crown indicator per requirement 2) */
+.host-crown-badge {
+  position: absolute;
+  top: -8px;
+  left: -4px;
+  font-size: 1.1rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 6px rgba(245, 197, 66, 0.9));
+  transform: rotate(-15deg);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.cohost-star-badge {
+  position: absolute;
+  top: -6px;
+  right: -3px;
+  font-size: 0.95rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 5px rgba(245, 197, 66, 0.8));
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Username below avatar */
+.player-tile-username {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.82rem;
+  color: #f3e8ff;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+.player-tile-username .you-text {
+  color: var(--cinema-gold);
+  font-size: 0.75rem;
+  margin-left: 2px;
+}
+
+/* Chat Send Button - Vibrant Purple with Send Icon per Image 2 */
+.btn-chat-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #9333ea, #7e22ce);
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 10px rgba(147, 51, 234, 0.45);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.btn-chat-send:hover {
+  background: linear-gradient(135deg, #a855f7, #9333ea);
+  transform: scale(1.08);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.65);
+}
+
+.btn-chat-send:active {
+  transform: scale(0.96);
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-header-icon {
+  font-size: 1.15rem;
+}
+
+/* Spectators Avatar Grid */
+.spectator-avatar-grid {
+  margin-top: 8px;
+}
+
+.spectator-avatar-tile .player-avatar-circle {
+  border-color: rgba(216, 180, 254, 0.4);
 }
 
 .player-roster-list {
@@ -699,6 +1016,279 @@
 .chat-input-row {
   display: flex;
   gap: 10px;
+}
+
+/* ================= 8B. PERSISTENT IN-GAME PLAYER STRIP ================= */
+.arena-player-strip-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  background: #171122;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-fast);
+}
+
+.arena-player-strip-bar:hover {
+  border-color: rgba(245, 197, 66, 0.35);
+  background: #1c152a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.strip-header-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  letter-spacing: 0.8px;
+  color: var(--cinema-gold);
+}
+
+.strip-icon {
+  font-size: 1.1rem;
+}
+
+.strip-expand-hint {
+  font-size: 0.72rem;
+  color: #a78bfa;
+  margin-left: 6px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.arena-avatar-scroll-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 4px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.arena-avatar-scroll-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.strip-player-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 4px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  font-size: 0.78rem;
+  color: #e2e8f0;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.strip-player-pill.is-me {
+  border-color: rgba(245, 197, 66, 0.4);
+  background: rgba(245, 197, 66, 0.08);
+}
+
+.strip-player-pill.is-offline {
+  opacity: 0.45;
+  filter: grayscale(0.8);
+}
+
+.strip-avatar-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  background: #26193d;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.strip-avatar-circle.online-glow {
+  border-color: #2ec486;
+  box-shadow: 0 0 6px rgba(46, 196, 134, 0.75);
+}
+
+.strip-crown-mini {
+  font-size: 0.65rem;
+  position: absolute;
+  top: -6px;
+  left: -3px;
+  line-height: 1;
+}
+
+/* ================= 8C. IN-GAME PLAYERS ROSTER MODAL ================= */
+.arena-players-modal-card {
+  width: 90%;
+  max-width: 440px;
+  max-height: 80vh;
+  background: #171122;
+  border: 1px solid rgba(245, 197, 66, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-header-title h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  color: var(--cinema-gold-bright);
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.btn-close-modal {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #a1a1aa;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+}
+
+.btn-close-modal:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.arena-players-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 18px 20px;
+  overflow-y: auto;
+  max-height: calc(80vh - 72px);
+}
+
+.modal-player-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all var(--transition-fast);
+}
+
+.modal-player-row.is-me {
+  background: rgba(245, 197, 66, 0.08);
+  border-color: rgba(245, 197, 66, 0.35);
+}
+
+.modal-player-row.is-offline {
+  opacity: 0.5;
+  filter: grayscale(0.7);
+}
+
+.modal-player-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-player-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  background: #241638;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+}
+
+.modal-player-circle.online-glow {
+  border-color: #2ec486;
+  box-shadow: 0 0 10px rgba(46, 196, 134, 0.65);
+}
+
+.modal-player-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.modal-player-name {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #f3e8ff;
+}
+
+.modal-player-role {
+  font-size: 0.75rem;
+  color: #a78bfa;
+}
+
+.modal-player-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-chip-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-family: var(--font-heading);
+  background: rgba(46, 196, 134, 0.15);
+  border: 1px solid rgba(46, 196, 134, 0.4);
+  color: #2ec486;
+}
+
+.status-chip-offline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-family: var(--font-heading);
+  background: rgba(113, 113, 122, 0.15);
+  border: 1px solid rgba(113, 113, 122, 0.3);
+  color: #a1a1aa;
 }
 
 /* ================= 9. ACTIVE GAME ARENA ================= */

@@ -252,6 +252,89 @@ html, body {
     width: 100%;
   }
 
+  /* Compact Avatar Grid on Mobile: Horizontally Scrollable Strip per Specification */
+  .player-avatar-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 12px;
+    padding: 6px 4px 12px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+
+  .player-avatar-tile {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    width: 92px;
+    min-height: 104px;
+    padding: 12px 6px 8px;
+  }
+
+  .avatar-ring-wrapper {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 6px;
+  }
+
+  .player-avatar-circle {
+    width: 52px;
+    height: 52px;
+    font-size: 1.35rem;
+  }
+
+  .presence-dot-indicator {
+    width: 10px;
+    height: 10px;
+    bottom: 0;
+    right: 0;
+  }
+
+  .player-tile-username {
+    max-width: 82px;
+    font-size: 0.78rem;
+  }
+
+  /* Compact Room Info Bar on Mobile */
+  .room-info-compact-bar {
+    padding: 10px 12px 14px;
+    gap: 10px;
+  }
+
+  .room-code-links-row {
+    justify-content: space-between;
+  }
+
+  .room-code-highlight-box {
+    padding: 2px 8px 2px 12px;
+  }
+
+  .room-code-text {
+    font-size: 1.15rem;
+    letter-spacing: 2px;
+  }
+
+  /* Compact In-Game Arena Player Strip on Mobile */
+  .arena-player-strip-bar {
+    padding: 6px 10px;
+    margin-bottom: 10px;
+  }
+
+  .arena-avatar-scroll-strip {
+    gap: 6px;
+  }
+
+  .strip-player-pill {
+    padding: 2px 8px 2px 3px;
+    font-size: 0.74rem;
+  }
+
+  .strip-avatar-circle {
+    width: 20px;
+    height: 20px;
+    font-size: 0.68rem;
+  }
+
   /* Compact Horizontal Input Rows for Mobile Typing */
   .guess-form {
     display: flex;

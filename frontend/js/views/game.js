@@ -75,6 +75,15 @@ export class GameView {
     this.playerStatusListEl = document.getElementById('gamePlayerStatusList');
     this.gamePlayerCountEl = document.getElementById('gamePlayerCount');
 
+    // Persistent In-Game Player Strip & Modal (Image 2 Design)
+    this.arenaPlayerStripBar = document.getElementById('arenaPlayerStripBar');
+    this.arenaStripPlayerCount = document.getElementById('arenaStripPlayerCount');
+    this.arenaAvatarScrollStrip = document.getElementById('arenaAvatarScrollStrip');
+    this.arenaPlayersModal = document.getElementById('arenaPlayersModal');
+    this.btnCloseArenaPlayersModal = document.getElementById('btnCloseArenaPlayersModal');
+    this.arenaPlayersModalList = document.getElementById('arenaPlayersModalList');
+    this.modalPlayerTotalCount = document.getElementById('modalPlayerTotalCount');
+
     // Cancellation
     this.btnProposeCancel = document.getElementById('btnProposeCancel');
 
@@ -87,6 +96,26 @@ export class GameView {
   }
 
   initEvents() {
+    if (this.arenaPlayerStripBar && this.arenaPlayersModal) {
+      this.arenaPlayerStripBar.addEventListener('click', () => {
+        this.openPlayersModal();
+      });
+    }
+
+    if (this.btnCloseArenaPlayersModal && this.arenaPlayersModal) {
+      this.btnCloseArenaPlayersModal.addEventListener('click', () => {
+        this.closePlayersModal();
+      });
+    }
+
+    if (this.arenaPlayersModal) {
+      this.arenaPlayersModal.addEventListener('click', (e) => {
+        if (e.target === this.arenaPlayersModal) {
+          this.closePlayersModal();
+        }
+      });
+    }
+
     if (this.chooseMovieForm) {
       this.chooseMovieForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -384,54 +413,130 @@ export class GameView {
     this.auditFeedEl.scrollTop = this.auditFeedEl.scrollHeight;
   }
 
-  renderPlayerStatus(room, currentPlayer, round) {
-    if (!this.playerStatusListEl) return;
+  openPlayersModal() {
+    if (this.arenaPlayersModal) {
+      this.arenaPlayersModal.classList.remove('hidden');
+    }
+  }
 
+  closePlayersModal() {
+    if (this.arenaPlayersModal) {
+      this.arenaPlayersModal.classList.add('hidden');
+    }
+  }
+
+  renderPlayerStatus(room, currentPlayer, round) {
     const players = room?.players || [];
+    const hostId = room?.hostId;
+    const clueGiverId = round?.clueGiverId || room?.currentClueGiverId;
+
     if (this.gamePlayerCountEl) {
       this.gamePlayerCountEl.textContent = players.length;
     }
 
-    const hostId = room?.hostId;
-    const clueGiverId = round?.clueGiverId || room?.currentClueGiverId;
+    // 1. Update Persistent In-Game Strip
+    if (this.arenaStripPlayerCount) {
+      this.arenaStripPlayerCount.textContent = players.length;
+    }
+    if (this.modalPlayerTotalCount) {
+      this.modalPlayerTotalCount.textContent = players.length;
+    }
 
-    this.playerStatusListEl.innerHTML = '';
+    if (this.arenaAvatarScrollStrip) {
+      this.arenaAvatarScrollStrip.innerHTML = '';
+      players.forEach(p => {
+        const isConnected = p.connected !== false;
+        const isHost = p.id === hostId || p.isHost;
+        const isMe = p.id === currentPlayer?.id;
+        const initial = (p.name || 'P').charAt(0).toUpperCase();
 
-    players.forEach(p => {
-      const isConnected = p.connected !== false;
-      const isHost = p.id === hostId || p.isHost;
-      const isClueGiver = p.id === clueGiverId;
-      const isSpectator = Boolean(p.spectator);
-      const isMe = p.id === currentPlayer?.id;
+        const pill = document.createElement('div');
+        pill.className = `strip-player-pill ${isMe ? 'is-me' : ''} ${!isConnected ? 'is-offline' : ''}`;
+        pill.innerHTML = `
+          <div class="strip-avatar-circle ${isConnected ? 'online-glow' : ''}">
+            ${initial}
+            ${isHost ? '<span class="strip-crown-mini">👑</span>' : ''}
+          </div>
+          <span class="strip-player-name">${this.escapeHtml(p.name || 'Player')}${isMe ? ' (You)' : ''}</span>
+        `;
+        this.arenaAvatarScrollStrip.appendChild(pill);
+      });
+    }
 
-      const playerName = p.name || 'Player';
-      const initial = playerName.charAt(0).toUpperCase();
+    // 2. Update Modal Roster List
+    if (this.arenaPlayersModalList) {
+      this.arenaPlayersModalList.innerHTML = '';
+      players.forEach(p => {
+        const isConnected = p.connected !== false;
+        const isHost = p.id === hostId || p.isHost;
+        const isCoHost = (p.id === room?.coHostId || p.isCoHost) && !isHost;
+        const isMe = p.id === currentPlayer?.id;
+        const initial = (p.name || 'P').charAt(0).toUpperCase();
 
-      const item = document.createElement('div');
-      item.className = `player-status-item ${isConnected ? 'is-connected' : 'is-disconnected'} ${isMe ? 'is-me' : ''} ${isHost ? 'is-host' : ''}`;
+        const row = document.createElement('div');
+        row.className = `modal-player-row ${isMe ? 'is-me' : ''} ${!isConnected ? 'is-offline' : ''}`;
+        const roleLabel = isHost ? '👑 Host' : (isCoHost ? '⭐ Co-Host' : (p.spectator ? '🍿 Spectator' : 'Player'));
 
-      item.innerHTML = `
-        <div class="status-avatar-wrapper">
-          <div class="player-avatar-sm ${isHost ? 'host-avatar' : ''}">${initial}</div>
-          <span class="presence-dot ${isConnected ? 'online' : 'offline'}" title="${isConnected ? 'Connected' : 'Disconnected'}"></span>
-        </div>
-        <div class="status-player-details">
-          <div class="status-name-row">
-            <span class="player-status-name" title="${this.escapeHtml(playerName)}">
-              ${this.escapeHtml(playerName)} ${isMe ? '<span class="you-tag">(You)</span>' : ''}
+        row.innerHTML = `
+          <div class="modal-player-left">
+            <div class="modal-player-circle ${isConnected ? 'online-glow' : ''}">
+              ${initial}
+              ${isHost ? '<span class="host-crown-badge">👑</span>' : ''}
+            </div>
+            <div class="modal-player-details">
+              <span class="modal-player-name">${this.escapeHtml(p.name || 'Player')}${isMe ? ' (You)' : ''}</span>
+              <span class="modal-player-role">${roleLabel}</span>
+            </div>
+          </div>
+          <div class="modal-player-right">
+            <span class="${isConnected ? 'status-chip-live' : 'status-chip-offline'}">
+              ${isConnected ? '● Online' : '○ Offline'}
             </span>
           </div>
-          <div class="player-status-tags">
-            ${isHost ? '<span class="status-tag-mini host">👑 Host</span>' : ''}
-            ${isClueGiver ? '<span class="status-tag-mini clue">🎙️ Clue</span>' : ''}
-            ${isSpectator ? '<span class="status-tag-mini spectator">🍿 Audience</span>' : ''}
-            ${!isConnected ? '<span class="status-tag-mini offline">🔴 Disconnected</span>' : ''}
-          </div>
-        </div>
-      `;
+        `;
+        this.arenaPlayersModalList.appendChild(row);
+      });
+    }
 
-      this.playerStatusListEl.appendChild(item);
-    });
+    // 3. Update Existing Compact Player Status List (if present in sidebar)
+    if (this.playerStatusListEl) {
+      this.playerStatusListEl.innerHTML = '';
+      players.forEach(p => {
+        const isConnected = p.connected !== false;
+        const isHost = p.id === hostId || p.isHost;
+        const isClueGiver = p.id === clueGiverId;
+        const isSpectator = Boolean(p.spectator);
+        const isMe = p.id === currentPlayer?.id;
+
+        const playerName = p.name || 'Player';
+        const initial = playerName.charAt(0).toUpperCase();
+
+        const item = document.createElement('div');
+        item.className = `player-status-item ${isConnected ? 'is-connected' : 'is-disconnected'} ${isMe ? 'is-me' : ''} ${isHost ? 'is-host' : ''}`;
+
+        item.innerHTML = `
+          <div class="status-avatar-wrapper">
+            <div class="player-avatar-sm ${isHost ? 'host-avatar' : ''}">${initial}</div>
+            <span class="presence-dot ${isConnected ? 'online' : 'offline'}" title="${isConnected ? 'Connected' : 'Disconnected'}"></span>
+          </div>
+          <div class="status-player-details">
+            <div class="status-name-row">
+              <span class="player-status-name" title="${this.escapeHtml(playerName)}">
+                ${this.escapeHtml(playerName)} ${isMe ? '<span class="you-tag">(You)</span>' : ''}
+              </span>
+            </div>
+            <div class="player-status-tags">
+              ${isHost ? '<span class="status-tag-mini host">👑 Host</span>' : ''}
+              ${isClueGiver ? '<span class="status-tag-mini clue">🎙️ Clue</span>' : ''}
+              ${isSpectator ? '<span class="status-tag-mini spectator">🍿 Audience</span>' : ''}
+              ${!isConnected ? '<span class="status-tag-mini offline">🔴 Disconnected</span>' : ''}
+            </div>
+          </div>
+        `;
+
+        this.playerStatusListEl.appendChild(item);
+      });
+    }
   }
 
   renderMarqueeBoard(round) {

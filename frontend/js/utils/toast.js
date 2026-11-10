@@ -75,3 +75,4 @@ class ToastManager {
 
 export const toast = new ToastManager();
 export default toast;
+
