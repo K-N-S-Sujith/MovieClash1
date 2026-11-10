@@ -76,33 +76,12 @@ html, body {
   }
 
   .arena-header-bar {
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: space-between;
-    padding: 14px 16px;
-  }
-
-  .clue-giver-banner {
-    order: 1;
-    width: 100%;
-    justify-content: center;
-    padding: 6px 12px;
-  }
-
-  .round-indicator {
-    order: 2;
-  }
-
-  .arena-timer {
-    order: 3;
-  }
-
-  .arena-controls {
-    order: 4;
-    width: 100%;
     display: flex;
-    justify-content: center;
-    margin-top: 4px;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 12px;
   }
 
   .hero-title {
@@ -252,47 +231,68 @@ html, body {
     width: 100%;
   }
 
-  /* Compact Avatar Grid on Mobile: Horizontally Scrollable Strip per Specification */
+  /* Compact Avatar Grid on Mobile: Horizontally Scrollable Strip */
   .player-avatar-grid {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
-    gap: 12px;
-    padding: 6px 4px 12px;
+    gap: 8px;
+    padding: 4px 2px 8px;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x mandatory;
+    max-height: 110px;
   }
 
   .player-avatar-tile {
     flex-shrink: 0;
     scroll-snap-align: start;
-    width: 92px;
-    min-height: 104px;
-    padding: 12px 6px 8px;
+    width: 78px;
+    min-height: 88px;
+    padding: 8px 4px 6px;
+    border-radius: 10px;
   }
 
   .avatar-ring-wrapper {
-    width: 52px;
-    height: 52px;
-    margin-bottom: 6px;
+    width: 42px;
+    height: 42px;
+    margin-bottom: 4px;
   }
 
   .player-avatar-circle {
-    width: 52px;
-    height: 52px;
-    font-size: 1.35rem;
+    width: 42px;
+    height: 42px;
+    font-size: 1.15rem;
   }
 
   .presence-dot-indicator {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     bottom: 0;
     right: 0;
   }
 
   .player-tile-username {
-    max-width: 82px;
-    font-size: 0.78rem;
+    max-width: 68px;
+    font-size: 0.72rem;
+  }
+
+  /* Compact Lobby Layout & Chat on Mobile */
+  .lobby-grid {
+    gap: 12px;
+  }
+
+  .lobby-roster {
+    padding: 10px 12px 12px;
+  }
+
+  .lobby-controls {
+    padding: 10px 12px 12px;
+  }
+
+  .chat-wrapper {
+    height: 140px;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
   }
 
   /* Compact Room Info Bar on Mobile */
@@ -312,6 +312,80 @@ html, body {
   .room-code-text {
     font-size: 1.15rem;
     letter-spacing: 2px;
+  }
+
+  /* Single-Row Compact Arena Header on Mobile (No wrapping or stacked rows) */
+  .arena-header-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 4px 8px;
+    min-height: 40px;
+  }
+
+  .clue-giver-banner {
+    gap: 4px;
+    font-size: 0.78rem;
+  }
+
+  .clue-label-text {
+    display: none;
+  }
+
+  #activeClueGiverName {
+    font-size: 0.82rem;
+    max-width: 95px;
+  }
+
+  .round-indicator {
+    padding: 2px 6px;
+    font-size: 0.74rem;
+  }
+
+  .timer-circle {
+    width: 28px;
+    height: 28px;
+  }
+
+  .timer-circle .timer-seconds {
+    font-size: 0.74rem;
+  }
+
+  .btn-cancel-game {
+    padding: 2px 8px;
+    font-size: 0.72rem;
+  }
+
+  /* Mobile – Compact Secret Movie Selection Panel (approx 50% height reduction) */
+  .guesser-waiting-card {
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+  }
+
+  .guesser-waiting-card .waiting-icon {
+    font-size: 26px;
+    margin-bottom: 4px;
+  }
+
+  .guesser-waiting-card h3 {
+    font-size: 15px;
+    margin-bottom: 3px;
+    letter-spacing: 0.5px;
+  }
+
+  .guesser-waiting-card p {
+    font-size: 11.5px;
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+
+  .guesser-waiting-card .text-sm.text-muted {
+    font-size: 10.5px;
+    margin-top: 2px;
+    line-height: 1.2;
   }
 
   /* Compact In-Game Arena Player Strip on Mobile */

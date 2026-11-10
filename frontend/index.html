@@ -346,31 +346,34 @@
     <section id="viewGame" class="view-section hidden">
       <div class="game-arena-layout">
         
-        <!-- Arena Header: Turn Info, Clue-Giver Banner, Countdown -->
+        <!-- Arena Header: Single Horizontal Status Bar -->
         <div class="arena-header-bar card">
-          <div class="round-indicator">
-            <span class="meta-label">ROUND</span>
-            <span id="gameRoundNumber" class="round-number">1/5</span>
-          </div>
-
+          <!-- 1. Clue-Giver: Small microphone icon and player name -->
           <div class="clue-giver-banner" id="clueGiverBanner">
             <span class="banner-icon">🎙️</span>
-            <div class="banner-text">
-              <span class="label">CURRENT CLUE-GIVER:</span>
+            <div class="clue-giver-text-group">
+              <span class="clue-label-text">CLUE:</span>
               <strong id="activeClueGiverName">PlayerName</strong>
               <span id="activeClueGiverTeam" class="team-badge-sm hidden"></span>
             </div>
           </div>
 
-          <!-- Countdown Timer Component -->
+          <!-- 2. Round: Compact 1/10 badge -->
+          <div class="round-indicator">
+            <span class="round-prefix">R:</span>
+            <span id="gameRoundNumber" class="round-number">1/5</span>
+          </div>
+
+          <!-- 3. Timer: Small circular countdown indicator -->
           <div class="arena-timer">
             <div class="timer-circle" id="timerCircle">
               <span id="timerValue" class="timer-seconds">60</span>
             </div>
           </div>
 
+          <!-- 4. Cancel Game: Compact red button -->
           <div class="arena-controls">
-            <button id="btnProposeCancel" class="btn-sm btn-danger-outline" title="Propose game cancellation">Cancel Game</button>
+            <button id="btnProposeCancel" class="btn-cancel-game" title="Propose game cancellation">Cancel</button>
           </div>
         </div>
 
@@ -546,16 +549,6 @@
 
           </div>
 
-          <!-- Column 3: Compact Player Status Section (Replaces Round Activity & In-Game Chat) -->
-          <div class="arena-right-sidebar card player-status-sidebar">
-            <div class="sidebar-header">
-              <h3>Players (<span id="gamePlayerCount">0</span>)</h3>
-            </div>
-            <div id="gamePlayerStatusList" class="player-status-list">
-              <!-- Compact player items with avatar, name, and connection/role badges -->
-            </div>
-          </div>
-
         </div>
       </div>
     </section>
@@ -704,7 +697,7 @@
         <div class="modal-header-row">
           <div class="modal-header-title">
             <span class="icon">👥</span>
-            <h3>Players &amp; Status (<span id="modalPlayerTotalCount">0</span>)</h3>
+            <h3>Players, Status &amp; Rankings (<span id="modalPlayerTotalCount">0</span>)</h3>
           </div>
           <button type="button" id="btnCloseArenaPlayersModal" class="btn-icon btn-close-modal" aria-label="Close">✕</button>
         </div>

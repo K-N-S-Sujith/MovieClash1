@@ -463,22 +463,48 @@ export class GameView {
       });
     }
 
-    // 2. Update Modal Roster List
+    // 2. Update Modal Roster List with Rankings
     if (this.arenaPlayersModalList) {
       this.arenaPlayersModalList.innerHTML = '';
-      players.forEach(p => {
+
+      // Sort by score descending for leaderboard rankings (non-spectators first)
+      const rankedPlayers = [...players].sort((a, b) => {
+        if (Boolean(a.spectator) !== Boolean(b.spectator)) {
+          return a.spectator ? 1 : -1;
+        }
+        return (b.score || 0) - (a.score || 0);
+      });
+
+      let currentRank = 1;
+      rankedPlayers.forEach(p => {
         const isConnected = p.connected !== false;
         const isHost = p.id === hostId || p.isHost;
         const isCoHost = (p.id === room?.coHostId || p.isCoHost) && !isHost;
         const isMe = p.id === currentPlayer?.id;
+        const isSpectator = Boolean(p.spectator);
+        const score = p.score || 0;
         const initial = (p.name || 'P').charAt(0).toUpperCase();
+
+        let rankBadge = '';
+        let isTopRank = false;
+        if (!isSpectator) {
+          if (currentRank === 1) { rankBadge = '🥇 #1'; isTopRank = true; }
+          else if (currentRank === 2) { rankBadge = '🥈 #2'; isTopRank = true; }
+          else if (currentRank === 3) { rankBadge = '🥉 #3'; isTopRank = true; }
+          else { rankBadge = `#${currentRank}`; }
+          currentRank++;
+        } else {
+          rankBadge = '🍿';
+        }
+
+        const roleLabel = isHost ? '👑 Host' : (isCoHost ? '⭐ Co-Host' : (isSpectator ? '🍿 Spectator' : 'Player'));
 
         const row = document.createElement('div');
         row.className = `modal-player-row ${isMe ? 'is-me' : ''} ${!isConnected ? 'is-offline' : ''}`;
-        const roleLabel = isHost ? '👑 Host' : (isCoHost ? '⭐ Co-Host' : (p.spectator ? '🍿 Spectator' : 'Player'));
 
         row.innerHTML = `
           <div class="modal-player-left">
+            <span class="modal-player-rank ${isTopRank ? 'top-rank' : ''}">${rankBadge}</span>
             <div class="modal-player-circle ${isConnected ? 'online-glow' : ''}">
               ${initial}
               ${isHost ? '<span class="host-crown-badge">👑</span>' : ''}
@@ -489,6 +515,7 @@ export class GameView {
             </div>
           </div>
           <div class="modal-player-right">
+            ${!isSpectator ? `<span class="modal-player-score">${score} pts</span>` : ''}
             <span class="${isConnected ? 'status-chip-live' : 'status-chip-offline'}">
               ${isConnected ? '● Online' : '○ Offline'}
             </span>
