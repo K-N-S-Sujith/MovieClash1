@@ -516,9 +516,7 @@ export class GameView {
           </div>
           <div class="modal-player-right">
             ${!isSpectator ? `<span class="modal-player-score">${score} pts</span>` : ''}
-            <span class="${isConnected ? 'status-chip-live' : 'status-chip-offline'}">
-              ${isConnected ? '● Online' : '○ Offline'}
-            </span>
+            <span class="presence-bulb ${isConnected ? 'bulb-on' : 'bulb-off'}" title="${isConnected ? 'Connected' : 'Disconnected'}"></span>
           </div>
         `;
         this.arenaPlayersModalList.appendChild(row);

@@ -18,7 +18,7 @@ html, body {
 /* ================= 1. TABLETS & COMPACT DESKTOPS (<= 1024px) ================= */
 @media (max-width: 1024px) {
   .arena-grid {
-    grid-template-columns: 210px 1fr 230px;
+    width: 100%;
     gap: 14px;
   }
 
@@ -43,26 +43,12 @@ html, body {
   }
 
   .arena-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+    width: 100%;
+    gap: 14px;
   }
 
-  /* Optimized Mobile Ordering: Play Arena First, Chat Second, Scoreboard Third */
   .arena-center {
-    order: 1;
-  }
-
-  .arena-right-sidebar {
-    order: 2;
-  }
-
-  .arena-sidebar {
-    order: 3;
-  }
-
-  .arena-sidebar .scoreboard-list {
-    max-height: 180px;
-    overflow-y: auto;
+    width: 100%;
   }
 
   .arena-right-sidebar .activity-feed {

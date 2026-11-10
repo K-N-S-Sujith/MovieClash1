@@ -1299,6 +1299,28 @@
   gap: 8px;
 }
 
+/* Presence Bulb: Glowing green if online, or light off (dim) if offline */
+.presence-bulb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.presence-bulb.bulb-on {
+  background: #2ec486;
+  box-shadow: 0 0 10px #2ec486, 0 0 4px #2ec486;
+}
+
+.presence-bulb.bulb-off {
+  background: #272130;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  box-shadow: none;
+  opacity: 0.45;
+}
+
 .status-chip-live {
   display: inline-flex;
   align-items: center;
@@ -1499,12 +1521,17 @@
   transform: translateY(-1px);
 }
 
-/* ================= 12. ARENA TWO-COLUMN GRID ================= */
+/* ================= 12. ARENA GRID (FULL-WIDTH GAMEPLAY) ================= */
 .arena-grid {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 20px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.arena-center {
+  width: 100%;
 }
 
 /* ================= 13. RETRO CINEMA SCOREBOARD ================= */
